@@ -1,0 +1,12 @@
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\bin\Debug\netcoreapp2.1\PimBot.bot
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\bin\Debug\netcoreapp2.1\PimBot.deps.json
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\bin\Debug\netcoreapp2.1\PimBot.runtimeconfig.json
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\bin\Debug\netcoreapp2.1\PimBot.runtimeconfig.dev.json
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\bin\Debug\netcoreapp2.1\PimBot.dll
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\bin\Debug\netcoreapp2.1\PimBot.pdb
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\obj\Debug\netcoreapp2.1\PimBot.csprojAssemblyReference.cache
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\obj\Debug\netcoreapp2.1\PimBot.csproj.CoreCompileInputs.cache
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\obj\Debug\netcoreapp2.1\PimBot.AssemblyInfoInputs.cache
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\obj\Debug\netcoreapp2.1\PimBot.AssemblyInfo.cs
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\obj\Debug\netcoreapp2.1\PimBot.dll
+C:\Users\miroslav.novak\source\repos\PimBot\PimBot\obj\Debug\netcoreapp2.1\PimBot.pdb
