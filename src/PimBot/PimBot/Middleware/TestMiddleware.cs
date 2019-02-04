@@ -1,5 +1,4 @@
-﻿using FeaturesPimServiceReference;
-using Microsoft.Bot.Builder;
+﻿using Microsoft.Bot.Builder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace PimBot.Middleware
             await next(cancellationToken);
 
             ODataClientSettings settings = new ODataClientSettings();
-            settings.BaseUri = new Uri("http://pimicschatbot.westeurope.cloudapp.azure.com:7048/NAV/OData/");
+            settings.BaseUri = new Uri(Constants.ODataServiceEndpoint);
 
             settings.Credentials = new NetworkCredential("Allium", "#Allium12345$");
 
