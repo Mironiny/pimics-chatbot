@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PimBot.Service
 {
-    interface IItemService
+    public interface IItemService
     {
         Task<IEnumerable<string>> GetAllItemsAsync();
     }

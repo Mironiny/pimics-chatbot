@@ -16,13 +16,7 @@ namespace PimBot
 
     public class PimBot : IBot
     {
-        private IItemService ItemService = new ItemService();
-
-        private const string WelcomeMessage = 
-            @"Let me introduce myself. My name is PimBot and I'm Bot 🤖 and your virtual assistent!
-            I can help you with making and managing the orders. Simple type find and add a product
-              you are looking for. ";
-
+        private readonly IItemService _itemService = new ItemService();
 
         // The bot state accessor object. Use this to access specific state properties.
         private readonly PimBotStateAccesors _pimBotStateAccesors;
@@ -42,38 +36,23 @@ namespace PimBot
             // see https://aka.ms/about-bot-activity-message to learn more about the message and other activity types
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-                if (pimBotState.DidBotWelcomeUser == false)
+                switch (turnContext.Activity.Text)
                 {
-                    pimBotState.DidBotWelcomeUser = true;
+                    case "items":
+                        var items = await _itemService.GetAllItemsAsync();
+                        foreach (var item in items)
+                        {
+                        await turnContext.SendActivityAsync(item, cancellationToken: cancellationToken);
+                        }
+                        break;
 
-                    await _pimBotStateAccesors.PimBotState.SetAsync(turnContext, pimBotState);
-                    await _pimBotStateAccesors.UserState.SaveChangesAsync(turnContext);
+                    default:
+                        // Echo back to the user whatever they typed.             
+                        await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand, cancellationToken: cancellationToken);
 
-                    // the channel should sends the user name in the 'From' object
-                    var userName = turnContext.Activity.From.Name;
-
-                    await turnContext.SendActivityAsync($"You are seeing this message because this was your first message ever to this bot.", cancellationToken: cancellationToken);
-                    await turnContext.SendActivityAsync($"It is a good practice to welcome the user and provide personal greeting. For example, welcome {userName}.", cancellationToken: cancellationToken);
-
+                        break;
                 }
-                else
-                {
-                    switch (turnContext.Activity.Text)
-                    {
-                        case "items":
-                            var items = await ItemService.GetAllItemsAsync();
-                            foreach (var item in items)
-                            {
-                                await turnContext.SendActivityAsync(item, cancellationToken: cancellationToken);
-                            }
-                            break;
-
-                        default:
-                            // Echo back to the user whatever they typed.             
-                            await turnContext.SendActivityAsync(turnContext.Activity.Text, cancellationToken: cancellationToken);
-                            break;
-                    }
-                }
+                
             }
 
             else if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
@@ -89,9 +68,12 @@ namespace PimBot
                         // bot was added to the conversation.
                         if (member.Id != turnContext.Activity.Recipient.Id)
                         {
-                            await turnContext.SendActivityAsync($"Hi there, {member.Name} ✌️. {WelcomeMessage}", cancellationToken: cancellationToken);
-//                            await turnContext.SendActivityAsync(InfoMessage, cancellationToken: cancellationToken);
-//                            await turnContext.SendActivityAsync(PatternMessage, cancellationToken: cancellationToken);
+                            await turnContext.SendActivityAsync($"Hi there, {member.Name} ✌️. {Messages.Messages.IntroducingMessage}", cancellationToken: cancellationToken);
+                            
+                            // There would be nice typing
+
+                            await turnContext.SendActivityAsync(Messages.Messages.HelpMessage, cancellationToken: cancellationToken);
+
                         }
                     }
                 }
@@ -100,3 +82,20 @@ namespace PimBot
         }
     }
 }
+
+//if (pimBotState.DidBotWelcomeUser == false)
+//{
+//pimBotState.DidBotWelcomeUser = true;
+//
+//await _pimBotStateAccesors.PimBotState.SetAsync(turnContext, pimBotState);
+//await _pimBotStateAccesors.UserState.SaveChangesAsync(turnContext);
+//
+//// the channel should sends the user name in the 'From' object
+//var userName = turnContext.Activity.From.Name;
+//
+//await turnContext.SendActivityAsync($"You are seeing this message because this was your first message ever to this bot.", cancellationToken: cancellationToken);
+//await turnContext.SendActivityAsync($"It is a good practice to welcome the user and provide personal greeting. For example, welcome {userName}.", cancellationToken: cancellationToken);
+//
+//}
+//else
+//{

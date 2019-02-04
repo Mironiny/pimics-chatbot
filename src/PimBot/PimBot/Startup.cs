@@ -74,7 +74,7 @@ namespace PimBot
 
                 // Add Midleware
                 options.Middleware.Add(new TestMiddleware());
-                options.Middleware.Add(new ShowTypingMiddleware());
+                options.Middleware.Add(new ShowTypingMiddleware(10000, 20000));
        
                 // Creates a logger for the application to use.
                 ILogger logger = _loggerFactory.CreateLogger<PimBot>();

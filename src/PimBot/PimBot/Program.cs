@@ -3,7 +3,9 @@
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PimBot.Service.impl;
 
 namespace PimBot
 {
@@ -32,6 +34,7 @@ namespace PimBot
                 // Consider using Application Insights for your logging and metrics needs.
                 // https://azure.microsoft.com/en-us/services/application-insights/
                 // .UseApplicationInsights()
+                .ConfigureServices(serviceCollection => { serviceCollection.AddSingleton(new ItemService()); })
                 .UseStartup<Startup>()
                 .Build();
     }
