@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "83313d5a5724678628c9b2db3d649b43cc053424"
+    "signature": "1dc0016e2438db79ff1d7f746b3fbc6e0819f805"
   },
   "compilationOptions": {
     "defines": [
@@ -31,7 +31,13 @@
           "Microsoft.Bot.Configuration": "4.2.0",
           "Microsoft.Bot.Connector": "4.2.0",
           "Microsoft.Bot.Schema": "4.2.0",
-          "Microsoft.NETCore.App": "2.1.0"
+          "Microsoft.Data.Services": "5.8.4",
+          "Microsoft.NETCore.App": "2.1.0",
+          "Simple.OData.Client": "5.6.2",
+          "System.ServiceModel.Duplex": "4.4.4",
+          "System.ServiceModel.Http": "4.4.4",
+          "System.ServiceModel.NetTcp": "4.4.4",
+          "System.ServiceModel.Security": "4.4.4"
         },
         "runtime": {
           "PimBot.dll": {}
@@ -1879,11 +1885,11 @@
         }
       },
       "Microsoft.CSharp/4.4.0": {},
-      "Microsoft.Data.Edm/5.8.2": {
+      "Microsoft.Data.Edm/5.8.4": {
         "runtime": {
           "lib/netstandard1.1/Microsoft.Data.Edm.dll": {
-            "assemblyVersion": "5.8.1.0",
-            "fileVersion": "5.8.1.62767"
+            "assemblyVersion": "5.8.4.0",
+            "fileVersion": "5.8.4.63386"
           }
         },
         "resources": {
@@ -1919,15 +1925,15 @@
           "lib/netstandard1.1/Microsoft.Data.Edm.dll": {}
         }
       },
-      "Microsoft.Data.OData/5.8.2": {
+      "Microsoft.Data.OData/5.8.4": {
         "dependencies": {
-          "Microsoft.Data.Edm": "5.8.2",
-          "System.Spatial": "5.8.2"
+          "Microsoft.Data.Edm": "5.8.4",
+          "System.Spatial": "5.8.4"
         },
         "runtime": {
           "lib/netstandard1.1/Microsoft.Data.OData.dll": {
-            "assemblyVersion": "5.8.1.0",
-            "fileVersion": "5.8.1.62767"
+            "assemblyVersion": "5.8.4.0",
+            "fileVersion": "5.8.4.63386"
           }
         },
         "resources": {
@@ -1961,6 +1967,96 @@
         },
         "compile": {
           "lib/netstandard1.1/Microsoft.Data.OData.dll": {}
+        }
+      },
+      "Microsoft.Data.Services/5.8.4": {
+        "dependencies": {
+          "Microsoft.Data.Services.Client": "5.8.4"
+        },
+        "runtime": {
+          "lib/net40/Microsoft.Data.Services.dll": {
+            "assemblyVersion": "5.8.4.0",
+            "fileVersion": "5.8.4.63386"
+          }
+        },
+        "resources": {
+          "lib/net40/de/Microsoft.Data.Services.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net40/es/Microsoft.Data.Services.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net40/fr/Microsoft.Data.Services.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net40/it/Microsoft.Data.Services.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net40/ja/Microsoft.Data.Services.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net40/ko/Microsoft.Data.Services.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net40/ru/Microsoft.Data.Services.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net40/zh-Hans/Microsoft.Data.Services.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net40/zh-Hant/Microsoft.Data.Services.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        },
+        "compile": {
+          "lib/net40/Microsoft.Data.Services.dll": {}
+        }
+      },
+      "Microsoft.Data.Services.Client/5.8.4": {
+        "dependencies": {
+          "Microsoft.Data.OData": "5.8.4",
+          "System.ComponentModel.EventBasedAsync": "4.0.11",
+          "System.Dynamic.Runtime": "4.3.0",
+          "System.Linq.Queryable": "4.0.1",
+          "System.Net.Requests": "4.0.11"
+        },
+        "runtime": {
+          "lib/netstandard1.1/Microsoft.Data.Services.Client.dll": {
+            "assemblyVersion": "5.8.4.0",
+            "fileVersion": "5.8.4.63386"
+          }
+        },
+        "resources": {
+          "lib/netstandard1.1/de/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard1.1/es/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard1.1/fr/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard1.1/it/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "it"
+          },
+          "lib/netstandard1.1/ja/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/netstandard1.1/ko/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/netstandard1.1/ru/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/netstandard1.1/zh-Hans/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/netstandard1.1/zh-Hant/Microsoft.Data.Services.Client.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.1/Microsoft.Data.Services.Client.dll": {}
         }
       },
       "Microsoft.Data.Sqlite/2.0.1": {
@@ -2867,6 +2963,32 @@
           "lib/netstandard2.0/Microsoft.Net.Http.Headers.dll": {}
         }
       },
+      "Microsoft.OData.Core/7.5.3": {
+        "dependencies": {
+          "Microsoft.OData.Edm": "7.5.3",
+          "Microsoft.Spatial": "7.5.3"
+        },
+        "runtime": {
+          "lib/netstandard1.1/Microsoft.OData.Core.dll": {
+            "assemblyVersion": "7.5.3.21218",
+            "fileVersion": "7.5.3.21218"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.1/Microsoft.OData.Core.dll": {}
+        }
+      },
+      "Microsoft.OData.Edm/7.5.3": {
+        "runtime": {
+          "lib/netstandard1.1/Microsoft.OData.Edm.dll": {
+            "assemblyVersion": "7.5.3.21218",
+            "fileVersion": "7.5.3.21218"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.1/Microsoft.OData.Edm.dll": {}
+        }
+      },
       "Microsoft.Rest.ClientRuntime/2.3.13": {
         "dependencies": {
           "NETStandard.Library": "2.0.3",
@@ -2896,6 +3018,17 @@
         },
         "compile": {
           "lib/netstandard1.4/Microsoft.Rest.ClientRuntime.Azure.dll": {}
+        }
+      },
+      "Microsoft.Spatial/7.5.3": {
+        "runtime": {
+          "lib/netstandard1.1/Microsoft.Spatial.dll": {
+            "assemblyVersion": "7.5.3.21218",
+            "fileVersion": "7.5.3.21218"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.1/Microsoft.Spatial.dll": {}
         }
       },
       "Microsoft.VisualStudio.Web.BrowserLink/2.0.3": {
@@ -3157,6 +3290,36 @@
           }
         }
       },
+      "Simple.OData.Client/5.6.2": {
+        "dependencies": {
+          "Microsoft.Data.OData": "5.8.4",
+          "Microsoft.OData.Core": "7.5.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Simple.OData.Client.Core.dll": {
+            "assemblyVersion": "5.6.2.0",
+            "fileVersion": "5.6.2.0"
+          },
+          "lib/netstandard2.0/Simple.OData.Client.Dynamic.dll": {
+            "assemblyVersion": "5.6.2.0",
+            "fileVersion": "5.6.2.0"
+          },
+          "lib/netstandard2.0/Simple.OData.Client.V3.Adapter.dll": {
+            "assemblyVersion": "5.6.2.0",
+            "fileVersion": "5.6.2.0"
+          },
+          "lib/netstandard2.0/Simple.OData.Client.V4.Adapter.dll": {
+            "assemblyVersion": "5.6.2.0",
+            "fileVersion": "5.6.2.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Simple.OData.Client.Core.dll": {},
+          "lib/netstandard2.0/Simple.OData.Client.Dynamic.dll": {},
+          "lib/netstandard2.0/Simple.OData.Client.V3.Adapter.dll": {},
+          "lib/netstandard2.0/Simple.OData.Client.V4.Adapter.dll": {}
+        }
+      },
       "SourceLink.Create.CommandLine/2.8.1": {},
       "SQLitePCLRaw.bundle_green/1.1.7": {
         "dependencies": {
@@ -3333,6 +3496,14 @@
         }
       },
       "System.ComponentModel.Annotations/4.4.0": {},
+      "System.ComponentModel.EventBasedAsync/4.0.11": {
+        "dependencies": {
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Tasks": "4.3.0"
+        }
+      },
       "System.Console/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.1.0",
@@ -3663,6 +3834,22 @@
           }
         }
       },
+      "System.Net.Http.WinHttpHandler/4.4.0": {
+        "runtime": {
+          "lib/netstandard2.0/System.Net.Http.WinHttpHandler.dll": {
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netstandard2.0/System.Net.Http.WinHttpHandler.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        }
+      },
       "System.Net.NameResolution/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.1.0",
@@ -3697,6 +3884,33 @@
           "Microsoft.NETCore.Targets": "2.1.0",
           "System.Runtime": "4.3.0",
           "System.Runtime.Handles": "4.3.0"
+        }
+      },
+      "System.Net.Requests/4.0.11": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "2.1.0",
+          "System.Collections": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Diagnostics.Tracing": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.IO": "4.3.0",
+          "System.Net.Http": "4.3.0",
+          "System.Net.Primitives": "4.3.0",
+          "System.Net.WebHeaderCollection": "4.0.1",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Tasks": "4.3.0"
+        },
+        "runtimeTargets": {
+          "runtime/unix/lib/_._": {
+            "rid": "unix",
+            "assetType": "runtime"
+          },
+          "runtime/win/lib/_._": {
+            "rid": "win",
+            "assetType": "runtime"
+          }
         }
       },
       "System.Net.Security/4.3.0": {
@@ -3751,6 +3965,14 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
+      "System.Net.WebHeaderCollection/4.0.1": {
+        "dependencies": {
+          "System.Collections": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0"
+        }
+      },
       "System.Numerics.Vectors/4.5.0": {},
       "System.ObjectModel/4.3.0": {
         "dependencies": {
@@ -3790,6 +4012,28 @@
           "System.Xml.XmlSerializer": "4.3.0"
         }
       },
+      "System.Private.ServiceModel/4.4.4": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "2.1.0",
+          "System.Net.Http.WinHttpHandler": "4.4.0",
+          "System.Reflection.DispatchProxy": "4.4.0",
+          "System.Security.Principal.Windows": "4.5.0"
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard2.0/System.Private.ServiceModel.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "4.1.2.4",
+            "fileVersion": "4.6.26720.1"
+          },
+          "runtimes/win7/lib/netstandard2.0/System.Private.ServiceModel.dll": {
+            "rid": "win7",
+            "assetType": "runtime",
+            "assemblyVersion": "4.1.2.4",
+            "fileVersion": "4.6.26720.1"
+          }
+        }
+      },
       "System.Reflection/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.1.0",
@@ -3799,6 +4043,7 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Reflection.DispatchProxy/4.4.0": {},
       "System.Reflection.Emit/4.3.0": {
         "dependencies": {
           "System.IO": "4.3.0",
@@ -4180,11 +4425,90 @@
           "ref/netstandard2.0/System.Security.Principal.Windows.dll": {}
         }
       },
-      "System.Spatial/5.8.2": {
+      "System.ServiceModel.Duplex/4.4.4": {
+        "dependencies": {
+          "System.Private.ServiceModel": "4.4.4",
+          "System.ServiceModel.Primitives": "4.4.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.ServiceModel.Duplex.dll": {
+            "assemblyVersion": "4.1.0.3",
+            "fileVersion": "4.6.26720.1"
+          }
+        },
+        "compile": {
+          "ref/netstandard2.0/System.ServiceModel.Duplex.dll": {}
+        }
+      },
+      "System.ServiceModel.Http/4.4.4": {
+        "dependencies": {
+          "System.Private.ServiceModel": "4.4.4",
+          "System.ServiceModel.Primitives": "4.4.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.ServiceModel.Http.dll": {
+            "assemblyVersion": "4.1.2.3",
+            "fileVersion": "4.6.26720.1"
+          }
+        },
+        "compile": {
+          "ref/netstandard2.0/System.ServiceModel.Http.dll": {}
+        }
+      },
+      "System.ServiceModel.NetTcp/4.4.4": {
+        "dependencies": {
+          "System.Private.ServiceModel": "4.4.4",
+          "System.ServiceModel.Primitives": "4.4.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.ServiceModel.NetTcp.dll": {
+            "assemblyVersion": "4.1.2.3",
+            "fileVersion": "4.6.26720.1"
+          }
+        },
+        "compile": {
+          "ref/netstandard2.0/System.ServiceModel.NetTcp.dll": {}
+        }
+      },
+      "System.ServiceModel.Primitives/4.4.4": {
+        "dependencies": {
+          "System.Private.ServiceModel": "4.4.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.ServiceModel.Primitives.dll": {
+            "assemblyVersion": "4.2.0.3",
+            "fileVersion": "4.6.26720.1"
+          },
+          "lib/netstandard2.0/System.ServiceModel.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "0.0.65535.65535"
+          }
+        },
+        "compile": {
+          "ref/netstandard2.0/System.ServiceModel.Primitives.dll": {},
+          "ref/netstandard2.0/System.ServiceModel.dll": {}
+        }
+      },
+      "System.ServiceModel.Security/4.4.4": {
+        "dependencies": {
+          "System.Private.ServiceModel": "4.4.4",
+          "System.ServiceModel.Primitives": "4.4.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.ServiceModel.Security.dll": {
+            "assemblyVersion": "4.0.3.3",
+            "fileVersion": "4.6.26720.1"
+          }
+        },
+        "compile": {
+          "ref/netstandard2.0/System.ServiceModel.Security.dll": {}
+        }
+      },
+      "System.Spatial/5.8.4": {
         "runtime": {
           "lib/netstandard1.1/System.Spatial.dll": {
-            "assemblyVersion": "5.8.1.0",
-            "fileVersion": "5.8.1.62767"
+            "assemblyVersion": "5.8.4.0",
+            "fileVersion": "5.8.4.63386"
           }
         },
         "resources": {
@@ -4413,10 +4737,10 @@
       },
       "WindowsAzure.Storage/8.1.4": {
         "dependencies": {
-          "Microsoft.Data.OData": "5.8.2",
+          "Microsoft.Data.OData": "5.8.4",
           "NETStandard.Library": "2.0.3",
           "Newtonsoft.Json": "11.0.2",
-          "System.Spatial": "5.8.2"
+          "System.Spatial": "5.8.4"
         },
         "runtime": {
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {
@@ -5331,19 +5655,33 @@
       "path": "microsoft.csharp/4.4.0",
       "hashPath": "microsoft.csharp.4.4.0.nupkg.sha512"
     },
-    "Microsoft.Data.Edm/5.8.2": {
+    "Microsoft.Data.Edm/5.8.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-P/d8DxA6MFHroBEn/jW0LMQSIKnsRRibrZtRCLfov2boQfrQ1R1BVgkJ5oIhcQsOm0l4POv+I2ny6RBsclNbOw==",
-      "path": "microsoft.data.edm/5.8.2",
-      "hashPath": "microsoft.data.edm.5.8.2.nupkg.sha512"
+      "sha512": "sha512-wsb14A7kqCsEotMUue3hCWe4neGrnu313Lqey04uVs1+bnhZKtKWbUApBzBAHPn2ho3V4bLos42mH5zTp251CA==",
+      "path": "microsoft.data.edm/5.8.4",
+      "hashPath": "microsoft.data.edm.5.8.4.nupkg.sha512"
     },
-    "Microsoft.Data.OData/5.8.2": {
+    "Microsoft.Data.OData/5.8.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-oEIUtXcRiKogF0yZxA+QdgxoBJ34989qL/5xOSrTfxAhzNJV5Hw6DRdWgUCpeXFMoJUQx7ptbHCN+My/LCQfsg==",
-      "path": "microsoft.data.odata/5.8.2",
-      "hashPath": "microsoft.data.odata.5.8.2.nupkg.sha512"
+      "sha512": "sha512-QqKZ5LrmBiIz0kx17KWlwA7HDMxC8tOCpkJi3rufjC3n9sCQvOhFsLHLqTK/EPo9XTibGoNfnvz55BqSIyVJFg==",
+      "path": "microsoft.data.odata/5.8.4",
+      "hashPath": "microsoft.data.odata.5.8.4.nupkg.sha512"
+    },
+    "Microsoft.Data.Services/5.8.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6/5nUBg6fZOcf02OV7Gq5oopd1N9f2EhoMbDLxCDk/V2+b6KUOxbYqI1MVec4EO0oq6XRuPiDxF429e3SuPw4w==",
+      "path": "microsoft.data.services/5.8.4",
+      "hashPath": "microsoft.data.services.5.8.4.nupkg.sha512"
+    },
+    "Microsoft.Data.Services.Client/5.8.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kiLpQA3qQMYC25nhcKfKwEOuaPMwLMUc2egGFg5R/5DbK8FRmFg5+8a0KpuNwgJgdcdh/jMz5bGhfLfPKn1rJA==",
+      "path": "microsoft.data.services.client/5.8.4",
+      "hashPath": "microsoft.data.services.client.5.8.4.nupkg.sha512"
     },
     "Microsoft.Data.Sqlite/2.0.1": {
       "type": "package",
@@ -5765,6 +6103,20 @@
       "path": "microsoft.net.http.headers/2.1.1",
       "hashPath": "microsoft.net.http.headers.2.1.1.nupkg.sha512"
     },
+    "Microsoft.OData.Core/7.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+vsamZmoXZt7Tg49pSPnnMdijZ4qd0sSV5y6ssGX/86Z+sufxHBQxSkpF48CCzrxOhECSJVX5yOwqjVd80umBA==",
+      "path": "microsoft.odata.core/7.5.3",
+      "hashPath": "microsoft.odata.core.7.5.3.nupkg.sha512"
+    },
+    "Microsoft.OData.Edm/7.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RvXuEPNTWA3waSkentkbP32YbU8x6WvHeK/AZrAiS8fChZ6lGOt7tUYatkXMakZdBP/4LrTyihFdOjL+JerdBA==",
+      "path": "microsoft.odata.edm/7.5.3",
+      "hashPath": "microsoft.odata.edm.7.5.3.nupkg.sha512"
+    },
     "Microsoft.Rest.ClientRuntime/2.3.13": {
       "type": "package",
       "serviceable": true,
@@ -5778,6 +6130,13 @@
       "sha512": "sha512-CgO+/QV35GIEYaV3x1pqWWxj/F95FBXNU9Npfu7zISs1wQVCeMzmSsKx1QKdCWwJt/+wx151sT0Rff8Bxbe2Eg==",
       "path": "microsoft.rest.clientruntime.azure/3.3.7",
       "hashPath": "microsoft.rest.clientruntime.azure.3.3.7.nupkg.sha512"
+    },
+    "Microsoft.Spatial/7.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UVZlOdhC2LnSRX3yteG5w+UZ4tRd3PX4SY2dCOiIxzscebOvjkzZPxferY7iQ4r1p5KtWpKzj6rsWh278ZueNA==",
+      "path": "microsoft.spatial/7.5.3",
+      "hashPath": "microsoft.spatial.7.5.3.nupkg.sha512"
     },
     "Microsoft.VisualStudio.Web.BrowserLink/2.0.3": {
       "type": "package",
@@ -5968,6 +6327,13 @@
       "path": "runtime.win-x86.runtime.native.system.data.sqlclient.sni/4.4.0",
       "hashPath": "runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
     },
+    "Simple.OData.Client/5.6.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gEkAH2Z86w6sGbYtA7nGxtIAFR+MyGlVVnxlapEnbF7uIH46eiKK73bHpzzpzpO8EOH/hQcwN0sOxYtqHUQxdg==",
+      "path": "simple.odata.client/5.6.2",
+      "hashPath": "simple.odata.client.5.6.2.nupkg.sha512"
+    },
     "SourceLink.Create.CommandLine/2.8.1": {
       "type": "package",
       "serviceable": true,
@@ -6079,6 +6445,13 @@
       "sha512": "sha512-vd03owHLpgcjxuZQJt/rZDsphb6uofhbxeFdXAHI7bytuHBKOmARGV0jE6fKH32vmQlPkRnvxQRbPS2elLAmSg==",
       "path": "system.componentmodel.annotations/4.4.0",
       "hashPath": "system.componentmodel.annotations.4.4.0.nupkg.sha512"
+    },
+    "System.ComponentModel.EventBasedAsync/4.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Z7SO6vvQIR84daPE4uhaNdef9CjgjDMGYkas8epUhf0U3WGuaGgZ0Mm4QuNycMdbHUY8KEdZrtgxonkAiJaAlA==",
+      "path": "system.componentmodel.eventbasedasync/4.0.11",
+      "hashPath": "system.componentmodel.eventbasedasync.4.0.11.nupkg.sha512"
     },
     "System.Console/4.3.0": {
       "type": "package",
@@ -6255,6 +6628,13 @@
       "path": "system.net.http/4.3.0",
       "hashPath": "system.net.http.4.3.0.nupkg.sha512"
     },
+    "System.Net.Http.WinHttpHandler/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YqwobZ4S2NccFweRdD53iBQL+tI5BtplnjpLWE5YEN5f03NQzSjSUKjbAuvSeW9W95SM73ua+KqvdqCjlK8Ctw==",
+      "path": "system.net.http.winhttphandler/4.4.0",
+      "hashPath": "system.net.http.winhttphandler.4.4.0.nupkg.sha512"
+    },
     "System.Net.NameResolution/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -6269,6 +6649,13 @@
       "path": "system.net.primitives/4.3.0",
       "hashPath": "system.net.primitives.4.3.0.nupkg.sha512"
     },
+    "System.Net.Requests/4.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vxGt7C0cZixN+VqoSW4Yakc1Y9WknmxauDqzxgpw/FnBdz4kQNN51l4wxdXX5VY1xjqy//+G+4CvJWp1+f+y6Q==",
+      "path": "system.net.requests/4.0.11",
+      "hashPath": "system.net.requests.4.0.11.nupkg.sha512"
+    },
     "System.Net.Security/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -6282,6 +6669,13 @@
       "sha512": "sha512-m6icV6TqQOAdgt5N/9I5KNpjom/5NFtkmGseEH+AK/hny8XrytLH3+b5M8zL/Ycg3fhIocFpUMyl/wpFnVRvdw==",
       "path": "system.net.sockets/4.3.0",
       "hashPath": "system.net.sockets.4.3.0.nupkg.sha512"
+    },
+    "System.Net.WebHeaderCollection/4.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XX2TIAN+wBSAIV51BU2FvvXMdstUa8b0FBSZmDWjZdwUMmggQSifpTOZ5fNH20z9ZCg2fkV1L5SsZnpO2RQDRQ==",
+      "path": "system.net.webheadercollection/4.0.1",
+      "hashPath": "system.net.webheadercollection.4.0.1.nupkg.sha512"
     },
     "System.Numerics.Vectors/4.5.0": {
       "type": "package",
@@ -6304,12 +6698,26 @@
       "path": "system.private.datacontractserialization/4.3.0",
       "hashPath": "system.private.datacontractserialization.4.3.0.nupkg.sha512"
     },
+    "System.Private.ServiceModel/4.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-z3IRVwQs/n1gvRekVczO0gvPXAOlrfysHfkCTQB94gwj2096NFStre+HmqmevXmOgGg2VxFTaQowEQNHsxO0Yg==",
+      "path": "system.private.servicemodel/4.4.4",
+      "hashPath": "system.private.servicemodel.4.4.4.nupkg.sha512"
+    },
     "System.Reflection/4.3.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-KMiAFoW7MfJGa9nDFNcfu+FpEdiHpWgTcS2HdMpDvt9saK3y/G4GwprPyzqjFH9NTaGPQeWNHU+iDlDILj96aQ==",
       "path": "system.reflection/4.3.0",
       "hashPath": "system.reflection.4.3.0.nupkg.sha512"
+    },
+    "System.Reflection.DispatchProxy/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OMBZ2YO0MOoi8yarOmXQVLso5RW9S62liNXJ0UjANonTBA4n/H1hn8A90BRNXdwbwIlPKIjis2G2wreukTRSWA==",
+      "path": "system.reflection.dispatchproxy/4.4.0",
+      "hashPath": "system.reflection.dispatchproxy.4.4.0.nupkg.sha512"
     },
     "System.Reflection.Emit/4.3.0": {
       "type": "package",
@@ -6521,12 +6929,47 @@
       "path": "system.security.principal.windows/4.5.0",
       "hashPath": "system.security.principal.windows.4.5.0.nupkg.sha512"
     },
-    "System.Spatial/5.8.2": {
+    "System.ServiceModel.Duplex/4.4.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0RfZZJ8RlrfjoBPAF6pczX4Nd2kyLM8EX1PCP5Rqs/jOhJBUPYhpXjIsVAYN7kocj9IJ9XoJWAxWgXIDtJY2Ag==",
-      "path": "system.spatial/5.8.2",
-      "hashPath": "system.spatial.5.8.2.nupkg.sha512"
+      "sha512": "sha512-9AdWXWsvQl6WB6B72ZrGKpJvP9pgdMydTFEyN5iTzzTtk9WgSwkJH3G9VWZZrw97p6pvAdyDRnRYKCcbNWUTLQ==",
+      "path": "system.servicemodel.duplex/4.4.4",
+      "hashPath": "system.servicemodel.duplex.4.4.4.nupkg.sha512"
+    },
+    "System.ServiceModel.Http/4.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GFNgP4IQ4zWRHN7jNDEQaAGMqoIGQuEH6uCx39VXGVWVt3EiKgTAOnw1v/Ij0eFWmhzXfYvNmRP+syp5oXU1yw==",
+      "path": "system.servicemodel.http/4.4.4",
+      "hashPath": "system.servicemodel.http.4.4.4.nupkg.sha512"
+    },
+    "System.ServiceModel.NetTcp/4.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ioHzQ5dLusTv+p/CBva4EiVldVTsuJ/jH0+hCJuij9Xxj9Kmq6RdqwpbfqAZ245S6ok+xyaOCeMsWtEVtsl/dA==",
+      "path": "system.servicemodel.nettcp/4.4.4",
+      "hashPath": "system.servicemodel.nettcp.4.4.4.nupkg.sha512"
+    },
+    "System.ServiceModel.Primitives/4.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cd5ktQSd3WgEJ0J6DV8PSHMT2f9tt1vS51riZJhLsTwGAjaQyyR0v6CLymEBU0XQ2gfXVX8QQwFOumssJjRMgw==",
+      "path": "system.servicemodel.primitives/4.4.4",
+      "hashPath": "system.servicemodel.primitives.4.4.4.nupkg.sha512"
+    },
+    "System.ServiceModel.Security/4.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Iawb8WsL4vG0r5bc6/zqMIVk9TiAJBTQ4LdFipTjIrTP2rGKmL6ANSfG/hy+NUOpyQ8IpfI5qGQtFJ1ykK5eKA==",
+      "path": "system.servicemodel.security/4.4.4",
+      "hashPath": "system.servicemodel.security.4.4.4.nupkg.sha512"
+    },
+    "System.Spatial/5.8.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZyoIuNvwZV7rkFm5IGeoRFvBaoTXJ1INtPPPxP+exd/QvA+LU63jTjkU/mTo9xq22Nan1AC+gQ13rrA72y9QSw==",
+      "path": "system.spatial/5.8.4",
+      "hashPath": "system.spatial.5.8.4.nupkg.sha512"
     },
     "System.Text.Encoding/4.3.0": {
       "type": "package",
