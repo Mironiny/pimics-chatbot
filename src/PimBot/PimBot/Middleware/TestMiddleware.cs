@@ -15,25 +15,25 @@ namespace PimBot.Middleware
     {
         public async Task OnTurnAsync(ITurnContext context, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await context.SendActivityAsync($"[TestMiddleware] {context.Activity.Type}/OnTurn/Before");
-
+//            await context.SendActivityAsync($"[TestMiddleware] {context.Activity.Type}/OnTurn/Before");
+//
             await next(cancellationToken);
-
-            ODataClientSettings settings = new ODataClientSettings();
-            settings.BaseUri = new Uri(Constants.ODataServiceEndpoint);
-
-            settings.Credentials = new NetworkCredential("Allium", "#Allium12345$");
-
-            var client = new ODataClient(settings);
-
-            var featuresPIM = await client
-                .For("FeaturesPIM")
-                .FindEntriesAsync();
-
-
-            var e = featuresPIM.First();
-
-            var s = e["Code"];
+//
+//            ODataClientSettings settings = new ODataClientSettings();
+//            settings.BaseUri = new Uri(Constants.ODataServiceEndpoint);
+//
+//            settings.Credentials = new NetworkCredential("Allium", "#Allium12345$");
+//
+//            var client = new ODataClient(settings);
+//
+//            var featuresPIM = await client
+//                .For("FeaturesPIM")
+//                .FindEntriesAsync();
+//
+//
+//            var e = featuresPIM.First();
+//
+//            var s = e["Code"];
 
 
             //            FeaturesPIM featuresPim = new FeaturesPIM();
@@ -54,7 +54,7 @@ namespace PimBot.Middleware
             //            var valules = result.FeaturesPIM.Values;
 
 
-            await context.SendActivityAsync($"[TestMiddleware] first code: {s} and {context.Activity.Type}/OnTurn/After");
+//            await context.SendActivityAsync($"[TestMiddleware] first code: and {context.Activity.Type}/OnTurn/After");
 
         }
     }

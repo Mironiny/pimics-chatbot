@@ -1,61 +1,37 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using PimBot.Service;
+using PimBot.Service.impl;
 using PimBot.State;
 
 namespace PimBot
 {
-    /// <summary>
-    /// Represents a bot that processes incoming activities.
-    /// For each user interaction, an instance of this class is created and the OnTurnAsync method is called.
-    /// This is a Transient lifetime service. Transient lifetime services are created
-    /// each time they're requested. Objects that are expensive to construct, or have a lifetime
-    /// beyond a single turn, should be carefully managed.
-    /// For example, the <see cref="MemoryStorage"/> object and associated
-    /// <see cref="IStatePropertyAccessor{T}"/> object are created with a singleton lifetime.
-    /// </summary>
-    /// <seealso cref="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1"/>
+
     public class PimBot : IBot
     {
-        // Messages sent to the user.
+        private IItemService ItemService = new ItemService();
 
         private const string WelcomeMessage = 
             @"Let me introduce myself. My name is PimBot and I'm Bot 🤖 and your virtual assistent!
             I can help you with making and managing the orders. Simple type find and add a product
               you are looking for. ";
 
-        //        private const string WelcomeMessage = @"This is a simple Welcome Bot sample.This bot will introduce you
-        //                                                to welcoming and greeting users. You can say 'intro' to see the
-        //                                                introduction card. If you are running this bot in the Bot Framework
-        //                                                Emulator, press the 'Start Over' button to simulate user joining
-        //                                                a bot or a channel";
 
         // The bot state accessor object. Use this to access specific state properties.
         private readonly PimBotStateAccesors _pimBotStateAccesors;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PimBot"/> class.
-        /// </summary>                        
+                    
         public PimBot(PimBotStateAccesors statePropetyAccesors)
         {
             _pimBotStateAccesors = statePropetyAccesors ?? throw new System.ArgumentNullException("state accessor can't be null");
         }
 
-        /// <summary>
-        /// Every conversation turn calls this method.
-        /// </summary>
-        /// <param name="turnContext">A <see cref="ITurnContext"/> containing all the data needed
-        /// for processing this conversation turn. </param>
-        /// <param name="cancellationToken">(Optional) A <see cref="CancellationToken"/> that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A <see cref="Task"/> that represents the work queued to execute.</returns>
-        /// <seealso cref="BotStateSet"/>
-        /// <seealso cref="ConversationState"/>
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
 
@@ -82,9 +58,21 @@ namespace PimBot
                 }
                 else
                 {
-                    // Echo back to the user whatever they typed.             
-                    await turnContext.SendActivityAsync(turnContext.Activity.Text, cancellationToken: cancellationToken);
+                    switch (turnContext.Activity.Text)
+                    {
+                        case "items":
+                            var items = await ItemService.GetAllItemsAsync();
+                            foreach (var item in items)
+                            {
+                                await turnContext.SendActivityAsync(item, cancellationToken: cancellationToken);
+                            }
+                            break;
 
+                        default:
+                            // Echo back to the user whatever they typed.             
+                            await turnContext.SendActivityAsync(turnContext.Activity.Text, cancellationToken: cancellationToken);
+                            break;
+                    }
                 }
             }
 
