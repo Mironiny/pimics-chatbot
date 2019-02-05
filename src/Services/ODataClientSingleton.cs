@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Simple.OData.Client;
+
+namespace PimBot.Service
+{
+    public class ODataClientSingleton
+    {
+        private static ODataClient client = null;
+
+        private ODataClientSingleton()
+        {
+        }
+
+        public static ODataClient Get()
+        {
+            if (client == null)
+            {
+                ODataClientSettings settings = new ODataClientSettings();
+                settings.BaseUri = new Uri(Constants.ODataServiceEndpoint);
+                settings.Credentials = new NetworkCredential(Constants.SecureUserName, Constants.SecureUserPassword);
+                client = new ODataClient(settings);
+            }
+
+            return client;
+        }
+    }
+}

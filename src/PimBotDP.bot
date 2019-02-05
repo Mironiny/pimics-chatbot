@@ -1,0 +1,61 @@
+{
+  "name": "PimBotDP",
+  "padlock": "O+8tBdVfH5/o1AYXk7lmxg==!RCTMMXZPYj6/gHeROKNxbPtrykQNQch8stVxvvUYtmL9QRTMzkJcqOuYw7eUcj55",
+  "version": "2.0",
+  "services": [
+    {
+      "tenantId": "6c19f530-fdfe-4a1f-af7e-a0c0497381b8",
+      "subscriptionId": "dba60a9c-5b75-4726-967d-92fcb25d06e3",
+      "resourceGroup": "DP-Chatbot",
+      "serviceName": "PimBotDP",
+      "type": "abs",
+      "name": "PimBotDP",
+      "id": "1"
+    },
+    {
+      "connectionString": "GMlQtD+Vy6VPRGTHu9qc1Q==!z4Y2nF5lGjpZEp6QAvABWNbeqComlo39Fc8rbULHEU0DYrczFP4+ibz71cLeIbzOf8Yx7FngcfffQtjx7HPu/6OM82exUA58Plngyrg5iSl+Vadn6Jhz9cWCeF8sSUK4+1iU+W5N1WxMvNLDoxq1vRew/9Bhsq4u9UpnaWxDyX5LIH7YtyHy9ljXnnKxOAOsicpGZqLM/DJJOikNMFfeOw==",
+      "tenantId": "6c19f530-fdfe-4a1f-af7e-a0c0497381b8",
+      "subscriptionId": "dba60a9c-5b75-4726-967d-92fcb25d06e3",
+      "resourceGroup": "DP-Chatbot",
+      "serviceName": "pimbotdp8e9d",
+      "type": "blob",
+      "id": "2"
+    },
+    {
+      "appId": "",
+      "appPassword": "",
+      "endpoint": "http://localhost:3978/api/messages",
+      "type": "endpoint",
+      "name": "development",
+      "id": "3"
+    },
+    {
+      "appId": "e5bddf8a-61f5-400d-ad77-4a8b94f6712f",
+      "appPassword": "rI96jr9HrXZfmbMF8JHyhA==!PVjSErdPMj9IgjWqOe5Nm6bWTM73qtOfmevXz/ODjOg=",
+      "endpoint": "https://pimbotdp.azurewebsites.net/api/messages",
+      "type": "endpoint",
+      "name": "production",
+      "id": "4"
+    },
+    {
+      "instrumentationKey": "4jmuI+zTfJXyqsJz2vKQDg==!hM0QLaY2hEWh/sIRG/m/SzCFZOUu21ExGCCOPEoKIq3bkvTbt4TclV3uQpX3qArx",
+      "applicationId": "6cc0062c-fad8-477c-bac6-facf05490160",
+      "apiKeys": {},
+      "tenantId": "6c19f530-fdfe-4a1f-af7e-a0c0497381b8",
+      "subscriptionId": "dba60a9c-5b75-4726-967d-92fcb25d06e3",
+      "resourceGroup": "DP-Chatbot",
+      "serviceName": "PimBotDPnjrq4c",
+      "type": "appInsights",
+      "id": "5"
+    },
+    {
+      "appId": "d1ad16ba-9e01-4924-b90f-3608c49c6e24",
+      "authoringKey": "afCMFbvfkoOWCKQBv91NZw==!vMCYP4nmrqrPqXQ2/8yT9DsxboNChS9aOkQ+ycL4/Ur4eX3jru2C+SQhBzOmD2lp",
+      "version": "0.1",
+      "region": "westeurope",
+      "type": "luis",
+      "name": "BasicBotLuisApplication",
+      "id": "6"
+    }
+  ]
+}
