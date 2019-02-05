@@ -13,8 +13,8 @@
       "type": "endpoint",
       "name": "production",
       "endpoint": "https://PimBot.azurewebsites.net/api/messages",
-      "appId": "<YOUR APP ID>",
-      "appPassword": "<YOUR APP PASSWORD>",
+      "appId": "a8dac71b-8ca0-466c-9232-b5f99557c47e",
+      "appPassword": "fggaXMNQ98123*rwoTDO-#]",
       "id": "2"
     }
   ],
