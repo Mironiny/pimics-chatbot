@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using Microsoft.BotBuilderSamples;
 using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBot.State;
@@ -19,17 +20,29 @@ namespace PimBot
     {
         private readonly IItemService _itemService = new ItemService();
 
+        public static readonly string LuisConfiguration = "PimBot";
+
         // The bot state accessor object. Use this to access specific state properties.
         private readonly PimBotStateAccesors _pimBotStateAccesors;
 
-        public PimBot()
+        private readonly BotServices _services;
+
+        public PimBot(BotServices services)
         {
+            _services = services ?? throw new ArgumentNullException(nameof(services));
+
+            // Verify LUIS configuration.
+            if (!_services.LuisServices.ContainsKey(LuisConfiguration))
+            {
+                throw new InvalidOperationException($"The bot configuration does not contain a service type of `luis` with the id `{LuisConfiguration}`.");
+            }
+
         }
 
-//        public PimBot(PimBotStateAccesors statePropetyAccesors)
-//        {
-//           _pimBotStateAccesors = statePropetyAccesors ?? throw new System.ArgumentNullException("state accessor can't be null");
-//        }
+        //        public PimBot(PimBotStateAccesors statePropetyAccesors)
+        //        {
+        //           _pimBotStateAccesors = statePropetyAccesors ?? throw new System.ArgumentNullException("state accessor can't be null");
+        //        }
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -40,6 +53,16 @@ namespace PimBot
             // see https://aka.ms/about-bot-activity-message to learn more about the message and other activity types
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
+                // Perform a call to LUIS to retrieve results for the current activity message.
+//                var luisResults = await _services.LuisServices[LuisConfiguration].RecognizeAsync(dc.Context, cancellationToken);
+
+                // If any entities were updated, treat as interruption.
+                // For example, "no my name is tony" will manifest as an update of the name to be "tony".
+//                var topScoringIntent = luisResults?.GetTopScoringIntent();
+
+//                var topIntent = topScoringIntent.Value.intent;
+
+
                 switch (turnContext.Activity.Text)
                 {
                     case "items":
