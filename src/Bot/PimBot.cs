@@ -20,29 +20,25 @@ namespace PimBot
     {
         private readonly IItemService _itemService = new ItemService();
 
-        public static readonly string LuisConfiguration = "PimBot";
+        public static readonly string LuisConfiguration = "pimbotdp";
 
-        // The bot state accessor object. Use this to access specific state properties.
         private readonly PimBotStateAccesors _pimBotStateAccesors;
-
         private readonly BotServices _services;
+        private readonly UserState _userState;
+        private readonly ConversationState _conversationState;
 
-        public PimBot(BotServices services)
+        public PimBot(BotServices services, UserState userState, ConversationState conversationState)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
+            _userState = userState ?? throw new ArgumentNullException(nameof(userState));
+            _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
 
             // Verify LUIS configuration.
             if (!_services.LuisServices.ContainsKey(LuisConfiguration))
             {
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `luis` with the id `{LuisConfiguration}`.");
             }
-
         }
-
-        //        public PimBot(PimBotStateAccesors statePropetyAccesors)
-        //        {
-        //           _pimBotStateAccesors = statePropetyAccesors ?? throw new System.ArgumentNullException("state accessor can't be null");
-        //        }
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -53,15 +49,12 @@ namespace PimBot
             // see https://aka.ms/about-bot-activity-message to learn more about the message and other activity types
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-                // Perform a call to LUIS to retrieve results for the current activity message.
-//                var luisResults = await _services.LuisServices[LuisConfiguration].RecognizeAsync(dc.Context, cancellationToken);
+                var luisResults = await _services.LuisServices[LuisConfiguration]
+                    .RecognizeAsync(turnContext, cancellationToken);
 
-                // If any entities were updated, treat as interruption.
-                // For example, "no my name is tony" will manifest as an update of the name to be "tony".
-//                var topScoringIntent = luisResults?.GetTopScoringIntent();
+                var topScoringIntent = luisResults?.GetTopScoringIntent();
 
-//                var topIntent = topScoringIntent.Value.intent;
-
+                var topIntent = topScoringIntent.Value.intent;
 
                 switch (turnContext.Activity.Text)
                 {
@@ -83,7 +76,7 @@ namespace PimBot
 
                     default:
                         // Echo back to the user whatever they typed.
-                        await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand + ". Your intent is: " + topIntent, cancellationToken: cancellationToken);
 
                         break;
                 }
