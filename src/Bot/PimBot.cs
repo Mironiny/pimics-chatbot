@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using Newtonsoft.Json.Linq;
 using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBot.State;
@@ -49,8 +50,13 @@ namespace PimBot
             // see https://aka.ms/about-bot-activity-message to learn more about the message and other activity types
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-                var luisResults = await _services.LuisServices[LuisConfiguration]
-                    .RecognizeAsync(turnContext, cancellationToken);
+                var luisResults = await _services.LuisServices[LuisConfiguration].RecognizeAsync(turnContext, cancellationToken);
+
+                //                luisResults.Entities.First().Resolution.Values.First(s => JArray.Parse(s.ToString());
+                var entities = luisResults.Entities.ToString();
+
+                var x = luisResults.Entities.First.Values().Select(s => JArray.Parse(s.ToString()).Distinct().ToList());
+
 
                 var topScoringIntent = luisResults?.GetTopScoringIntent();
 
@@ -77,6 +83,11 @@ namespace PimBot
                     default:
                         // Echo back to the user whatever they typed.
                         await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand + ". Your intent is: " + topIntent, cancellationToken: cancellationToken);
+                        if (luisResults.Entities["item"].Count() > 0)
+                        {
+                            var firstEntity = (string)luisResults.Entities["item"].First;
+                            await turnContext.SendActivityAsync("Entity is: " + firstEntity, cancellationToken: cancellationToken);
+                        }
 
                         break;
                 }
