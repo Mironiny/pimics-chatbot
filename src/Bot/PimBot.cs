@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -13,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBot.State;
+using PimBotDp.State;
 
 namespace PimBot
 {
@@ -27,12 +29,16 @@ namespace PimBot
         private readonly BotServices _services;
         private readonly UserState _userState;
         private readonly ConversationState _conversationState;
+        private readonly IStatePropertyAccessor<CartState> _cartStateAccessor;
+
 
         public PimBot(BotServices services, UserState userState, ConversationState conversationState)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
+
+            _cartStateAccessor = _userState.CreateProperty<CartState>(nameof(CartState));
 
             // Verify LUIS configuration.
             if (!_services.LuisServices.ContainsKey(LuisConfiguration))
@@ -56,14 +62,74 @@ namespace PimBot
                 var entities = luisResults.Entities.ToString();
 
                 var x = luisResults.Entities.First.Values().Select(s => JArray.Parse(s.ToString()).Distinct().ToList());
-
-
                 var topScoringIntent = luisResults?.GetTopScoringIntent();
-
                 var topIntent = topScoringIntent.Value.intent;
 
-                switch (turnContext.Activity.Text)
+                await turnContext.SendActivityAsync("Your intent is: " + topIntent, cancellationToken: cancellationToken);
+
+                switch (topIntent)
                 {
+                    case Intents.FindItem:
+                        if (luisResults.Entities["keyPhrase"].Count() > 0)
+                        {
+                            var firstEntity = (string)luisResults.Entities["keyPhrase"].First;
+                            await turnContext.SendActivityAsync("Entity is: " + firstEntity, cancellationToken: cancellationToken);
+                        }
+
+                        break;
+
+                    case Intents.AddItem:
+                        if (luisResults.Entities["itemAdd"].Count() > 0)
+                        {
+                            var firstEntity = (string)luisResults.Entities["itemAdd"].First;
+
+                            //TODO check if item exists in PIM
+                            CartState cartState = await _cartStateAccessor.GetAsync(turnContext, () => new CartState());
+                            if (cartState.Items == null)
+                            {
+                                cartState.Items = new List<string>();
+                            }
+
+                            cartState.Items.Add(firstEntity);
+
+                            // Set the new values into state.
+                            await _cartStateAccessor.SetAsync(turnContext, cartState);
+                            await turnContext.SendActivityAsync("Entity is: " + firstEntity, cancellationToken: cancellationToken);
+                        }
+
+                        break;
+
+                    case Intents.ShowCart:
+                        var cartState1 = await _cartStateAccessor.GetAsync(turnContext, () => new CartState());
+                        if (cartState1.Items == null || cartState1.Items.Count == 0)
+                        {
+                            await turnContext.SendActivityAsync(Messages.Messages.EmptyCart, cancellationToken: cancellationToken);
+                            await turnContext.SendActivityAsync(Messages.Messages.SuggestHelp, cancellationToken: cancellationToken);
+                        }
+                        else
+                        {
+                            string itemsInCart = Messages.Messages.ShowCartTitle + Environment.NewLine;
+                            foreach (var item in cartState1.Items)
+                            {
+                                itemsInCart += "* " + item + Environment.NewLine;
+                            }
+
+                            itemsInCart += Environment.NewLine + Environment.NewLine + Messages.Messages.ShowCartAfter;
+
+                            await turnContext.SendActivityAsync(itemsInCart, cancellationToken: cancellationToken);
+                        }
+
+                        break;
+
+                    case Intents.None:
+                        await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(Messages.Messages.SuggestHelp, cancellationToken: cancellationToken);
+                        break;
+
+                    case Intents.Help:
+                        await turnContext.SendActivityAsync(Messages.Messages.HelpMessage, cancellationToken: cancellationToken);
+                        break;
+
                     case "items":
                         try
                         {
@@ -81,14 +147,7 @@ namespace PimBot
                         break;
 
                     default:
-                        // Echo back to the user whatever they typed.
-                        await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand + ". Your intent is: " + topIntent, cancellationToken: cancellationToken);
-                        if (luisResults.Entities["item"].Count() > 0)
-                        {
-                            var firstEntity = (string)luisResults.Entities["item"].First;
-                            await turnContext.SendActivityAsync("Entity is: " + firstEntity, cancellationToken: cancellationToken);
-                        }
-
+                        await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand, cancellationToken: cancellationToken);
                         break;
                 }
             }
@@ -114,6 +173,8 @@ namespace PimBot
                     }
                 }
             }
+            await _conversationState.SaveChangesAsync(turnContext);
+            await _userState.SaveChangesAsync(turnContext);
         }
     }
 }
