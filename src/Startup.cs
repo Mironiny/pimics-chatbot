@@ -157,29 +157,29 @@ namespace Microsoft.BotBuilderSamples
 
             // Create and register state accessors.
             // Accessors created here are passed into the IBot-derived class on every turn.
-//            services.AddSingleton<PimBotStateAccesors>(sp =>
-//            {
-//                var options = sp.GetRequiredService<IOptions<BotFrameworkOptions>>().Value;
-//                if (options == null)
-//                {
-//                    throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
-//                }
-//
-//                var userState1 = options.State.OfType<UserState>().FirstOrDefault();
-//                if (userState1 == null)
-//                {
-//                    throw new InvalidOperationException("UserState must be defined and added before adding user-scoped state accessors.");
-//                }
-//
-//                // Create the custom state accessor.
-//                // State accessors enable other components to read and write individual properties of state.
-//                var accessors = new PimBotStateAccesors(userState1)
-//                {
-//                    PimBotState = userState1.CreateProperty<PimBotState>(PimBotStateAccesors.PimUserName),
-//                };
-//
-//                return accessors;
-//            });
+            //            services.AddSingleton<PimBotStateAccesors>(sp =>
+            //            {
+            //                var options = sp.GetRequiredService<IOptions<BotFrameworkOptions>>().Value;
+            //                if (options == null)
+            //                {
+            //                    throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
+            //                }
+            //
+            //                var userState1 = options.State.OfType<UserState>().FirstOrDefault();
+            //                if (userState1 == null)
+            //                {
+            //                    throw new InvalidOperationException("UserState must be defined and added before adding user-scoped state accessors.");
+            //                }
+            //
+            //                // Create the custom state accessor.
+            //                // State accessors enable other components to read and write individual properties of state.
+            //                var accessors = new PimBotStateAccesors(userState1)
+            //                {
+            //                    PimBotState = userState1.CreateProperty<PimBotState>(PimBotStateAccesors.PimUserName),
+            //                };
+            //
+            //                return accessors;
+            //            });
         }
 
         /// <summary>
