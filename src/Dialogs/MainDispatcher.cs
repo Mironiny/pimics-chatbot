@@ -47,6 +47,7 @@ namespace PimBotDp.Dialogs
             _cartStateAccessor = userState.CreateProperty<CartState>(nameof(CartState));
             _dialogs = new DialogSet(_mainDispatcherAccessor);
             AddDialog(new AddItemDialog(services, onTurnAccessor, _cartStateAccessor));
+            AddDialog(new RemoveItemDialog(services, onTurnAccessor, _cartStateAccessor));
         }
 
         protected override async Task<DialogTurnResult> OnBeginDialogAsync(DialogContext innerDc, object options,
@@ -133,6 +134,9 @@ namespace PimBotDp.Dialogs
 
                 case Intents.AddItem:
                     return await dc.BeginDialogAsync(AddItemDialog.Name);
+
+                case Intents.RemoveItem:
+                    return await dc.BeginDialogAsync(RemoveItemDialog.Name);
 
                 case Intents.ShowCart:
                     var cartState1 =

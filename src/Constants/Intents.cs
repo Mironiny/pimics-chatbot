@@ -10,6 +10,7 @@ namespace PimBot
         public const string FindItem = "FindItem";
         public const string AddItem = "AddItem";
         public const string ShowCart = "ShowCart";
+        public const string RemoveItem = "RemoveItem";
         public const string None = "None";
         public const string Help = "Utilities_Help";
     }

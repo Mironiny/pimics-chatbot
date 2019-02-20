@@ -13,17 +13,17 @@ using PimBotDp.State;
 
 namespace PimBotDp.Dialogs.AddItem
 {
-    public class AddItemDialog : ComponentDialog
+    public class RemoveItemDialog : ComponentDialog
     {
-        public const string Name = "Add_item";
+        public const string Name = "Remove_item";
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
 
         // Prompts names
-        private const string CountPrompt = "countPrompt";
+        private const string ConfirmPrompt = "confirmPrompt";
 
-        public AddItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
+        public RemoveItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
             : base(Name)
         {
             if (services == null)
@@ -38,13 +38,13 @@ namespace PimBotDp.Dialogs.AddItem
             var waterfallSteps = new WaterfallStep[]
             {
                 InitializeStateStepAsync,
-                PromptForCountStepAsync,
-                ResolveCountAsync,
+                PromptForConfirmStepAsync,
+                ResolveConfirmAsync,
             };
             AddDialog(new WaterfallDialog(
                 "start",
                 waterfallSteps));
-            AddDialog(new TextPrompt(CountPrompt, ValidateCount));
+            AddDialog(new ConfirmPrompt(ConfirmPrompt));
         }
 
         private async Task<DialogTurnResult> InitializeStateStepAsync(
@@ -53,11 +53,11 @@ namespace PimBotDp.Dialogs.AddItem
         {
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            if (onTurnProperty.Entities[EntityNames.Item].Count() > 0)
+            if (onTurnProperty.Entities != null || onTurnProperty.Entities[EntityNames.Item].Count() > 0)
             {
-                var firstEntity = (string)onTurnProperty.Entities[EntityNames.Item].First;
+                var item = (string)onTurnProperty.Entities[EntityNames.Item].First;
 
-                //TODO check if item exists in PIM
+                // Check if item exists in cart
                 CartState cartState =
                     await _cartStateAccessor.GetAsync(context, () => new CartState());
                 if (cartState.Items == null)
@@ -65,59 +65,62 @@ namespace PimBotDp.Dialogs.AddItem
                     cartState.Items = new List<CartItem>();
                 }
 
-                cartState.Items.Add(new CartItem(firstEntity));
-
-                // Set the new values into state.
-                await _cartStateAccessor.SetAsync(context, cartState);
-                await context.SendActivityAsync("Entity is: " + firstEntity);
+                if (!cartState.Items.Exists(x => x.Name == item))
+                {
+                    await context.SendActivityAsync($"Sorry, I cannot find {item} in your cart. You can show your cart simple by write *show cart*.");
+                    return await stepContext.EndDialogAsync();
+                }
+                else
+                {
+                    return await stepContext.NextAsync();
+                }
             }
-            return await stepContext.NextAsync();
+            await context.SendActivityAsync($"Sorry, I cannot find in your cart. You can show your cart simple by write *show cart*.");
+            return await stepContext.EndDialogAsync();
 
         }
 
-        private async Task<DialogTurnResult> PromptForCountStepAsync(
+        private async Task<DialogTurnResult> PromptForConfirmStepAsync(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            CartState cartState =
-                await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
-
-            var item = cartState.Items[cartState.Items.Count - 1].Name;
-
             var opts = new PromptOptions
             {
                 Prompt = new Activity
                 {
                     Type = ActivityTypes.Message,
-                    Text = $"How many **{item}** do you want order?",
-                },
-                RetryPrompt = new Activity
-                {
-                    Type = ActivityTypes.Message,
-                    Text = $"How many **{item}** do you want order?",
+                    Text = $"Are you sure?",
                 },
             };
-            return await stepContext.PromptAsync(CountPrompt, opts);
+            return await stepContext.PromptAsync(ConfirmPrompt, opts);
         }
 
-        private async Task<DialogTurnResult> ResolveCountAsync(
+        private async Task<DialogTurnResult> ResolveConfirmAsync(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            var context = stepContext.Context;
 
-            var inputCount = stepContext.Result as string;
-            int outputCount;
-            int.TryParse(inputCount, out outputCount);
 
-            CartState cartState =
-                await _cartStateAccessor.GetAsync(context, () => new CartState());
+            bool isConfirmed = (bool)stepContext.Result;
+            if (isConfirmed)
+            {
+                CartState cartState =
+                    await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
 
-            cartState.Items[cartState.Items.Count - 1].Count = outputCount;
-            await _cartStateAccessor.SetAsync(context, cartState);
-
-            await stepContext.Context.SendActivityAsync("Added to cart 👍. You can show your current cart by writting *show cart*.");
-            return await stepContext.EndDialogAsync();
+                var nameToRemove = cartState.Items[cartState.Items.Count - 1].Name;
+                var item = cartState.Items.SingleOrDefault(x => x.Name == nameToRemove);
+                if (item != null)
+                {
+                    cartState.Items.Remove(item);
+                }
+                await stepContext.Context.SendActivityAsync("Ok, removed.");
+                return await stepContext.EndDialogAsync();
+            }
+            else
+            {
+                await stepContext.Context.SendActivityAsync("Ok, never mind.");
+                return await stepContext.EndDialogAsync();
+            }
         }
 
         private async Task<bool> ValidateCount(PromptValidatorContext<string> promptContext,
