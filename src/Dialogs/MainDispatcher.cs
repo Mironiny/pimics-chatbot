@@ -22,6 +22,7 @@ namespace PimBotDp.Dialogs
         private readonly ILogger _logger;
         private readonly IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private readonly IStatePropertyAccessor<CartState> _cartStateAccessor;
+        private readonly IStatePropertyAccessor<CustomerState> _customerStateAccessor;
         private readonly IStatePropertyAccessor<DialogState> _mainDispatcherAccessor;
         private readonly DialogSet _dialogs;
 
@@ -33,6 +34,8 @@ namespace PimBotDp.Dialogs
             _logger = loggerFactory.CreateLogger<MainDispatcher>();
             _onTurnAccessor = onTurnAccessor;
             _mainDispatcherAccessor = conversationState.CreateProperty<DialogState>(MainDispatcherStateProperty);
+
+            _customerStateAccessor = conversationState.CreateProperty<CustomerState>("customerProperty");
 
             if (conversationState == null)
             {
@@ -48,6 +51,7 @@ namespace PimBotDp.Dialogs
             _dialogs = new DialogSet(_mainDispatcherAccessor);
             AddDialog(new AddItemDialog(services, onTurnAccessor, _cartStateAccessor));
             AddDialog(new RemoveItemDialog(services, onTurnAccessor, _cartStateAccessor));
+            AddDialog(new GetUserInfoDialog(services, onTurnAccessor, _cartStateAccessor, _customerStateAccessor));
         }
 
         protected override async Task<DialogTurnResult> OnBeginDialogAsync(DialogContext innerDc, object options,
@@ -138,6 +142,17 @@ namespace PimBotDp.Dialogs
                 case Intents.RemoveItem:
                     return await dc.BeginDialogAsync(RemoveItemDialog.Name);
 
+                case Intents.Confirm:
+                    var customerState =
+                        await _customerStateAccessor.GetAsync(context, () => new CustomerState());
+
+                    if (customerState == null || customerState.Name == null || customerState.Name.Equals(string.Empty))
+                    {
+                        return await dc.BeginDialogAsync(GetUserInfoDialog.Name);
+                    }
+              //      await context.SendActivityAsync("Yolo, so yu want to confirm order, righty? 😈");
+                    break;
+
                 case Intents.ShowCart:
                     var cartState1 =
                         await _cartStateAccessor.GetAsync(context, () => new CartState());
@@ -153,7 +168,7 @@ namespace PimBotDp.Dialogs
                         {
                             if (item.Count > 0)
                             {
-                                itemsInCart += $"* {item.Name} ({item.Count}PCS) {Environment.NewLine}";
+                                itemsInCart += $"* {item.Description} ({item.Count}PCS) {Environment.NewLine}";
                             }
                         }
 
@@ -194,6 +209,7 @@ namespace PimBotDp.Dialogs
 
                 default:
                     await context.SendActivityAsync(Messages.NotUnderstand);
+                    await context.SendActivityAsync(Messages.SuggestHelp);
                     break;
             }
 

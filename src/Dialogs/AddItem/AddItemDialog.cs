@@ -82,7 +82,7 @@ namespace PimBotDp.Dialogs.AddItem
             CartState cartState =
                 await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
 
-            var item = cartState.Items[cartState.Items.Count - 1].Name;
+            var item = cartState.Items[cartState.Items.Count - 1].Description;
 
             var opts = new PromptOptions
             {

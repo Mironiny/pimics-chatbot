@@ -7,12 +7,24 @@ namespace PimBotDp.State
 {
     public class CartItem
     {
-        public CartItem(string name)
+        public CartItem(string description)
         {
-            Name = name;
+            Description = description;
         }
 
-        public string Name { get; set; }
+        public string No { get; set; }
+
+        public string Description { get; set; }
+
+        public string Type { get; set; }
+
+        public string MessureUnit { get; set; }
+
+        public string UnitCost { get; set; }
+
+        public string UnitPrice { get; set; }
+
+        public int VendorNo { get; set; }
 
         public int Count { get; set; }
     }

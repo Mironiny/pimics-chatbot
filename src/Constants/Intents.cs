@@ -12,6 +12,7 @@ namespace PimBot
         public const string ShowCart = "ShowCart";
         public const string RemoveItem = "RemoveItem";
         public const string None = "None";
+        public const string Confirm = "Utilities_Confirm";
         public const string Help = "Utilities_Help";
     }
 }

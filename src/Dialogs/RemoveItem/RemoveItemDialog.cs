@@ -65,7 +65,7 @@ namespace PimBotDp.Dialogs.AddItem
                     cartState.Items = new List<CartItem>();
                 }
 
-                if (!cartState.Items.Exists(x => x.Name == item))
+                if (!cartState.Items.Exists(x => x.Description == item))
                 {
                     await context.SendActivityAsync($"Sorry, I cannot find {item} in your cart. You can show your cart simple by write *show cart*.");
                     return await stepContext.EndDialogAsync();
@@ -107,8 +107,8 @@ namespace PimBotDp.Dialogs.AddItem
                 CartState cartState =
                     await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
 
-                var nameToRemove = cartState.Items[cartState.Items.Count - 1].Name;
-                var item = cartState.Items.SingleOrDefault(x => x.Name == nameToRemove);
+                var nameToRemove = cartState.Items[cartState.Items.Count - 1].Description;
+                var item = cartState.Items.SingleOrDefault(x => x.Description == nameToRemove);
                 if (item != null)
                 {
                     cartState.Items.Remove(item);
