@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBotDp.Constants;
@@ -28,13 +29,23 @@ namespace PimBotDp.Dialogs.AddItem
         private const string ShippingPostCodePrompt = "ShippingPostCodePrompt";
         private const string ShippingCityPrompt = "ShippingCityPrompt";
         private const string ConfirmUserInfoPrompt = "ConfirmUserInfoPrompt";
-
+        private const string CorrectValuePrompt = "CorrectValuePrompt";
 
         public const string Name = "GetUserInfo";
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
         private IStatePropertyAccessor<CustomerState> _customerStateAccessor;
+
+        private static readonly Dictionary<string, int> DialogIndex
+            = new Dictionary<string, int>
+            {
+                { "Name", 0 },
+                { "Address", 1 },
+                { "Post code", 2 },
+                { "City", 3 },
+                { "Shipping", 4 },
+            };
 
         public GetUserInfoDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor,
             IStatePropertyAccessor<CartState> cartStateAccessor,
@@ -57,7 +68,8 @@ namespace PimBotDp.Dialogs.AddItem
                 PromptForShipping,
                 ResolveShipping,
                 ConfirmCustomerInfo,
-                ResolveConfirmCustomerInfo
+                ResolveConfirmCustomerInfo,
+                ResolveIsEverythingOk,
             };
             AddDialog(new WaterfallDialog(
                 "start",
@@ -72,6 +84,7 @@ namespace PimBotDp.Dialogs.AddItem
             AddDialog(new TextPrompt(ShippingNamePrompt));
             AddDialog(new TextPrompt(ShippingAdressPrompt));
             AddDialog(new TextPrompt(ShippingPostCodePrompt));
+            AddDialog(new ChoicePrompt(CorrectValuePrompt));
             AddDialog(new TextPrompt(ShippingCityPrompt));
             AddDialog(new ConfirmPrompt(ConfirmUserInfoPrompt));
         }
@@ -212,6 +225,7 @@ namespace PimBotDp.Dialogs.AddItem
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
+
             CustomerState customerState =
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var city = stepContext.Result as string;
@@ -286,16 +300,74 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
 
             bool confirmCustomerInfo = (bool)stepContext.Result;
+            //  stepContext.ActiveDialog.State["stepIndex"] = 0;
+            //   return await stepContext.NextAsync();
+
             if (confirmCustomerInfo)
             {
                 await stepContext.Context.SendActivityAsync("Okey, let's continue with the order");
             }
             else
             {
-                await stepContext.Context.SendActivityAsync("Okey, let's go to begginng");
+                await stepContext.Context.SendActivityAsync("What customer information do you want to change?");
+
+                // Prompt for the location.
+                return await stepContext.PromptAsync(
+                    CorrectValuePrompt,
+                    new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Please choose a location."),
+                        RetryPrompt = MessageFactory.Text("Sorry, please choose a location from the list."),
+                        Choices = ChoiceFactory.ToChoices(new List<string>(DialogIndex.Keys)),
+                    },
+                    cancellationToken);
             }
 
-            return await stepContext.EndDialogAsync();
+            return await stepContext.NextAsync();
+        }
+
+        private async Task<DialogTurnResult> ResolveIsEverythingOk(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+            var whatToChange = stepContext.Result as FoundChoice;
+
+            // Save name, if prompted.
+            if (whatToChange == null)
+            {
+               return await stepContext.EndDialogAsync();
+            }
+            else
+            {
+                switch (whatToChange.Value)
+                {
+                    case "Name":
+                        customerState.Name = null;
+                        break;
+
+                    case "Address":
+                        customerState.Address = null;
+                        break;
+
+                    case "Post code":
+                        customerState.PostCode = null;
+                        break;
+
+                    case "City":
+                        customerState.City = null;
+                        break;
+
+                    case "Shipping":
+                        customerState.IsShippingAdressSet = null;
+                        break;
+                }
+
+                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                stepContext.ActiveDialog.State["stepIndex"] = DialogIndex[whatToChange.Value];
+                return await stepContext.ContinueDialogAsync();
+            }
         }
 
         private string GetPrintableCustomerInfo(CustomerState customerState)
@@ -311,6 +383,7 @@ namespace PimBotDp.Dialogs.AddItem
                 var isAddressMatch = (bool)customerState.IsShippingAdressSet ? "Yes" : "No";
                 result += $"Is address match shipping address: {isAddressMatch}" + Environment.NewLine;
             }
+
             return result;
         }
     }
