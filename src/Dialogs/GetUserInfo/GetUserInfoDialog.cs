@@ -9,6 +9,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Service;
+using PimBot.Service.Impl;
 using PimBotDp.Constants;
 using PimBotDp.State;
 
@@ -16,6 +18,9 @@ namespace PimBotDp.Dialogs.AddItem
 {
     public class GetUserInfoDialog : ComponentDialog
     {
+        private ISalesOrderService _salesOrder = new SalesOrderService();
+        private IItemService _itemService = new ItemService();
+
         // Prompts names
         private const string NamePrompt = "NamePrompt";
         private const string AdressPrompt = "AdressPrompt";
@@ -96,6 +101,7 @@ namespace PimBotDp.Dialogs.AddItem
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
             await stepContext.Context.SendActivityAsync("To make new order I need contact information about you.");
+//            await _salesOrder.CreateOrder(new CustomerState());
             return await stepContext.NextAsync();
         }
 
