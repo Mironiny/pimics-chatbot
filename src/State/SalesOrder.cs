@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.OData.Edm;
 
 namespace PimBotDp.State
 {
@@ -18,12 +19,12 @@ namespace PimBotDp.State
         public string Sell_to_Contact_No { get; set; }
         public string Sell_to_Contact { get; set; }
         public int No_of_Archived_Versions { get; set; }
-        public DateTime Document_Date { get; set; }
-        public DateTime Posting_Date { get; set; }
-        public DateTime Order_Date { get; set; }
-        public DateTime Due_Date { get; set; }
-        public DateTime Requested_Delivery_Date { get; set; }
-        public DateTime Promised_Delivery_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Document_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Posting_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Order_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Due_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Requested_Delivery_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Promised_Delivery_Date { get; set; }
         public string External_Document_No { get; set; }
         public string Salesperson_Code { get; set; }
         public string Campaign_No { get; set; }
@@ -43,7 +44,7 @@ namespace PimBotDp.State
         public string Shortcut_Dimension_1_Code { get; set; }
         public string Shortcut_Dimension_2_Code { get; set; }
         public int Payment_Discount_Percent { get; set; }
-        public DateTime Pmt_Discount_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Pmt_Discount_Date { get; set; }
         public string Direct_Debit_Mandate_ID { get; set; }
         public string ShippingOptions { get; set; }
         public string Ship_to_Code { get; set; }
@@ -67,7 +68,7 @@ namespace PimBotDp.State
         public string Bill_to_Contact_No { get; set; }
         public string Bill_to_Contact { get; set; }
         public string Location_Code { get; set; }
-        public DateTime Shipment_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Shipment_Date { get; set; }
         public string Shipping_Advice { get; set; }
         public string Outbound_Whse_Handling_Time { get; set; }
         public string Shipping_Time { get; set; }
@@ -80,9 +81,9 @@ namespace PimBotDp.State
         public int Prepayment_Percent { get; set; }
         public bool Compress_Prepayment { get; set; }
         public string Prepmt_Payment_Terms_Code { get; set; }
-        public DateTime Prepayment_Due_Date { get; set; }
+     //   public Microsoft.OData.Edm.Date Prepayment_Due_Date { get; set; }
         public int Prepmt_Payment_Discount_Percent { get; set; }
-        public DateTime Prepmt_Pmt_Discount_Date { get; set; }
+//        public Microsoft.OData.Edm.Date Prepmt_Pmt_Discount_Date { get; set; }
         public string Date_Filter { get; set; }
         public string ETag { get; set; }
     }

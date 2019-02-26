@@ -8,6 +8,6 @@ namespace PimBot.Service
 {
     public interface ISalesOrderService
     {
-        Task CreateOrder(CustomerState customerState);
+        Task<bool> CreateOrder(CustomerState customerState);
     }
 }

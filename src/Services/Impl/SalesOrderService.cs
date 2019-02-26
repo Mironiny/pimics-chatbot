@@ -10,80 +10,44 @@ namespace PimBot.Service.Impl
 {
     public class SalesOrderService : ISalesOrderService
     {
-        public async Task CreateOrder(CustomerState customerState)
+        public async Task<bool> CreateOrder(CustomerState customerState)
         {
             var client = ODataClientSingleton.Get();
 
-            //            await client.For("Company").Key("CRONUS%20International%20Ltd.").NavigateTo("Keywords").Set(CreateDummyKeyword())
-            //                .InsertEntryAsync();
+            var product = await client
+                    .For<SalesOrder>("SalesOrder")
+                    .Set(CreateSaleOrder(customerState))
+                    .InsertEntryAsync();
 
-            var items = await client
-                .For("SalesOrder")
-                .FindEntriesAsync();
-
-            await client
-                .For<Keyword>("Keywords")
-                .Set(CreateDummyKeyword())
-                .InsertEntryAsync();
-
-//            var product = await client
-//                    .For<SalesOrder>("SalesOrder")
-//                    .Set(CreateDummyOrder())
-//                    .InsertEntryAsync();
-
-//            var product = await client
-//                    .For("KeywordsPIM")
-//                    .Set(new
-//                    {
-//                        Source = "Item",
-//                        Group_System_Number = "INTERNAL",
-//                        Code = "1000",
-//                        Source_Type = "Item",
-//                        Source_Code = "",
-//                        Line_No = "1000",
-//                        Keyword_ID = "INT100007",
-//                        Keyword = "Bicycle1",
-//                        Classification_System = "Internal",
-//                        Classification_System_Version = "1.1",
-//                        Usage_Type_Code = "",
-//                        Inherited = false,
-//                    //
-//                    //                    Description = "test2",
-//                    //                    Beschreibung = "",
-//                    //                    Usage_Table_of_Contents = false,
-//                    //                    Group_System_Number = "INTERNAL",
-//                    //                    Created_On = DateTimeOffset.Parse("2018-06-01T23:11:17.5479185-07:00"),
-//                    //                    Updated_By = "PIMICS-CHATBOT\\ALLIUM",
-//                })
-//                    .InsertEntryAsync();
-
-            //            var product = await client
-            //                .For("SalesOrder")
-            //                .Set(new { Document_Type = "Order", No = "111111", Sell_to_Customer_Name = "Mirek", })
-            //                .InsertEntryAsync();
+            return true;
         }
 
-        private Keyword CreateDummyKeyword()
+        private SalesOrder CreateSaleOrder(CustomerState customerState)
         {
-            var keyword = new Keyword();
-            keyword.Keyword_ID = "INT100007";
-            keyword.Description = "test2";
-            keyword.Beschreibung = "";
-            keyword.Usage_Table_of_Contents = false;
-            keyword.Group_System_Number = "INTERNAL";
-            keyword.Created_On = DateTime.Parse("2018-06-01T23:11:17.5479185-07:00");
-            keyword.Updated_By = "PIMICS-CHATBOT\\ALLIUM";
-            keyword.ETag = "netusimcosemdat";
-            return keyword;
+            var saleOrder = new SalesOrder();
+            saleOrder.No = RandomString(7);
+            saleOrder.Document_Type = "Order";
+            saleOrder.Sell_to_Customer_Name = customerState.Name;
+            saleOrder.Sell_to_Address = customerState.ShippingAddress;
+            saleOrder.Sell_to_Post_Code = customerState.PostCode;
+            saleOrder.Sell_to_City = customerState.City;
+            return saleOrder;
         }
 
         private SalesOrder CreateDummyOrder()
         {
             var saleOrder = new SalesOrder();
-            saleOrder.No = "100005";
+            saleOrder.No = RandomString(7);
             saleOrder.Document_Type = "Order";
-
             return saleOrder;
+        }
+
+        private static Random random = new Random();
+        private static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

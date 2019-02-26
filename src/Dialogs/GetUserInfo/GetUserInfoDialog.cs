@@ -101,7 +101,6 @@ namespace PimBotDp.Dialogs.AddItem
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
             await stepContext.Context.SendActivityAsync("To make new order I need contact information about you.");
-//            await _salesOrder.CreateOrder(new CustomerState());
             return await stepContext.NextAsync();
         }
 
@@ -343,7 +342,17 @@ namespace PimBotDp.Dialogs.AddItem
             // Save name, if prompted.
             if (whatToChange == null)
             {
-               return await stepContext.EndDialogAsync();
+                var isSave = await _salesOrder.CreateOrder(new CustomerState());
+                if (isSave == true)
+                {
+                    await stepContext.Context.SendActivityAsync("Okey, let's continue with the order.");
+                }
+                else
+                {
+                    await stepContext.Context.SendActivityAsync("Sorry, there is some problem with server. Please try it later.");
+                }
+
+                return await stepContext.EndDialogAsync();
             }
             else
             {
