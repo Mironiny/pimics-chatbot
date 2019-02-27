@@ -22,7 +22,7 @@ namespace PimBotDp.State
         public string City { get; set; }
 
         // Nullable boolean
-        public bool? IsShippingAdressSet { get; set; }
+        public bool? IsShippingAdressMatch { get; set; }
 
         public string ShippingName { get; set; }
 

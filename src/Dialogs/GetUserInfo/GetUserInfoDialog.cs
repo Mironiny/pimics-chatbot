@@ -9,6 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Messages;
 using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBotDp.Constants;
@@ -45,11 +46,16 @@ namespace PimBotDp.Dialogs.AddItem
         private static readonly Dictionary<string, int> DialogIndex
             = new Dictionary<string, int>
             {
-                { "Name", 0 },
-                { "Address", 1 },
-                { "Post code", 2 },
-                { "City", 3 },
-                { "Shipping", 4 },
+                { Messages.Name, 0 },
+                { Messages.Address, 1 },
+                { Messages.PostCode, 2 },
+                { Messages.City, 3 },
+                { Messages.IsAddressMatchShippingAddress, 4 },
+                { Messages.ShippingName, 6 },
+                { Messages.ShippingAddress, 7 },
+                { Messages.ShippingPostCode, 8 },
+                { Messages.ShippingCity, 9 },
+                { "ConfirmCustomerInfo", 11 },
             };
 
         public GetUserInfoDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor,
@@ -72,6 +78,13 @@ namespace PimBotDp.Dialogs.AddItem
                 PromptForCity,
                 PromptForShipping,
                 ResolveShipping,
+
+                PromptForShippingName,
+                PromptForShippingAddress,
+                PromptForShippingPostCode,
+                PromptForShippingCity,
+                ResolveShippingCity,
+
                 ConfirmCustomerInfo,
                 ResolveConfirmCustomerInfo,
                 ResolveIsEverythingOk,
@@ -100,7 +113,7 @@ namespace PimBotDp.Dialogs.AddItem
         {
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            await stepContext.Context.SendActivityAsync("To make new order I need contact information about you.");
+            await stepContext.Context.SendActivityAsync(Messages.GetUserInfoNewOrder);
             return await stepContext.NextAsync();
         }
 
@@ -118,7 +131,7 @@ namespace PimBotDp.Dialogs.AddItem
                     Prompt = new Activity
                     {
                         Type = ActivityTypes.Message,
-                        Text = "What is your **full name**? Or company name?",
+                        Text = Messages.GetUserInfoPromptName,
                     },
                 };
                 return await stepContext.PromptAsync(NamePrompt, opts);
@@ -150,7 +163,7 @@ namespace PimBotDp.Dialogs.AddItem
                         Prompt = new Activity
                         {
                             Type = ActivityTypes.Message,
-                            Text = "What is your **adress**?",
+                            Text = Messages.GetUserInfoPromptAddress,
                         },
                     };
                     return await stepContext.PromptAsync(AdressPrompt, opts);
@@ -183,7 +196,7 @@ namespace PimBotDp.Dialogs.AddItem
                         Prompt = new Activity
                         {
                             Type = ActivityTypes.Message,
-                            Text = "What is your **post code**?",
+                            Text = Messages.GetUserInfoPromptPostCode,
                         },
                     };
                     return await stepContext.PromptAsync(PostCodePrompt, opts);
@@ -216,7 +229,7 @@ namespace PimBotDp.Dialogs.AddItem
                         Prompt = new Activity
                         {
                             Type = ActivityTypes.Message,
-                            Text = "What is your **city**?",
+                            Text = Messages.GetUserInfoPromptCity,
                         },
                     };
                     return await stepContext.PromptAsync(CityPrompt, opts);
@@ -242,14 +255,14 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
             }
 
-            if (customerState.IsShippingAdressSet == null)
+            if (customerState.IsShippingAdressMatch == null)
             {
                 var opts = new PromptOptions
                 {
                     Prompt = new Activity
                     {
                         Type = ActivityTypes.Message,
-                        Text = "Is this address also shipping address?",
+                        Text = Messages.GetUserInfoPromptShippingMatch,
                     },
                 };
                 return await stepContext.PromptAsync(IsShippingAdressMatchPrompt, opts);
@@ -265,13 +278,158 @@ namespace PimBotDp.Dialogs.AddItem
             //TODO use case when is shipping adress not same
             CustomerState customerState =
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
-            if (customerState.IsShippingAdressSet == null)
+            if (customerState.IsShippingAdressMatch == null)
             {
                 bool isShippingAdressSet = (bool)stepContext.Result;
-                customerState.IsShippingAdressSet = isShippingAdressSet;
+                customerState.IsShippingAdressMatch = isShippingAdressSet;
+                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+            }
+            if (customerState.IsShippingAdressMatch == true)
+            {
+                stepContext.ActiveDialog.State["stepIndex"] = DialogIndex["ConfirmCustomerInfo"];
+            }
+
+            return await stepContext.ContinueDialogAsync();
+        }
+
+        private async Task<DialogTurnResult> PromptForShippingName(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+
+            if (string.IsNullOrWhiteSpace(customerState.ShippingName))
+            {
+                {
+                    var opts = new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = Messages.GetUserInfoPromptShippingName,
+                        },
+                    };
+                    return await stepContext.PromptAsync(ShippingNamePrompt, opts);
+                }
+            }
+
+            return await stepContext.NextAsync();
+        }
+
+        private async Task<DialogTurnResult> PromptForShippingAddress(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+            var shippingName = stepContext.Result as string;
+
+            // Save postcode, if prompted.
+            if (string.IsNullOrWhiteSpace(customerState.ShippingName) && shippingName != null)
+            {
+                customerState.ShippingName = shippingName;
                 await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
             }
 
+            if (string.IsNullOrWhiteSpace(customerState.ShippingAddress))
+            {
+                {
+                    var opts = new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = Messages.GetUserInfoPromptShippingAddress,
+                        },
+                    };
+                    return await stepContext.PromptAsync(ShippingAdressPrompt, opts);
+                }
+            }
+
+            return await stepContext.NextAsync();
+        }
+
+        private async Task<DialogTurnResult> PromptForShippingPostCode(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+            var shippingAddress = stepContext.Result as string;
+
+            // Save postcode, if prompted.
+            if (string.IsNullOrWhiteSpace(customerState.ShippingAddress) && shippingAddress != null)
+            {
+                customerState.ShippingAddress = shippingAddress;
+                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+            }
+
+            if (string.IsNullOrWhiteSpace(customerState.ShippingPostCode))
+            {
+                {
+                    var opts = new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = Messages.GetUserInfoPromptShippingPostCode,
+                        },
+                    };
+                    return await stepContext.PromptAsync(ShippingPostCodePrompt, opts);
+                }
+            }
+
+            return await stepContext.NextAsync();
+        }
+
+        private async Task<DialogTurnResult> PromptForShippingCity(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+            var shippingPostCode = stepContext.Result as string;
+
+            // Save postcode, if prompted.
+            if (string.IsNullOrWhiteSpace(customerState.ShippingPostCode) && shippingPostCode != null)
+            {
+                customerState.ShippingPostCode = shippingPostCode;
+                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+            }
+
+            if (string.IsNullOrWhiteSpace(customerState.ShippingCity))
+            {
+                {
+                    var opts = new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = Messages.GetUserInfoPromptShippingCity,
+                        },
+                    };
+                    return await stepContext.PromptAsync(ShippingCityPrompt, opts);
+                }
+            }
+
+            return await stepContext.NextAsync();
+        }
+
+        private async Task<DialogTurnResult> ResolveShippingCity(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+            var shippingCity = stepContext.Result as string;
+
+            // Save postcode, if prompted.
+            if (string.IsNullOrWhiteSpace(customerState.ShippingCity) && shippingCity != null)
+            {
+                customerState.ShippingCity = shippingCity;
+                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+            }
             return await stepContext.NextAsync();
         }
 
@@ -290,7 +448,7 @@ namespace PimBotDp.Dialogs.AddItem
                 Prompt = new Activity
                 {
                     Type = ActivityTypes.Message,
-                    Text = "Is all information correct?",
+                    Text = Messages.GetUserInfoPromptIsOrderOk,
                 },
             };
             return await stepContext.PromptAsync(ConfirmUserInfoPrompt, opts);
@@ -305,25 +463,22 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
 
             bool confirmCustomerInfo = (bool)stepContext.Result;
-            //  stepContext.ActiveDialog.State["stepIndex"] = 0;
-            //   return await stepContext.NextAsync();
 
             if (confirmCustomerInfo)
             {
-                await stepContext.Context.SendActivityAsync("Okey, let's continue with the order");
+                await stepContext.Context.SendActivityAsync(Messages.GetUserInfoContinueWithOrder);
             }
             else
             {
-                await stepContext.Context.SendActivityAsync("What customer information do you want to change?");
+                await stepContext.Context.SendActivityAsync(Messages.GetUserInfoPromptChange);
+                List<string> dialogIndex = GetListOfEditableProperties(customerState.IsShippingAdressMatch);
 
-                // Prompt for the location.
                 return await stepContext.PromptAsync(
                     CorrectValuePrompt,
                     new PromptOptions
                     {
-                        Prompt = MessageFactory.Text("Please choose a location."),
-                        RetryPrompt = MessageFactory.Text("Sorry, please choose a location from the list."),
-                        Choices = ChoiceFactory.ToChoices(new List<string>(DialogIndex.Keys)),
+                        Prompt = MessageFactory.Text(Messages.GetUserInfoPromptEdit),
+                        Choices = ChoiceFactory.ToChoices(dialogIndex),
                     },
                     cancellationToken);
             }
@@ -345,11 +500,11 @@ namespace PimBotDp.Dialogs.AddItem
                 var isSave = await _salesOrder.CreateOrder(new CustomerState());
                 if (isSave == true)
                 {
-                    await stepContext.Context.SendActivityAsync("Okey, let's continue with the order.");
+                    await stepContext.Context.SendActivityAsync(Messages.GetUserInfoPromptIsOrderOk);
                 }
                 else
                 {
-                    await stepContext.Context.SendActivityAsync("Sorry, there is some problem with server. Please try it later.");
+                    await stepContext.Context.SendActivityAsync(Messages.GetUserInfoServerIssue);
                 }
 
                 return await stepContext.EndDialogAsync();
@@ -358,24 +513,40 @@ namespace PimBotDp.Dialogs.AddItem
             {
                 switch (whatToChange.Value)
                 {
-                    case "Name":
+                    case Messages.Name:
                         customerState.Name = null;
                         break;
 
-                    case "Address":
+                    case Messages.Address:
                         customerState.Address = null;
                         break;
 
-                    case "Post code":
+                    case Messages.PostCode:
                         customerState.PostCode = null;
                         break;
 
-                    case "City":
+                    case Messages.City:
                         customerState.City = null;
                         break;
 
-                    case "Shipping":
-                        customerState.IsShippingAdressSet = null;
+                    case Messages.IsAddressMatchShippingAddress:
+                        customerState.IsShippingAdressMatch = null;
+                        break;
+
+                    case Messages.ShippingName:
+                        customerState.ShippingName = null;
+                        break;
+
+                    case Messages.ShippingAddress:
+                        customerState.ShippingAddress = null;
+                        break;
+
+                    case Messages.ShippingPostCode:
+                        customerState.ShippingPostCode = null;
+                        break;
+
+                    case Messages.ShippingCity:
+                        customerState.ShippingCity = null;
                         break;
                 }
 
@@ -387,19 +558,52 @@ namespace PimBotDp.Dialogs.AddItem
 
         private string GetPrintableCustomerInfo(CustomerState customerState)
         {
-            string result = "This is your customer information:" + Environment.NewLine;
-            result += $"**Name**: {customerState.Name}" + Environment.NewLine;
-            result += $"**Address**: {customerState.Address}" + Environment.NewLine;
-            result += $"**Post code**: {customerState.PostCode}" + Environment.NewLine;
-            result += $"**City**: {customerState.City}" + Environment.NewLine;
+            string result = Messages.GetUserInfoCustomerInformation + Environment.NewLine;
+            result += $"**{Messages.Name}**: {customerState.Name}" + Environment.NewLine;
+            result += $"**{Messages.Address}**: {customerState.Address}" + Environment.NewLine;
+            result += $"**{Messages.PostCode}**: {customerState.PostCode}" + Environment.NewLine;
+            result += $"**{Messages.City}**: {customerState.City}" + Environment.NewLine;
 
-            if (customerState.IsShippingAdressSet != null)
+            if (customerState.IsShippingAdressMatch != null)
             {
-                var isAddressMatch = (bool)customerState.IsShippingAdressSet ? "Yes" : "No";
-                result += $"Is address match shipping address: {isAddressMatch}" + Environment.NewLine;
+                var isAddressMatch = (bool)customerState.IsShippingAdressMatch ? Messages.Yes : Messages.No;
+                result += $"{Messages.GetUserInfoIsThisYourShippingInformation} {isAddressMatch}" + Environment.NewLine;
+
+                if (customerState.IsShippingAdressMatch == false)
+                {
+                    result += $"**{Messages.ShippingName}**: {customerState.ShippingName}" + Environment.NewLine;
+                    result += $"**{Messages.ShippingAddress}**: {customerState.ShippingAddress}" + Environment.NewLine;
+                    result += $"**{Messages.ShippingPostCode}**: {customerState.ShippingPostCode}" + Environment.NewLine;
+                    result += $"**{Messages.ShippingCity}**: {customerState.ShippingCity}" + Environment.NewLine;
+                }
             }
 
             return result;
+        }
+
+        private List<string> GetListOfEditableProperties(bool? isAddressMatch)
+        {
+            List<string> editableProperties = new List<string>();
+            if (isAddressMatch == null)
+            {
+                return editableProperties;
+            }
+
+            editableProperties.Add(Messages.Name);
+            editableProperties.Add(Messages.Address);
+            editableProperties.Add(Messages.PostCode);
+            editableProperties.Add(Messages.City);
+            editableProperties.Add(Messages.IsAddressMatchShippingAddress);
+
+            if (!(bool)isAddressMatch)
+            {
+                editableProperties.Add(Messages.ShippingName);
+                editableProperties.Add(Messages.ShippingAddress);
+                editableProperties.Add(Messages.ShippingPostCode);
+                editableProperties.Add(Messages.ShippingCity);
+            }
+
+            return editableProperties;
         }
     }
 }
