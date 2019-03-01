@@ -11,8 +11,9 @@ namespace PimBot.Messages
             @"Let me introduce myself. My name is PimBot and obviously I'm a bot 🤖 and what is more important - your virtual assistent!";
 
         public const string HelpMessage =
-            @"Right now, I'm not really smart. You can find simple by write *find item*, also you can add item to your cart by write *add item*.
-            Also you can show your cart simple by write *show cart*. After that, you can confirm your order by writing *confirm*.";
+            @"You can find simple by write *find* and then your desirable item. Also you can add item to your cart by write *add item*.
+            Also you can show your cart simple by write *show cart*. After that, you can confirm your order by writing *confirm*.
+            So, what can I do for you? 😊";
 
         public const string NotUnderstand =
             @"Sorry, I don't **understand** your message 😕.";

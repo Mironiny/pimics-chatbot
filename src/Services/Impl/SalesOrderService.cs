@@ -13,11 +13,18 @@ namespace PimBot.Service.Impl
         public async Task<bool> CreateOrder(CustomerState customerState)
         {
             var client = ODataClientSingleton.Get();
-
-            var product = await client
+            try
+            {
+                var product = await client
                     .For<SalesOrder>("SalesOrder")
                     .Set(CreateSaleOrder(customerState))
                     .InsertEntryAsync();
+            }
+            catch (System.Net.Http.HttpRequestException e)
+            {
+                return false;
+            }
+
 
             return true;
         }

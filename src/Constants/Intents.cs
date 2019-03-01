@@ -14,5 +14,6 @@ namespace PimBot
         public const string None = "None";
         public const string Confirm = "Utilities_Confirm";
         public const string Help = "Utilities_Help";
+        public const string Cancel = "Utilities_Cancel";
     }
 }

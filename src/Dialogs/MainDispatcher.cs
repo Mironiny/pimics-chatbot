@@ -24,6 +24,10 @@ namespace PimBotDp.Dialogs
         private readonly IStatePropertyAccessor<CartState> _cartStateAccessor;
         private readonly IStatePropertyAccessor<CustomerState> _customerStateAccessor;
         private readonly IStatePropertyAccessor<DialogState> _mainDispatcherAccessor;
+        private readonly UserState _userState;
+        private readonly ConversationState _conversationState;
+
+
         private readonly DialogSet _dialogs;
 
         public MainDispatcher(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, UserState userState, ConversationState conversationState,
@@ -34,7 +38,8 @@ namespace PimBotDp.Dialogs
             _logger = loggerFactory.CreateLogger<MainDispatcher>();
             _onTurnAccessor = onTurnAccessor;
             _mainDispatcherAccessor = conversationState.CreateProperty<DialogState>(MainDispatcherStateProperty);
-
+            _userState = userState;
+            _conversationState = conversationState;
             _customerStateAccessor = conversationState.CreateProperty<CustomerState>("customerProperty");
 
             if (conversationState == null)
@@ -71,6 +76,35 @@ namespace PimBotDp.Dialogs
             var context = innerDc.Context;
 
             var onTurnState = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
+
+            // Handle conversation interrupts first.
+
+            // See if there are any conversation interrupts we need to handle.
+            if (onTurnState.Intent.Equals(Intents.Cancel))
+            {
+                if (innerDc.ActiveDialog != null)
+                {
+                    await _conversationState.SaveChangesAsync(innerDc.Context);
+                    await _userState.SaveChangesAsync(innerDc.Context);
+                    await innerDc.Context.SendActivityAsync("Ok. I've canceled our last activity.");
+                    return await innerDc.CancelAllDialogsAsync();
+                    
+                }
+                else
+                {
+                    await innerDc.Context.SendActivityAsync("I don't have anything to cancel.");
+                }
+            }
+            //            var interrupted = await IsTurnInterruptedAsync(innerDc, onTurnState.Intent);
+            //            if (interrupted)
+            //            {
+            //                // Bypass the dialog.
+            //                // Save state before the next turn.
+            //                //                await _conversationState.SaveChangesAsync(turnContext);
+            //                //                await _userState.SaveChangesAsync(turnContext);
+            //                return dialogTurnResult;
+            //                
+            //            }
 
             // Evaluate if the requested operation is possible/ allowed.
             //            var activeDialog = (innerDc.ActiveDialog != null) ? innerDc.ActiveDialog.Id : string.Empty;
@@ -131,7 +165,7 @@ namespace PimBotDp.Dialogs
                     if (onTurnState.Entities["keyPhrase"].Count() > 0)
                     {
                         var firstEntity = (string)onTurnState.Entities["keyPhrase"].First;
-                         await context.SendActivityAsync("Entity is: " + firstEntity);
+                        await context.SendActivityAsync("Entity is: " + firstEntity);
                     }
 
                     break;
@@ -145,21 +179,16 @@ namespace PimBotDp.Dialogs
                 case Intents.Confirm:
                     var customerState =
                         await _customerStateAccessor.GetAsync(context, () => new CustomerState());
-
-                    if (customerState == null || customerState.Name == null || customerState.Name.Equals(string.Empty))
-                    {
+    
                         return await dc.BeginDialogAsync(GetUserInfoDialog.Name);
-                    }
-              //      await context.SendActivityAsync("Yolo, so yu want to confirm order, righty? 😈");
-                    break;
 
                 case Intents.ShowCart:
                     var cartState1 =
                         await _cartStateAccessor.GetAsync(context, () => new CartState());
                     if (cartState1.Items == null || cartState1.Items.Count == 0)
                     {
-                         await context.SendActivityAsync(Messages.EmptyCart);
-                         await context.SendActivityAsync(Messages.SuggestHelp);
+                        await context.SendActivityAsync(Messages.EmptyCart);
+                        await context.SendActivityAsync(Messages.SuggestHelp);
                     }
                     else
                     {
@@ -175,7 +204,7 @@ namespace PimBotDp.Dialogs
                         itemsInCart += Environment.NewLine + Environment.NewLine +
                                        Messages.ShowCartAfter;
 
-                         await context.SendActivityAsync(itemsInCart);
+                        await context.SendActivityAsync(itemsInCart);
                     }
 
                     break;
@@ -189,23 +218,27 @@ namespace PimBotDp.Dialogs
                     await context.SendActivityAsync(Messages.HelpMessage);
                     break;
 
-//                case "items":
-//                    try
-//                    {
-//                        var items = await _itemService.GetAllItemsAsync();
-//                        foreach (var item in items)
-//                        {
-//                            await turnContext.SendActivityAsync(item,
-//                                cancellationToken: cancellationToken);
-//                        }
-//                    }
-//                    catch (Exception ex)
-//                    {
-//                        await turnContext.SendActivityAsync(Messages.Messages.ServerIssue,
-//                            cancellationToken: cancellationToken);
-//                    }
-//
-//                    break;
+                case Intents.Cancel:
+                    await context.SendActivityAsync("Sure, but there is nothing to cancel right now 😄.");
+                    break;
+
+                //                case "items":
+                //                    try
+                //                    {
+                //                        var items = await _itemService.GetAllItemsAsync();
+                //                        foreach (var item in items)
+                //                        {
+                //                            await turnContext.SendActivityAsync(item,
+                //                                cancellationToken: cancellationToken);
+                //                        }
+                //                    }
+                //                    catch (Exception ex)
+                //                    {
+                //                        await turnContext.SendActivityAsync(Messages.Messages.ServerIssue,
+                //                            cancellationToken: cancellationToken);
+                //                    }
+                //
+                //                    break;
 
                 default:
                     await context.SendActivityAsync(Messages.NotUnderstand);
@@ -242,5 +275,38 @@ namespace PimBotDp.Dialogs
         //
         //            return outcome;
         //        }
+        // Determine if an interruption has occurred before we dispatch to any active dialog.
+        private async Task<bool> IsTurnInterruptedAsync(DialogContext dc, string topIntent)
+        {
+            // See if there are any conversation interrupts we need to handle.
+            if (topIntent.Equals(Intents.Cancel))
+            {
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.CancelAllDialogsAsync();
+                    await dc.Context.SendActivityAsync("Ok. I've canceled our last activity.");
+                }
+                else
+                {
+                    await dc.Context.SendActivityAsync("I don't have anything to cancel.");
+                }
+
+                return true;        // Handled the interrupt.
+            }
+
+            if (topIntent.Equals(Intents.Help))
+            {
+                await dc.Context.SendActivityAsync("Let me try to provide some help.");
+                await dc.Context.SendActivityAsync("I understand greetings, being asked for help, or being asked to cancel what I am doing.");
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.RepromptDialogAsync();
+                }
+
+                return true;        // Handled the interrupt.
+            }
+
+            return false;           // Did not handle the interrupt.
+        }
     }
 }
