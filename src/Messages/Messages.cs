@@ -33,6 +33,8 @@ namespace PimBot.Messages
         public const string SuggestHelp = @"For more help simple write *help*.";
 
         public const string Name = @"Name";
+        public const string Email = @"Email";
+        public const string PhoneNumber = @"Phone number";
         public const string Address = @"Address";
         public const string PostCode = @"Post Code";
         public const string City = @"City";
@@ -48,10 +50,12 @@ namespace PimBot.Messages
         // ---------------Get User Info ---------------
         public const string GetUserInfoNewOrder = @"To make a new order I need to contact information about you.";
         public const string GetUserInfoPromptName = @"What is your **full name**? Or company name?";
-        public const string GetUserInfoPromptAddress = @"What is your **adress**?";
+        public const string GetUserInfoPromptEmail = @"What is your **email address**?";
+        public const string GetUserInfoPromptPhoneNumber = @"What is your **phone number**?";
+        public const string GetUserInfoPromptAddress = @"What is your **address**?";
         public const string GetUserInfoPromptPostCode = @"What is your **post code**?";
         public const string GetUserInfoPromptCity = @"What is your **city**?";
-        public const string GetUserInfoPromptShippingMatch = @"Is this address also shipping address?";
+        public const string GetUserInfoPromptShippingMatch = @"Is this address also your shipping address?";
         public const string GetUserInfoPromptIsOrderOk = @"Is all information correct";
         public const string GetUserInfoContinueWithOrder = @"Okey, let's continue with the order";
         public const string GetUserInfoPromptChange = @"What customer information do you want to change?";
@@ -60,9 +64,10 @@ namespace PimBot.Messages
         public const string GetUserInfoCustomerInformation = @"This is your customer information:";
         public const string GetUserInfoIsThisYourShippingInformation = @"Is address match shipping address:";
         public const string GetUserInfoPromptShippingName = @"What is your **shipping full name**?";
-        public const string GetUserInfoPromptShippingAddress = @"What is your **shipping adress**?";
+        public const string GetUserInfoPromptShippingAddress = @"What is your **shipping address**?";
         public const string GetUserInfoPromptShippingPostCode = @"What is your **shipping post code**?";
         public const string GetUserInfoPromptShippingCity = @"What is your **shipping city**?";
+        public const string GetUserInfoEmailIsNotValid = @"Sorry, your email is not valid. Please, try it again.";
 
     }
 }

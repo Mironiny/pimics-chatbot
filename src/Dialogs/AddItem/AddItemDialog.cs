@@ -140,6 +140,5 @@ namespace PimBotDp.Dialogs.AddItem
 
             return true;
         }
-
     }
 }

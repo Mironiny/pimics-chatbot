@@ -24,9 +24,9 @@ namespace PimBot
 
     public class PimBot : IBot
     {
-        private readonly IItemService _itemService = new ItemService();
-
         public static readonly string LuisConfiguration = "pimbotdp";
+
+        private readonly IItemService _itemService = new ItemService();
 
         private readonly PimBotStateAccesors _pimBotStateAccesors;
         private readonly BotServices _services;
@@ -45,13 +45,13 @@ namespace PimBot
             _onTurnAccessor = conversationState.CreateProperty<OnTurnState>("onTurnStateProperty");
             _dialogStateAccessor = _conversationState.CreateProperty<DialogState>(nameof(DialogState));
 
-            //             Verify logger configuration.
             if (loggerFactory == null)
             {
                 throw new System.ArgumentNullException(nameof(loggerFactory));
             }
+
             _logger = loggerFactory.CreateLogger<PimBot>();
-            _logger.LogTrace("CafeBot turn start.");
+            _logger.LogTrace("Pimbot turn start.");
 
             // Verify LUIS configuration.
             if (!_services.LuisServices.ContainsKey(LuisConfiguration))
@@ -61,18 +61,15 @@ namespace PimBot
 
             Dialogs = new DialogSet(_dialogStateAccessor);
             Dialogs.Add(new MainDispatcher(services, _onTurnAccessor, userState, conversationState, loggerFactory));
-
         }
 
         private DialogSet Dialogs { get; set; }
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
-            //       var dc = await Dialogs.CreateContextAsync(turnContext);
-
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-
+                // Found intent from the input
                 var luisResults = await _services.LuisServices[LuisConfiguration]
                     .RecognizeAsync(turnContext, cancellationToken);
                 var entities = luisResults.Entities.ToString();
@@ -82,11 +79,6 @@ namespace PimBot
                 var onTurnState = new OnTurnState(topIntent, luisResults.Entities);
 
                 await _onTurnAccessor.SetAsync(turnContext, onTurnState);
-//                await ConversationState.SaveChangesAsync(turnContext);
-//                await UserState.SaveChangesAsync(turnContext);
-
-                //                await turnContext.SendActivityAsync("Your intent is: " + topIntent,
-                //                    cancellationToken: cancellationToken);
 
                 // Create dialog context.
                 var dc = await Dialogs.CreateContextAsync(turnContext);
@@ -94,138 +86,12 @@ namespace PimBot
                 // Continue outstanding dialogs.
                 await dc.ContinueDialogAsync();
 
-             //   await dc.BeginDialogAsync(nameof(MainDispatcher));
-
                 // Begin main dialog if no outstanding dialogs/ no one responded.
                 if (!dc.Context.Responded)
                 {
                     await dc.BeginDialogAsync(nameof(MainDispatcher));
                 }
 
-                //                // Continue the current dialog
-                //                var dialogResult = await dc.ContinueDialogAsync();
-                //
-                //                // if no one has responded,
-                //                if (!dc.Context.Responded)
-                //                {
-                //                    // examine results from active dialog
-                //                    switch (dialogResult.Status)
-                //                    {
-                //                        case DialogTurnStatus.Empty:
-                //
-                //                            switch (topIntent)
-                //                            {
-                //                                case Intents.FindItem:
-                //                                    if (luisResults.Entities["keyPhrase"].Count() > 0)
-                //                                    {
-                //                                        var firstEntity = (string) luisResults.Entities["keyPhrase"].First;
-                //                                        await turnContext.SendActivityAsync("Entity is: " + firstEntity,
-                //                                            cancellationToken: cancellationToken);
-                //                                    }
-                //
-                //                                    break;
-                //
-                //                                case Intents.AddItem:
-                //                                    if (luisResults.Entities["itemAdd"].Count() > 0)
-                //                                    {
-                //                                        var firstEntity = (string) luisResults.Entities["itemAdd"].First;
-                //
-                //                                        //TODO check if item exists in PIM
-                //                                        CartState cartState =
-                //                                            await _cartStateAccessor.GetAsync(turnContext, () => new CartState());
-                //                                        if (cartState.Items == null)
-                //                                        {
-                //                                            cartState.Items = new List<string>();
-                //                                        }
-                //
-                //                                        cartState.Items.Add(firstEntity);
-                //
-                //                                        // Set the new values into state.
-                //                                        await _cartStateAccessor.SetAsync(turnContext, cartState);
-                //                                        await turnContext.SendActivityAsync("Entity is: " + firstEntity,
-                //                                            cancellationToken: cancellationToken);
-                //                                    }
-                //
-                //                                    break;
-                //
-                //                                case Intents.ShowCart:
-                //                                    var cartState1 =
-                //                                        await _cartStateAccessor.GetAsync(turnContext, () => new CartState());
-                //                                    if (cartState1.Items == null || cartState1.Items.Count == 0)
-                //                                    {
-                //                                        await turnContext.SendActivityAsync(Messages.Messages.EmptyCart,
-                //                                            cancellationToken: cancellationToken);
-                //                                        await turnContext.SendActivityAsync(Messages.Messages.SuggestHelp,
-                //                                            cancellationToken: cancellationToken);
-                //                                    }
-                //                                    else
-                //                                    {
-                //                                        string itemsInCart = Messages.Messages.ShowCartTitle + Environment.NewLine;
-                //                                        foreach (var item in cartState1.Items)
-                //                                        {
-                //                                            itemsInCart += "* " + item + Environment.NewLine;
-                //                                        }
-                //
-                //                                        itemsInCart += Environment.NewLine + Environment.NewLine +
-                //                                                       Messages.Messages.ShowCartAfter;
-                //
-                //                                        await turnContext.SendActivityAsync(itemsInCart,
-                //                                            cancellationToken: cancellationToken);
-                //                                    }
-                //
-                //                                    break;
-                //
-                //                                case Intents.None:
-                //                                    await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand,
-                //                                        cancellationToken: cancellationToken);
-                //                                    await turnContext.SendActivityAsync(Messages.Messages.SuggestHelp,
-                //                                        cancellationToken: cancellationToken);
-                //                                    break;
-                //
-                //                                case Intents.Help:
-                //                                    await turnContext.SendActivityAsync(Messages.Messages.HelpMessage,
-                //                                        cancellationToken: cancellationToken);
-                //                                    break;
-                //
-                //                                case "items":
-                //                                    try
-                //                                    {
-                //                                        var items = await _itemService.GetAllItemsAsync();
-                //                                        foreach (var item in items)
-                //                                        {
-                //                                            await turnContext.SendActivityAsync(item,
-                //                                                cancellationToken: cancellationToken);
-                //                                        }
-                //                                    }
-                //                                    catch (Exception ex)
-                //                                    {
-                //                                        await turnContext.SendActivityAsync(Messages.Messages.ServerIssue,
-                //                                            cancellationToken: cancellationToken);
-                //                                    }
-                //
-                //                                    break;
-                //
-                //                                default:
-                //                                    await turnContext.SendActivityAsync(Messages.Messages.NotUnderstand,
-                //                                        cancellationToken: cancellationToken);
-                //                                    break;
-                //                            }
-                //
-                //                            break;
-                //
-                //                        case DialogTurnStatus.Waiting:
-                //                            // The active dialog is waiting for a response from the user, so do nothing.
-                //                            break;
-                //
-                //                        case DialogTurnStatus.Complete:
-                //                            await dc.EndDialogAsync();
-                //                            break;
-                //
-                //                        default:
-                //                            await dc.CancelAllDialogsAsync();
-                //                            break;
-                //                    }
-                //                }
             }
             else if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
             {
@@ -240,15 +106,16 @@ namespace PimBot
                         // bot was added to the conversation.
                         if (member.Id != turnContext.Activity.Recipient.Id)
                         {
-                            await turnContext.SendActivityAsync($"Hi there, {member.Name} ✌️. {Messages.Messages.IntroducingMessage}", cancellationToken: cancellationToken);
-
-                            // There would be nice typing
+                            await turnContext.SendActivityAsync(
+                                $"Hi there, {member.Name} ✌️. {Messages.Messages.IntroducingMessage}",
+                                cancellationToken: cancellationToken);
 
                             await turnContext.SendActivityAsync(Messages.Messages.HelpMessage, cancellationToken: cancellationToken);
                         }
                     }
                 }
             }
+
             await _conversationState.SaveChangesAsync(turnContext);
             await _userState.SaveChangesAsync(turnContext);
         }

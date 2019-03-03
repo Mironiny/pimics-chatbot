@@ -17,10 +17,13 @@ using PimBotDp.State;
 
 namespace PimBotDp.Dialogs.AddItem
 {
+    /// <summary>
+    /// Dialog which takes from user information needs to be know to complete the order.
+    /// </summary>
     public class GetUserInfoDialog : ComponentDialog
     {
-        private ISalesOrderService _salesOrder = new SalesOrderService();
-        private IItemService _itemService = new ItemService();
+        private readonly ISalesOrderService _salesOrder = new SalesOrderService();
+        private readonly IItemService _itemService = new ItemService();
 
         // Prompts names
         private const string NamePrompt = "NamePrompt";
@@ -47,15 +50,17 @@ namespace PimBotDp.Dialogs.AddItem
             = new Dictionary<string, int>
             {
                 { Messages.Name, 0 },
-                { Messages.Address, 1 },
-                { Messages.PostCode, 2 },
-                { Messages.City, 3 },
-                { Messages.IsAddressMatchShippingAddress, 4 },
-                { Messages.ShippingName, 6 },
-                { Messages.ShippingAddress, 7 },
-                { Messages.ShippingPostCode, 8 },
-                { Messages.ShippingCity, 9 },
-                { "ConfirmCustomerInfo", 11 },
+                { Messages.Email, 1 },
+                { Messages.PhoneNumber, 2 },
+                { Messages.Address, 3 },
+                { Messages.PostCode, 4 },
+                { Messages.City, 5 },
+                { Messages.IsAddressMatchShippingAddress, 6 },
+                { Messages.ShippingName, 8 },
+                { Messages.ShippingAddress, 9 },
+                { Messages.ShippingPostCode, 10 },
+                { Messages.ShippingCity, 11 },
+                { "ConfirmCustomerInfo", 13 },
             };
 
         public GetUserInfoDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor,
@@ -73,6 +78,8 @@ namespace PimBotDp.Dialogs.AddItem
             {
                 InitializeStateStepAsync,
                 PromptForNameAsync,
+                PromptForEmailAdress,
+                PromptForPhone,
                 PromptForNameAdress,
                 PromptForPostCode,
                 PromptForCity,
@@ -93,11 +100,11 @@ namespace PimBotDp.Dialogs.AddItem
                 "start",
                 waterfallSteps));
             AddDialog(new TextPrompt(NamePrompt));
+            AddDialog(new TextPrompt(EmailPrompt, ValidateEmail));
+            AddDialog(new TextPrompt(PhonePrompt));
             AddDialog(new TextPrompt(AdressPrompt));
             AddDialog(new TextPrompt(PostCodePrompt));
             AddDialog(new TextPrompt(CityPrompt));
-            AddDialog(new TextPrompt(EmailPrompt));
-            AddDialog(new TextPrompt(PhonePrompt));
             AddDialog(new ConfirmPrompt(IsShippingAdressMatchPrompt));
             AddDialog(new TextPrompt(ShippingNamePrompt));
             AddDialog(new TextPrompt(ShippingAdressPrompt));
@@ -117,6 +124,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for NAME.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForNameAsync(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -140,7 +150,10 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.ContinueDialogAsync();
         }
 
-        private async Task<DialogTurnResult> PromptForNameAdress(
+        /// <summary>
+        /// Prompt for EMAIL.
+        /// </summary>
+        private async Task<DialogTurnResult> PromptForEmailAdress(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
@@ -148,10 +161,79 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var name = stepContext.Result as string;
 
-            // Save name, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.Name) && name != null)
             {
                 customerState.Name = name;
+                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+            }
+
+            if (string.IsNullOrWhiteSpace(customerState.Email))
+            {
+                {
+                    var opts = new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = Messages.GetUserInfoPromptEmail,
+                        },
+                    };
+                    return await stepContext.PromptAsync(EmailPrompt, opts);
+                }
+            }
+
+            return await stepContext.NextAsync();
+        }
+
+        /// <summary>
+        /// Prompt for PHONE NUMBER.
+        /// </summary>
+        private async Task<DialogTurnResult> PromptForPhone(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+            var email = stepContext.Result as string;
+
+            if (string.IsNullOrWhiteSpace(customerState.Email) && email != null)
+            {
+                customerState.Email = email;
+                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+            }
+
+            if (string.IsNullOrWhiteSpace(customerState.PhoneNumber))
+            {
+                {
+                    var opts = new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = Messages.GetUserInfoPromptPhoneNumber,
+                        },
+                    };
+                    return await stepContext.PromptAsync(PhonePrompt, opts);
+                }
+            }
+
+            return await stepContext.NextAsync();
+        }
+
+        /// <summary>
+        /// Prompt for ADDRESS.
+        /// </summary>
+        private async Task<DialogTurnResult> PromptForNameAdress(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+            var phone = stepContext.Result as string;
+
+            if (string.IsNullOrWhiteSpace(customerState.PhoneNumber) && phone != null)
+            {
+                customerState.PhoneNumber = phone;
                 await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
             }
 
@@ -173,6 +255,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for POSTCODE.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForPostCode(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -181,7 +266,6 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var adress = stepContext.Result as string;
 
-            // Save name, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.Address) && adress != null)
             {
                 customerState.Address = adress;
@@ -206,6 +290,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for CITY.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForCity(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -214,7 +301,6 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var postCode = stepContext.Result as string;
 
-            // Save postcode, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.PostCode) && postCode != null)
             {
                 customerState.PostCode = postCode;
@@ -239,16 +325,17 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for SHIPPING.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForShipping(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-
             CustomerState customerState =
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var city = stepContext.Result as string;
 
-            // Save postcode, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.City) && city != null)
             {
                 customerState.City = city;
@@ -267,15 +354,17 @@ namespace PimBotDp.Dialogs.AddItem
                 };
                 return await stepContext.PromptAsync(IsShippingAdressMatchPrompt, opts);
             }
-            return await stepContext.NextAsync();
 
+            return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Resolve SHIPPING.
+        /// </summary>
         private async Task<DialogTurnResult> ResolveShipping(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            //TODO use case when is shipping adress not same
             CustomerState customerState =
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             if (customerState.IsShippingAdressMatch == null)
@@ -284,6 +373,7 @@ namespace PimBotDp.Dialogs.AddItem
                 customerState.IsShippingAdressMatch = isShippingAdressSet;
                 await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
             }
+
             if (customerState.IsShippingAdressMatch == true)
             {
                 stepContext.ActiveDialog.State["stepIndex"] = DialogIndex["ConfirmCustomerInfo"];
@@ -292,6 +382,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.ContinueDialogAsync();
         }
 
+        /// <summary>
+        /// Prompt for SHIPPING NAME.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForShippingName(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -317,6 +410,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for SHIPPING ADDRESS.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForShippingAddress(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -325,7 +421,6 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var shippingName = stepContext.Result as string;
 
-            // Save postcode, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.ShippingName) && shippingName != null)
             {
                 customerState.ShippingName = shippingName;
@@ -350,6 +445,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for SHIPPPING POSTCODE.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForShippingPostCode(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -383,6 +481,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for SHIPPING CITY.
+        /// </summary>
         private async Task<DialogTurnResult> PromptForShippingCity(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -391,7 +492,6 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var shippingPostCode = stepContext.Result as string;
 
-            // Save postcode, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.ShippingPostCode) && shippingPostCode != null)
             {
                 customerState.ShippingPostCode = shippingPostCode;
@@ -416,6 +516,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Resolve SHIPPING CITY.
+        /// </summary>
         private async Task<DialogTurnResult> ResolveShippingCity(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -424,15 +527,18 @@ namespace PimBotDp.Dialogs.AddItem
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
             var shippingCity = stepContext.Result as string;
 
-            // Save postcode, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.ShippingCity) && shippingCity != null)
             {
                 customerState.ShippingCity = shippingCity;
                 await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
             }
+
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Prompt for CONFIRM CUSTUMER INFO.
+        /// </summary>
         private async Task<DialogTurnResult> ConfirmCustomerInfo(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -454,11 +560,13 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.PromptAsync(ConfirmUserInfoPrompt, opts);
         }
 
+        /// <summary>
+        /// Resolve CUSTOMER INFR.
+        /// </summary>
         private async Task<DialogTurnResult> ResolveConfirmCustomerInfo(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            //TODO use case when is shipping adress not same
             CustomerState customerState =
                 await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
 
@@ -486,6 +594,9 @@ namespace PimBotDp.Dialogs.AddItem
             return await stepContext.NextAsync();
         }
 
+        /// <summary>
+        /// Resolve everything is OK.
+        /// </summary>
         private async Task<DialogTurnResult> ResolveIsEverythingOk(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -515,6 +626,14 @@ namespace PimBotDp.Dialogs.AddItem
                 {
                     case Messages.Name:
                         customerState.Name = null;
+                        break;
+
+                    case Messages.Email:
+                        customerState.Email = null;
+                        break;
+
+                    case Messages.PhoneNumber:
+                        customerState.PhoneNumber = null;
                         break;
 
                     case Messages.Address:
@@ -556,10 +675,15 @@ namespace PimBotDp.Dialogs.AddItem
             }
         }
 
+        /// <summary>
+        /// Print Customer state.
+        /// </summary>
         private string GetPrintableCustomerInfo(CustomerState customerState)
         {
             string result = Messages.GetUserInfoCustomerInformation + Environment.NewLine;
             result += $"**{Messages.Name}**: {customerState.Name}" + Environment.NewLine;
+            result += $"**{Messages.Email}**: {customerState.Email}" + Environment.NewLine;
+            result += $"**{Messages.PhoneNumber}**: {customerState.PhoneNumber}" + Environment.NewLine;
             result += $"**{Messages.Address}**: {customerState.Address}" + Environment.NewLine;
             result += $"**{Messages.PostCode}**: {customerState.PostCode}" + Environment.NewLine;
             result += $"**{Messages.City}**: {customerState.City}" + Environment.NewLine;
@@ -581,6 +705,9 @@ namespace PimBotDp.Dialogs.AddItem
             return result;
         }
 
+        /// <summary>
+        /// Get list
+        /// </summary>
         private List<string> GetListOfEditableProperties(bool? isAddressMatch)
         {
             List<string> editableProperties = new List<string>();
@@ -590,6 +717,8 @@ namespace PimBotDp.Dialogs.AddItem
             }
 
             editableProperties.Add(Messages.Name);
+            editableProperties.Add(Messages.Email);
+            editableProperties.Add(Messages.PhoneNumber);
             editableProperties.Add(Messages.Address);
             editableProperties.Add(Messages.PostCode);
             editableProperties.Add(Messages.City);
@@ -604,6 +733,24 @@ namespace PimBotDp.Dialogs.AddItem
             }
 
             return editableProperties;
+        }
+
+        private async Task<bool> ValidateEmail(
+            PromptValidatorContext<string> promptContext,
+            CancellationToken cancellationToken)
+        {
+            var email = promptContext.Recognized.Value;
+
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                await promptContext.Context.SendActivityAsync(Messages.GetUserInfoEmailIsNotValid);
+                return false;
+            }
         }
     }
 }
