@@ -14,7 +14,7 @@
         },
         {
             "type": "blob",
-            "connectionString": "4vHVoTymmbhOqt9kJ0Djqw==!vU1QJrWYOvleOStYzO3V20PR7UJ/sxwmwYEzB4WstSudNS9/9lNQqC8a4l94DuUd7lWgnegR4zo1ubmLK6a0FlXF0mITL/lSlQkp1aLpdeMTszurj5DuA2y/Ts5/Zq7f8v6DlC/z/dH675OkA+zBTvgQIk80KwJ2QzhUBsjl9m0qB58eaZnzjHMw8RrPtsfE8e66mxamsld1LqC6uROgig==",
+            "connectionString": "fikvpTZXTYC9qbCS0b882w==!GQBmQOoGFc2lNqyz23lV1YvtOg3ZnpLh1FYsSR9pGgZMs7xwDtRo0J8MIrqwfM0WMKUY+dIFEnQuQc5fVhcUVWKce/DmWOJV0KPUMkkJp6tKw5dFpzOFZPp45/x22xWAQrjX/v079VbgeN1ZTwptTIVbFvETp1Qw7OXFEglR14kU0ateYBgiCJ+dCeZa3GOwb6b0TOphMO90j8UpJOl4qw==",
             "tenantId": "6c19f530-fdfe-4a1f-af7e-a0c0497381b8",
             "subscriptionId": "dba60a9c-5b75-4726-967d-92fcb25d06e3",
             "resourceGroup": "DP-Chatbot",
@@ -32,14 +32,14 @@
         {
             "type": "endpoint",
             "appId": "e5bddf8a-61f5-400d-ad77-4a8b94f6712f",
-            "appPassword": "SiGAkBBGvbMl9B1uOYEBtA==!5C7JNQlpT7LLlPsfq+pE0yF8hZNYPHpH2EBRF1Q/fgc=",
+            "appPassword": "7hkAwHlUhLUPoLF+011Rrw==!lfCmPW9uMXrCplljBh93cpXJNuVz6OkalDfhVBbbagI=",
             "endpoint": "https://pimbotdp.azurewebsites.net/api/messages",
             "name": "production",
             "id": "4"
         },
         {
             "type": "appInsights",
-            "instrumentationKey": "7ObI2OPsC+/OPyZXVi+2uw==!Ega930OYwnHLKOamLjsO8p1fUA+ibgTWLZcXHneY14QERWsaLZiy2l9bol3Qo8C8",
+            "instrumentationKey": "007pqPoqZAC+8kQ1xPYhzw==!LrGY/vqGgrIpG4YhIxe7KKyKAm/StQvAeSMqApjlbNGa61Xd/nIdaZktRREmNRYj",
             "applicationId": "6cc0062c-fad8-477c-bac6-facf05490160",
             "apiKeys": {},
             "tenantId": "6c19f530-fdfe-4a1f-af7e-a0c0497381b8",
@@ -48,24 +48,14 @@
             "serviceName": "PimBotDPnjrq4c",
             "id": "5"
         },
-        {
-            "type": "luis",
-            "appId": "d1ad16ba-9e01-4924-b90f-3608c49c6e24",
-            "authoringKey": "CWZgkgsOxPG2KowkCajEuQ==!gHQgEHu1dSTSBQomHzb6fZTkSRry8+XE6qkIgvdW/LSfdX8iPaZrdjlmq6/T2pea",
-            "version": "0.1",
-            "region": "westeurope",
-            "name": "BasicBotLuisApplication",
-            "id": "6"
-        },
-        {
-            "type": "luis",
-            "name": "pimbotdp",
-            "appId": "8330422e-bbbf-4929-929a-c4cd0bbb6abf",
-            "version": "0.1",
-            "authoringKey": "jDZNRiePuXXJpJ+EvudH7A==!dEJWhQChfeecxrddYiwFqE6tapjpiZjJgbcsIcP2lFOR28+suhS+Y9w4qg4IvUYO",
-            "region": "westeurope",
-            "id": "231"
-        }
+      {
+        "type": "luis",
+        "name": "pimbotdp",
+        "appId": "8330422e-bbbf-4929-929a-c4cd0bbb6abf",
+        "version": "0.1",
+        "authoringKey": "mUT1hjWZi6+zF3w494x0vQ==!Hk8+D6f3YtKO3d376bU3ceIonnv8apG6lV4lZ6W57p3wwvb/hqIz9Jp724tLwbJ0",
+        "region": "westeurope",
+        "id": "231"      }
     ],
     "padlock": "O+8tBdVfH5/o1AYXk7lmxg==!RCTMMXZPYj6/gHeROKNxbPtrykQNQch8stVxvvUYtmL9QRTMzkJcqOuYw7eUcj55",
     "version": "2.0"

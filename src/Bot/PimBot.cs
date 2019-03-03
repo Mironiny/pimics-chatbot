@@ -121,20 +121,3 @@ namespace PimBot
         }
     }
 }
-
-//if (pimBotState.DidBotWelcomeUser == false)
-//{
-//pimBotState.DidBotWelcomeUser = true;
-//
-//await _pimBotStateAccesors.PimBotState.SetAsync(turnContext, pimBotState);
-//await _pimBotStateAccesors.UserState.SaveChangesAsync(turnContext);
-//
-//// the channel should sends the user name in the 'From' object
-//var userName = turnContext.Activity.From.Name;
-//
-//await turnContext.SendActivityAsync($"You are seeing this message because this was your first message ever to this bot.", cancellationToken: cancellationToken);
-//await turnContext.SendActivityAsync($"It is a good practice to welcome the user and provide personal greeting. For example, welcome {userName}.", cancellationToken: cancellationToken);
-//
-//}
-//else
-//{
