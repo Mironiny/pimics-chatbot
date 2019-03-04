@@ -55,48 +55,54 @@ namespace PimBotDp.Dialogs.FindItem
             if (onTurnProperty.Entities[EntityNames.FindItem].Count() > 0)
             {
                 var firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
+          //      await context.SendActivityAsync("Entity is: " + firstEntity);
+
                 var items = await _itemService.GetAllItemsAsync(firstEntity);
-
-                var response = stepContext.Context.Activity.CreateReply();
-                response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk() };
-
-                await context.SendActivityAsync("Entity is: " + firstEntity);
-                await context.SendActivityAsync(GetPrintableItems(items));
-                await context.SendActivityAsync(response);
-
-
+                var count = items.Count();
+                if (items.Count() == 0)
+                {
+                    await context.SendActivityAsync($"Sorry, I haven't found **{firstEntity}**");
+                }
+                else if (items.Count() < 10)
+                {
+                    foreach (var item in items)
+                    {
+                        var response = stepContext.Context.Activity.CreateReply();
+                        response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
+                        await context.SendActivityAsync(response);
+                    }
+                }
+                else
+                {
+                    await context.SendActivityAsync(GetPrintableListItems(items));
+                }
             }
 
             return await stepContext.EndDialogAsync();
         }
 
-        private string GetPrintableItems(IEnumerable<PimItem> items)
+        private string GetPrintableListItems(IEnumerable<PimItem> items)
         {
             string result = string.Empty;
             foreach (var item in items)
             {
-                result += $"Name: {item.Description}, unit price: {item.Unit_Price} {Environment.NewLine}";
+                result += $"**No**: {item.No}, desciption: {item.Description}, unit price: {item.Unit_Price}/{item.Base_Unit_of_Measure} {Environment.NewLine}";
             }
 
             return result;
         }
 
-        private Attachment CreateAdaptiveCardUsingSdk()
+        private Attachment CreateAdaptiveCardUsingSdk(PimItem item)
         {
             var card = new AdaptiveCard();
-            card.Body.Add(new AdaptiveTextBlock() { Text = "Colour", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
-            card.Body.Add(new AdaptiveChoiceSetInput()
+            card.Body.Add(new AdaptiveTextBlock() { Text = $"**No**: {item.No}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
+            card.Body.Add(new AdaptiveTextBlock() { Text = $"**Description** :{item.Description}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
+            card.Body.Add(new AdaptiveTextBlock()
             {
-                Id = "Colour",
-                Style = AdaptiveChoiceInputStyle.Compact,
-                Choices = new List<AdaptiveChoice>(new[] {
-                    new AdaptiveChoice() { Title = "Red", Value = "RED" },
-                    new AdaptiveChoice() { Title = "Green", Value = "GREEN" },
-                    new AdaptiveChoice() { Title = "Blue", Value = "BLUE" } })
+                Text = $"**Price**: {item.Unit_Price}/{item.Base_Unit_of_Measure}", Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder
             });
-            card.Body.Add(new AdaptiveTextBlock() { Text = "Registration number:", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
-            card.Body.Add(new AdaptiveTextInput() { Style = AdaptiveTextInputStyle.Text, Id = "RegistrationNumber" });
-            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
+//            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
