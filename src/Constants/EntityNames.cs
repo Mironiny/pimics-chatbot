@@ -8,6 +8,6 @@ namespace PimBotDp.Constants
     public class EntityNames
     {
         public const string Item = "itemAdd";
-
+        public const string FindItem = "keyPhrase";
     }
 }

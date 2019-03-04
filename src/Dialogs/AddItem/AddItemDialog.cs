@@ -8,6 +8,8 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Service;
+using PimBot.Service.Impl;
 using PimBotDp.Constants;
 using PimBotDp.State;
 
@@ -26,10 +28,6 @@ namespace PimBotDp.Dialogs.AddItem
         public AddItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
             : base(Name)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
             _services = services;
             _onTurnAccessor = onTurnAccessor;
             _cartStateAccessor = cartStateAccessor;

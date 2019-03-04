@@ -32,6 +32,7 @@ namespace PimBot.Messages
 
         public const string SuggestHelp = @"For more help simple write *help*.";
 
+        // ---------------General ---------------
         public const string Name = @"Name";
         public const string Email = @"Email";
         public const string PhoneNumber = @"Phone number";
@@ -45,7 +46,12 @@ namespace PimBot.Messages
         public const string ShippingPostCode = @"Shippping post code";
         public const string ShippingCity = @"Shipping city";
         public const string IsAddressMatchShippingAddress = @"Address match";
+        public const string IsThereAnythingICanDo = @"Is there anything else I can help you with?";
 
+
+        // ---------------Interuption ---------------
+        public const string InteruptionCancelConfirm = @"Ok. I've canceled our last activity.";
+        public const string InteruptionCancelNotConfirm = @"I don't have anything to cancel.";
 
         // ---------------Get User Info ---------------
         public const string GetUserInfoNewOrder = @"To make a new order I need to contact information about you.";

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using PimBotDp.Dialogs.AddItem;
+using PimBotDp.Dialogs.FindItem;
 
 namespace PimBotDp.Dialogs
 {
@@ -57,6 +58,8 @@ namespace PimBotDp.Dialogs
             AddDialog(new AddItemDialog(services, onTurnAccessor, _cartStateAccessor));
             AddDialog(new RemoveItemDialog(services, onTurnAccessor, _cartStateAccessor));
             AddDialog(new GetUserInfoDialog(services, onTurnAccessor, _cartStateAccessor, _customerStateAccessor));
+            AddDialog(new FindItemDialog(services, onTurnAccessor, _cartStateAccessor));
+
         }
 
         protected override async Task<DialogTurnResult> OnBeginDialogAsync(DialogContext innerDc, object options,
@@ -77,8 +80,6 @@ namespace PimBotDp.Dialogs
 
             var onTurnState = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
 
-            // Handle conversation interrupts first.
-
             // See if there are any conversation interrupts we need to handle.
             if (onTurnState.Intent.Equals(Intents.Cancel))
             {
@@ -86,43 +87,20 @@ namespace PimBotDp.Dialogs
                 {
                     await _conversationState.SaveChangesAsync(innerDc.Context);
                     await _userState.SaveChangesAsync(innerDc.Context);
-                    await innerDc.Context.SendActivityAsync("Ok. I've canceled our last activity.");
+                    await innerDc.Context.SendActivityAsync(Messages.InteruptionCancelConfirm);
                     return await innerDc.CancelAllDialogsAsync();
-                    
                 }
                 else
                 {
-                    await innerDc.Context.SendActivityAsync("I don't have anything to cancel.");
+                    await innerDc.Context.SendActivityAsync(Messages.InteruptionCancelNotConfirm);
                 }
             }
-            //            var interrupted = await IsTurnInterruptedAsync(innerDc, onTurnState.Intent);
-            //            if (interrupted)
-            //            {
-            //                // Bypass the dialog.
-            //                // Save state before the next turn.
-            //                //                await _conversationState.SaveChangesAsync(turnContext);
-            //                //                await _userState.SaveChangesAsync(turnContext);
-            //                return dialogTurnResult;
-            //                
-            //            }
-
-            // Evaluate if the requested operation is possible/ allowed.
-            //            var activeDialog = (innerDc.ActiveDialog != null) ? innerDc.ActiveDialog.Id : string.Empty;
-            //            var reqOpStatus = IsRequestedOperationPossible(activeDialog, onTurnProperty.Intent);
-            //            if (!reqOpStatus.allowed)
-            //            {
-            //                await context.SendActivityAsync(reqOpStatus.reason);
-            //
-            //                // Nothing to do here. End main dialog.
-            //                return await innerDc.EndDialogAsync();
-            //            }
 
             // Continue outstanding dialogs.
             var dialogTurnResult = await innerDc.ContinueDialogAsync();
 
             if (!context.Responded && dialogTurnResult != null && dialogTurnResult.Status != DialogTurnStatus.Complete)
             {
-                //                No one has responded so start the right child dialog.
                 dialogTurnResult = await BeginChildDialogAsync(innerDc, onTurnState);
             }
 
@@ -135,15 +113,18 @@ namespace PimBotDp.Dialogs
             switch (dialogTurnResult.Status)
             {
                 case DialogTurnStatus.Complete:
+
                     // The active dialog finished successfully. Ask user if they need help with anything else.
-                    //        await context.SendActivityAsync(MessageFactory.SuggestedActions(Helpers.GenSuggestedQueries(), "Is there anything else I can help you with ?"));
+                    await context.SendActivityAsync(Messages.IsThereAnythingICanDo);
                     break;
 
                 case DialogTurnStatus.Waiting:
+
                     // The active dialog is waiting for a response from the user, so do nothing
                     break;
 
                 case DialogTurnStatus.Cancelled:
+
                     // The active dialog's stack has been canceled
                     await innerDc.CancelAllDialogsAsync();
                     break;
@@ -162,13 +143,7 @@ namespace PimBotDp.Dialogs
             switch (onTurnState.Intent)
             {
                 case Intents.FindItem:
-                    if (onTurnState.Entities["keyPhrase"].Count() > 0)
-                    {
-                        var firstEntity = (string)onTurnState.Entities["keyPhrase"].First;
-                        await context.SendActivityAsync("Entity is: " + firstEntity);
-                    }
-
-                    break;
+                    return await dc.BeginDialogAsync(FindItemDialog.Name);
 
                 case Intents.AddItem:
                     return await dc.BeginDialogAsync(AddItemDialog.Name);
@@ -179,8 +154,7 @@ namespace PimBotDp.Dialogs
                 case Intents.Confirm:
                     var customerState =
                         await _customerStateAccessor.GetAsync(context, () => new CustomerState());
-    
-                        return await dc.BeginDialogAsync(GetUserInfoDialog.Name);
+                    return await dc.BeginDialogAsync(GetUserInfoDialog.Name);
 
                 case Intents.ShowCart:
                     var cartState1 =
