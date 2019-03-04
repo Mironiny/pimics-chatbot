@@ -5,11 +5,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace PimBot.Service.Impl
 {
     public class ItemService : IItemService
     {
+        public async Task<PimItem> FindItemByNo(string no)
+        {
+            // Refactor to look only for one item
+            var itemList = new List<string>();
+
+            var client = ODataClientSingleton.Get();
+
+            var items = await client
+                .For(Constants.ItemsServiceEndpointName)
+                .FindEntriesAsync();
+
+            var pimItems = MapItems(items);
+
+            var pimItem = pimItems.Where(o => o.No.Equals(no)).ToList();
+            if (pimItem == null || !pimItem.Any())
+            {
+                return null;
+            }
+            else
+            {
+                return pimItem.First();
+            }
+        }
+
         public async Task<IEnumerable<PimItem>> GetAllItemsAsync(string entity)
         {
             var itemList = new List<string>();

@@ -9,6 +9,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Messages;
 using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBotDp.Constants;
@@ -61,7 +62,7 @@ namespace PimBotDp.Dialogs.FindItem
                 var count = items.Count();
                 if (items.Count() == 0)
                 {
-                    await context.SendActivityAsync($"Sorry, I haven't found **{firstEntity}**");
+                    await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**");
                 }
                 else if (items.Count() < 10)
                 {

@@ -8,6 +8,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Messages;
 using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBotDp.Constants;
@@ -18,6 +19,8 @@ namespace PimBotDp.Dialogs.AddItem
     public class AddItemDialog : ComponentDialog
     {
         public const string Name = "Add_item";
+
+        private readonly IItemService _itemService = new ItemService();
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
@@ -55,7 +58,14 @@ namespace PimBotDp.Dialogs.AddItem
             {
                 var firstEntity = (string)onTurnProperty.Entities[EntityNames.Item].First;
 
-                //TODO check if item exists in PIM
+                var pimItem = await _itemService.FindItemByNo(firstEntity);
+
+                if (pimItem == null)
+                {
+                    await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**.");
+                    return await stepContext.EndDialogAsync();
+                }
+
                 CartState cartState =
                     await _cartStateAccessor.GetAsync(context, () => new CartState());
                 if (cartState.Items == null)
@@ -69,8 +79,8 @@ namespace PimBotDp.Dialogs.AddItem
                 await _cartStateAccessor.SetAsync(context, cartState);
                 await context.SendActivityAsync("Entity is: " + firstEntity);
             }
-            return await stepContext.NextAsync();
 
+            return await stepContext.NextAsync();
         }
 
         private async Task<DialogTurnResult> PromptForCountStepAsync(

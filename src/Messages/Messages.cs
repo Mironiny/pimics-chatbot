@@ -47,7 +47,7 @@ namespace PimBot.Messages
         public const string ShippingCity = @"Shipping city";
         public const string IsAddressMatchShippingAddress = @"Address match";
         public const string IsThereAnythingICanDo = @"Is there anything else I can help you with?";
-
+        public const string NotFound = @"Sorry, I haven't found";
 
         // ---------------Interuption ---------------
         public const string InteruptionCancelConfirm = @"Ok. I've canceled our last activity.";
