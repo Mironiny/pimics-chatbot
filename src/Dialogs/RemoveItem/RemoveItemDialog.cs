@@ -62,10 +62,10 @@ namespace PimBotDp.Dialogs.AddItem
                     await _cartStateAccessor.GetAsync(context, () => new CartState());
                 if (cartState.Items == null)
                 {
-                    cartState.Items = new List<CartItem>();
+                    cartState.Items = new List<PimItem>();
                 }
 
-                if (!cartState.Items.Exists(x => x.Description == item))
+                if (!cartState.Items.Exists(x => x.No == item))
                 {
                     await context.SendActivityAsync($"Sorry, I cannot find {item} in your cart. You can show your cart simple by write *show cart*.");
                     return await stepContext.EndDialogAsync();
@@ -75,9 +75,9 @@ namespace PimBotDp.Dialogs.AddItem
                     return await stepContext.NextAsync();
                 }
             }
+
             await context.SendActivityAsync($"Sorry, I cannot find in your cart. You can show your cart simple by write *show cart*.");
             return await stepContext.EndDialogAsync();
-
         }
 
         private async Task<DialogTurnResult> PromptForConfirmStepAsync(
@@ -99,8 +99,6 @@ namespace PimBotDp.Dialogs.AddItem
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-
-
             bool isConfirmed = (bool)stepContext.Result;
             if (isConfirmed)
             {
@@ -113,6 +111,7 @@ namespace PimBotDp.Dialogs.AddItem
                 {
                     cartState.Items.Remove(item);
                 }
+
                 await stepContext.Context.SendActivityAsync("Ok, removed.");
                 return await stepContext.EndDialogAsync();
             }

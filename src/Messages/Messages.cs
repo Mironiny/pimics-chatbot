@@ -28,7 +28,7 @@ namespace PimBot.Messages
             @"Here is your cart:";
 
         public const string ShowCartAfter =
-            @"You can confirm your order simple by write *confirm*.";
+            @"You can confirm your order simple by write *confirm*. Also you can remove some item by typing remove and No.";
 
         public const string SuggestHelp = @"For more help simple write *help*.";
 
@@ -48,10 +48,18 @@ namespace PimBot.Messages
         public const string IsAddressMatchShippingAddress = @"Address match";
         public const string IsThereAnythingICanDo = @"Is there anything else I can help you with?";
         public const string NotFound = @"Sorry, I haven't found";
+        public const string Description = @"Description";
+        public const string Number = @"No";
+        public const string Count = @"Count";
+        public const string UnitPrice = @"Unit price";
 
         // ---------------Interuption ---------------
         public const string InteruptionCancelConfirm = @"Ok. I've canceled our last activity.";
         public const string InteruptionCancelNotConfirm = @"I don't have anything to cancel.";
+
+        // ---------------Show cart ---------------
+        public const string ShowCartFullPrice = @"Full price is";
+
 
         // ---------------Get User Info ---------------
         public const string GetUserInfoNewOrder = @"To make a new order I need to contact information about you.";

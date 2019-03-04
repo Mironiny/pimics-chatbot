@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 namespace PimBotDp.State
 {
     public class PimItem
-    {
+    { 
+        // Not in PIM - represents how many item you order
+        public int Count { get; set; }
         public string No { get; set; }
         public string Systemstatus { get; set; }
         public string Description { get; set; }

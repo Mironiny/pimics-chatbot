@@ -7,6 +7,6 @@ namespace PimBotDp.State
 {
     public class CartState
     {
-        public List<CartItem> Items { get; set; }
+        public List<PimItem> Items { get; set; }
     }
 }

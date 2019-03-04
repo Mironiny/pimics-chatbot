@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace PimBot
+﻿namespace PimBot
 {
     public static class Constants
     {
@@ -15,6 +10,5 @@ namespace PimBot
         // Should be somewhere else
         public const string SecureUserName = "Allium";
         public const string SecureUserPassword = "#Allium12345$";
-
     }
 }

@@ -20,16 +20,16 @@ namespace PimBotDp.Dialogs.AddItem
     {
         public const string Name = "Add_item";
 
+        // Prompts names
+        private const string CountPrompt = "countPrompt";
+
         private readonly IItemService _itemService = new ItemService();
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
 
-        // Prompts names
-        private const string CountPrompt = "countPrompt";
-
         public AddItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
-            : base(Name)
+                    : base(Name)
         {
             _services = services;
             _onTurnAccessor = onTurnAccessor;
@@ -70,14 +70,11 @@ namespace PimBotDp.Dialogs.AddItem
                     await _cartStateAccessor.GetAsync(context, () => new CartState());
                 if (cartState.Items == null)
                 {
-                    cartState.Items = new List<CartItem>();
+                    cartState.Items = new List<PimItem>();
                 }
 
-                cartState.Items.Add(new CartItem(firstEntity));
-
-                // Set the new values into state.
+                cartState.Items.Add(pimItem);
                 await _cartStateAccessor.SetAsync(context, cartState);
-                await context.SendActivityAsync("Entity is: " + firstEntity);
             }
 
             return await stepContext.NextAsync();
@@ -124,7 +121,7 @@ namespace PimBotDp.Dialogs.AddItem
             cartState.Items[cartState.Items.Count - 1].Count = outputCount;
             await _cartStateAccessor.SetAsync(context, cartState);
 
-            await stepContext.Context.SendActivityAsync("Added to cart 👍. You can show your current cart by writting *show cart*.");
+            await stepContext.Context.SendActivityAsync(Messages.AddToCartAdded);
             return await stepContext.EndDialogAsync();
         }
 
@@ -136,13 +133,13 @@ namespace PimBotDp.Dialogs.AddItem
             bool isNumeric = int.TryParse(count, out n);
             if (!isNumeric)
             {
-                await promptContext.Context.SendActivityAsync($"Sorry, please add just number.");
+                await promptContext.Context.SendActivityAsync(Messages.AddToCartValidationOnlyNumber);
                 return false;
             }
 
             if (n < 1)
             {
-                await promptContext.Context.SendActivityAsync($"Sorry, count has to be greater than 0.");
+                await promptContext.Context.SendActivityAsync(Messages.AddToCartValidationPositiveNumber);
                 return false;
             }
 
