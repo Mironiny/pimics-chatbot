@@ -57,6 +57,11 @@ namespace PimBot.Messages
         public const string InteruptionCancelConfirm = @"Ok. I've canceled our last activity.";
         public const string InteruptionCancelNotConfirm = @"I don't have anything to cancel.";
 
+        // ---------------Add to cart ---------------
+        public const string AddToCartAdded = @"Added to cart 👍. You can show your current cart by writting *show cart*.";
+        public const string AddToCartValidationOnlyNumber = @"Sorry, please add just number.";
+        public const string AddToCartValidationPositiveNumber = @"Sorry, count has to be greater than 0.";
+
         // ---------------Show cart ---------------
         public const string ShowCartFullPrice = @"Full price is";
 

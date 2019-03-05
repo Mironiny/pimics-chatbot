@@ -1,16 +1,16 @@
-﻿using PimBotDp.State;
-using Simple.OData.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
+using PimBot.Services.Impl;
+using PimBotDp.State;
 
 namespace PimBot.Service.Impl
 {
     public class ItemService : IItemService
     {
+        private readonly IKeywordService _keywordService = new KeywordService();
+
         public async Task<PimItem> FindItemByNo(string no)
         {
             // Refactor to look only for one item
@@ -45,10 +45,41 @@ namespace PimBot.Service.Impl
                 .For(Constants.ItemsServiceEndpointName)
                 .FindEntriesAsync();
 
+            var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();
+    
             var pimItems = MapItems(items);
+//            var xxx = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
             var filteredItems = FilterByDescription(pimItems, entity);
 
             return filteredItems;
+        }
+
+        private IEnumerable<PimItem> FilterByKeywordsMatch(
+            IEnumerable<PimItem> items,
+            string key,
+            Dictionary<string, List<PimKeyword>> keywordsByItem)
+        {
+            return items.Where(item => IsItemContainsKeyword(item, key, keywordsByItem)).ToList();
+        }
+
+        private bool IsItemContainsKeyword(PimItem item, string key, Dictionary<string, List<PimKeyword>> keywordsByItem)
+        {
+            if (!keywordsByItem.ContainsKey(item.No))
+            {
+                return false;
+            }
+
+            var keywords = keywordsByItem[item.No];
+
+            foreach (var keyword in keywords)
+            {
+                if (keyword.Keyword.IndexOf(key, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private IEnumerable<PimItem> FilterByDescription(IEnumerable<PimItem> items, string key)

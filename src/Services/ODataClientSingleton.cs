@@ -7,6 +7,9 @@ using Simple.OData.Client;
 
 namespace PimBot.Service
 {
+    /// <summary>
+    /// Class which instanticiate OData client as singleton.
+    /// </summary>
     public class ODataClientSingleton
     {
         private static ODataClient client = null;
