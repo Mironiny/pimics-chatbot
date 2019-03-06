@@ -1,17 +1,16 @@
-﻿using Microsoft.Bot.Builder;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.BotBuilderSamples;
 using Microsoft.Extensions.Logging;
 using PimBot;
-using PimBot.Messages;
-using PimBotDp.State;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using PimBotDp.Dialogs.AddItem;
-using PimBotDp.Dialogs.FindItem;
+using PimBot.Dialogs.AddItem;
+using PimBot.Dialogs.FindItem;
+using PimBot.Service;
+using PimBot.Services.Impl;
+using PimBot.State;
 
 namespace PimBotDp.Dialogs
 {
@@ -27,7 +26,7 @@ namespace PimBotDp.Dialogs
         private readonly IStatePropertyAccessor<DialogState> _mainDispatcherAccessor;
         private readonly UserState _userState;
         private readonly ConversationState _conversationState;
-
+        private readonly ISmallTalkService _smallTalkService = new SmallTalkService();
 
         private readonly DialogSet _dialogs;
 
@@ -162,6 +161,14 @@ namespace PimBotDp.Dialogs
 
                 case Intents.ShowCart:
                     return await dc.BeginDialogAsync(ShowCartDialog.Name);
+
+                case Intents.SmallTalk:
+                    var inputMessage = context.Activity.Text;
+                    var result = await _smallTalkService.GetSmalltalkAnswer(inputMessage);
+
+                    await context.SendActivityAsync(result);
+                    await context.SendActivityAsync(Messages.SuggestHelp);
+                    break;
 
                 case Intents.None:
                     await context.SendActivityAsync(Messages.NotUnderstand);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,10 +7,9 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
-using PimBotDp.Constants;
-using PimBotDp.State;
+using PimBot.State;
 
-namespace PimBotDp.Dialogs.AddItem
+namespace PimBot.Dialogs.AddItem
 {
     public class RemoveItemDialog : ComponentDialog
     {

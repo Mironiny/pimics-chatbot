@@ -11,6 +11,8 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Builder.PersonalityChat;
+using Microsoft.Bot.Builder.PersonalityChat.Core;
 using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
@@ -152,6 +154,7 @@ namespace Microsoft.BotBuilderSamples
                 // For logging every single conversations
                 options.Middleware.Add(new TranscriptLoggerMiddleware(blobStorage));
                 options.Middleware.Add(new ShowTypingMiddleware());
+                var middleware = options.Middleware;
 
                 // Catches any errors that occur during a conversation turn and logs them to currently
                 // configured ILogger.

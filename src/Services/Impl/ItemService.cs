@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PimBot.Services;
 using PimBot.Services.Impl;
-using PimBotDp.Services;
-using PimBotDp.State;
+using PimBot.State;
 
 namespace PimBot.Service.Impl
 {

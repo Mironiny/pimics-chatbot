@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Service;
-using PimBotDp.State;
+using PimBot.State;
 
 namespace PimBot.Services.Impl
 {

@@ -16,5 +16,10 @@
             "DefaultEndpointsProtocol=https;AccountName=azurestorepimbotdp;AccountKey=2MTXz0yWH1Ykk7rG0//qYoYQu3amf8ZKfNNU9M64evJ9j36sPTfw/Ka98hmXuBA4vTke+o3cc9dXAyClSOfFZQ==;EndpointSuffix=core.windows.net";
 
         public const string BlobTranscriptStorageContainerName = "AllConversations";
+
+        public const string host = "https://qnapimbotdp.azurewebsites.net/qnamaker";
+        public const string endpoint_key = "a363fcfd-b747-4b52-86fc-4bf6d999a6e3";
+        public const string route = "/knowledgebases/42bc7b3f-f585-4df2-99ab-e7ea5ce7ebf3/generateAnswer";
+
     }
 }

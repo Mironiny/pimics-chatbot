@@ -1,0 +1,315 @@
+{
+  "luis_schema_version": "3.2.0",
+  "versionId": "0.1",
+  "name": "PimBot",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "AddItem"
+    },
+    {
+      "name": "Confirm"
+    },
+    {
+      "name": "FindItem"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "RemoveItem"
+    },
+    {
+      "name": "ShowCart"
+    },
+    {
+      "name": "ShowCategories"
+    },
+    {
+      "name": "Utilities.Cancel",
+      "inherits": {
+        "domain_name": "Utilities",
+        "model_name": "Cancel"
+      }
+    },
+    {
+      "name": "Utilities.Help",
+      "inherits": {
+        "domain_name": "Utilities",
+        "model_name": "Help"
+      }
+    }
+  ],
+  "entities": [
+    {
+      "name": "item",
+      "roles": []
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [
+    {
+      "name": "item1",
+      "roles": [],
+      "explicitList": []
+    },
+    {
+      "name": "itemAdd",
+      "roles": [],
+      "explicitList": []
+    },
+    {
+      "name": "ItemTest",
+      "roles": [],
+      "explicitList": []
+    }
+  ],
+  "regex_entities": [],
+  "prebuiltEntities": [
+    {
+      "name": "keyPhrase",
+      "roles": []
+    }
+  ],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [
+    {
+      "pattern": "remove {itemAdd}",
+      "intent": "RemoveItem"
+    },
+    {
+      "pattern": "remove {itemAdd} from cart",
+      "intent": "RemoveItem"
+    },
+    {
+      "pattern": "add {itemAdd}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add {itemAdd} to cart",
+      "intent": "AddItem"
+    }
+  ],
+  "utterances": [
+    {
+      "text": "add x",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "affirm",
+      "intent": "Confirm",
+      "entities": []
+    },
+    {
+      "text": "approve",
+      "intent": "Confirm",
+      "entities": []
+    },
+    {
+      "text": "can you help me ?",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "can you help me here",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "can you show me a banana",
+      "intent": "FindItem",
+      "entities": []
+    },
+    {
+      "text": "cancel",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel brawl",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel expanse",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel it",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel navigation",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel silent hours",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "cart",
+      "intent": "ShowCart",
+      "entities": []
+    },
+    {
+      "text": "category",
+      "intent": "ShowCategories",
+      "entities": []
+    },
+    {
+      "text": "confirm order",
+      "intent": "Confirm",
+      "entities": []
+    },
+    {
+      "text": "electric lamp",
+      "intent": "FindItem",
+      "entities": []
+    },
+    {
+      "text": "find pen",
+      "intent": "FindItem",
+      "entities": []
+    },
+    {
+      "text": "give me everything you have",
+      "intent": "ShowCategories",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "help me please",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "help me to start",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "help me to understand more please",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "help me with this",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "help with my device please",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "how are you?",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "i need your help",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "i want a luggage",
+      "intent": "FindItem",
+      "entities": []
+    },
+    {
+      "text": "i want to cancel",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "looking for chair",
+      "intent": "FindItem",
+      "entities": []
+    },
+    {
+      "text": "nevermind",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "not tomorrow please",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "please help me",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "please help me i want to finish",
+      "intent": "Utilities.Help",
+      "entities": []
+    },
+    {
+      "text": "print categories",
+      "intent": "ShowCategories",
+      "entities": []
+    },
+    {
+      "text": "remove x",
+      "intent": "RemoveItem",
+      "entities": []
+    },
+    {
+      "text": "show categories",
+      "intent": "ShowCategories",
+      "entities": []
+    },
+    {
+      "text": "show me all computers you have",
+      "intent": "FindItem",
+      "entities": []
+    },
+    {
+      "text": "show my cart",
+      "intent": "ShowCart",
+      "entities": []
+    },
+    {
+      "text": "wait never mind i just told you never mind",
+      "intent": "Utilities.Cancel",
+      "entities": []
+    },
+    {
+      "text": "what are you doing",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "what cars you have?",
+      "intent": "FindItem",
+      "entities": []
+    },
+    {
+      "text": "what should i do?",
+      "intent": "Utilities.Help",
+      "entities": []
+    }
+  ],
+  "settings": []
+}

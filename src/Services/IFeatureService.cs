@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PimBotDp.State;
+using PimBot.State;
 
 namespace PimBot.Service
 {

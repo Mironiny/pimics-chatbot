@@ -1,13 +1,6 @@
-﻿using Microsoft.Bot.Builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-
-using Simple.OData.Client;
-
+using Microsoft.Bot.Builder;
 
 namespace PimBotDp.Middleware
 {

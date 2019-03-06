@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace PimBot
+﻿namespace PimBot
 {
     public static class Intents
     {
@@ -16,5 +11,6 @@ namespace PimBot
         public const string Confirm = "Confirm";
         public const string Help = "Utilities_Help";
         public const string Cancel = "Utilities_Cancel";
+        public const string SmallTalk = "SmallTalk";
     }
 }

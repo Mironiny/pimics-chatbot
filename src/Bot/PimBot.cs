@@ -17,11 +17,9 @@ using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBot.State;
 using PimBotDp.Dialogs;
-using PimBotDp.State;
 
 namespace PimBot
 {
-
     public class PimBot : IBot
     {
         public static readonly string LuisConfiguration = "pimbotdp";
@@ -107,10 +105,10 @@ namespace PimBot
                         if (member.Id != turnContext.Activity.Recipient.Id)
                         {
                             await turnContext.SendActivityAsync(
-                                $"Hi there, {member.Name} ✌️. {Messages.Messages.IntroducingMessage}",
+                                $"Hi there, {member.Name} ✌️. {Messages.IntroducingMessage}",
                                 cancellationToken: cancellationToken);
 
-                            await turnContext.SendActivityAsync(Messages.Messages.HelpMessage, cancellationToken: cancellationToken);
+                            await turnContext.SendActivityAsync(Messages.HelpMessage, cancellationToken: cancellationToken);
                         }
                     }
                 }
