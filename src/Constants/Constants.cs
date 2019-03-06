@@ -11,5 +11,10 @@
         // Should be somewhere else
         public const string SecureUserName = "Allium";
         public const string SecureUserPassword = "#Allium12345$";
+
+        public const string AzureBlogStorageConnectionString =
+            "DefaultEndpointsProtocol=https;AccountName=azurestorepimbotdp;AccountKey=2MTXz0yWH1Ykk7rG0//qYoYQu3amf8ZKfNNU9M64evJ9j36sPTfw/Ka98hmXuBA4vTke+o3cc9dXAyClSOfFZQ==;EndpointSuffix=core.windows.net";
+
+        public const string BlobTranscriptStorageContainerName = "AllConversations";
     }
 }

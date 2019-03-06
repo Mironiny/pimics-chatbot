@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -135,19 +136,25 @@ namespace Microsoft.BotBuilderSamples
 
             var userState = new UserState(dataStore);
             services.AddSingleton(userState);
+            var blobStorage = new AzureBlobTranscriptStore(Constants.AzureBlogStorageConnectionString,
+                Constants.BlobTranscriptStorageContainerName);
 
             services.AddBot<PimBot.PimBot>(options =>
             {
                 options.CredentialProvider = new SimpleCredentialProvider(endpointService.AppId, endpointService.AppPassword);
                 options.ChannelProvider = new ConfigurationChannelProvider(Configuration);
 
+                ILogger logger = _loggerFactory.CreateLogger<PimBot.PimBot>();
+
                 // Add Midleware
                 options.Middleware.Add(new TestMiddleware());
+
+                // For logging every single conversations
+                options.Middleware.Add(new TranscriptLoggerMiddleware(blobStorage));
                 options.Middleware.Add(new ShowTypingMiddleware());
 
                 // Catches any errors that occur during a conversation turn and logs them to currently
                 // configured ILogger.
-                ILogger logger = _loggerFactory.CreateLogger<PimBot.PimBot>();
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");

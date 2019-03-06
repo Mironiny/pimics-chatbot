@@ -49,7 +49,7 @@ namespace PimBot.Service.Impl
                 .FindEntriesAsync();
 
             var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();
-            var features = await _featuresService.GetAllFeaturesByItemAsync();
+            var featuresByItem = await _featuresService.GetAllFeaturesByItemAsync();
 
             var pimItems = MapItems(items);
             var filteredByCategory = await FilterByCategory(pimItems, entity);
