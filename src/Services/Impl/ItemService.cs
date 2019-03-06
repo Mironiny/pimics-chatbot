@@ -10,6 +10,7 @@ namespace PimBot.Service.Impl
     public class ItemService : IItemService
     {
         private readonly IKeywordService _keywordService = new KeywordService();
+        private readonly ICategoryService _categoryService = new CategoryService();
 
         public async Task<PimItem> FindItemByNo(string no)
         {
@@ -48,10 +49,10 @@ namespace PimBot.Service.Impl
             var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();
     
             var pimItems = MapItems(items);
-//            var xxx = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
-            var filteredItems = FilterByDescription(pimItems, entity);
+            var xxx = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
+   //         var filteredItems = FilterByDescription(pimItems, entity);
 
-            return filteredItems;
+            return xxx;
         }
 
         private IEnumerable<PimItem> FilterByKeywordsMatch(

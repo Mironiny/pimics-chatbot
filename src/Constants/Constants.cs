@@ -6,6 +6,7 @@
         public const string ItemsServiceEndpointName = "ItemsPIM";
         public const string FeaturesServiceEndpointName = "FeaturesPIM";
         public const string KeywordsServiceEndpointName = "KeywordsPIM";
+        public const string ItemGroupServiceEndpointName = "ItemGroupsPIM";
 
         // Should be somewhere else
         public const string SecureUserName = "Allium";

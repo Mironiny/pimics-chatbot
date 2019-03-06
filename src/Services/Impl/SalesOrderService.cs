@@ -1,10 +1,7 @@
-﻿using PimBotDp.State;
-using Simple.OData.Client;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using PimBotDp.State;
 
 namespace PimBot.Service.Impl
 {

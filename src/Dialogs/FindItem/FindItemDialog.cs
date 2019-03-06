@@ -72,10 +72,13 @@ namespace PimBotDp.Dialogs.FindItem
                         response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
                         await context.SendActivityAsync(response);
                     }
+
+                    await context.SendActivityAsync(Messages.FindItemAddToCart);
                 }
                 else
                 {
                     await context.SendActivityAsync(GetPrintableListItems(items));
+                    await context.SendActivityAsync(Messages.FindItemAddToCart);
                 }
             }
 

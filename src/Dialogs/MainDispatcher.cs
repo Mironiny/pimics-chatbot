@@ -60,6 +60,7 @@ namespace PimBotDp.Dialogs
             AddDialog(new GetUserInfoDialog(services, onTurnAccessor, _cartStateAccessor, _customerStateAccessor));
             AddDialog(new FindItemDialog(services, onTurnAccessor, _cartStateAccessor));
             AddDialog(new ShowCartDialog(services, onTurnAccessor, _cartStateAccessor));
+            AddDialog(new ShowCategoriesDialog(services, onTurnAccessor));
         }
 
         protected override async Task<DialogTurnResult> OnBeginDialogAsync(DialogContext innerDc, object options,
@@ -144,6 +145,9 @@ namespace PimBotDp.Dialogs
             {
                 case Intents.FindItem:
                     return await dc.BeginDialogAsync(FindItemDialog.Name);
+
+                case Intents.ShowCategories:
+                    return await dc.BeginDialogAsync(ShowCategoriesDialog.Name);
 
                 case Intents.AddItem:
                     return await dc.BeginDialogAsync(AddItemDialog.Name);

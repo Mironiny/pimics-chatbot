@@ -65,6 +65,11 @@ namespace PimBot.Messages
         // ---------------Show cart ---------------
         public const string ShowCartFullPrice = @"Full price is";
 
+        // ---------------Show categories ---------------
+        public const string ShowCategoriesAvaliableCategories = @"This is all available **categories**: ";
+
+        // ---------------Find item ---------------
+        public const string FindItemAddToCart = @"You can simple add item to your cart by write *add* and item **No**.";
 
         // ---------------Get User Info ---------------
         public const string GetUserInfoNewOrder = @"To make a new order I need to contact information about you.";

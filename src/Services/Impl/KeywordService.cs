@@ -55,5 +55,5 @@ namespace PimBot.Services.Impl
             };
             return pimKeyword;
         }
-}
+    }
 }
