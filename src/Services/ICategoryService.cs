@@ -7,5 +7,7 @@ namespace PimBot.Service
     public interface ICategoryService
     {
         Task<IEnumerable<PimItemGroup>> GetAllItemGroupAsync();
+
+        Task<IEnumerable<string>> GetItemGroupIdsByDescription(string description);
     }
 }

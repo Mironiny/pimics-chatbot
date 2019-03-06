@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Services.Impl;
+using PimBotDp.Services;
 using PimBotDp.State;
 
 namespace PimBot.Service.Impl
@@ -47,12 +48,19 @@ namespace PimBot.Service.Impl
                 .FindEntriesAsync();
 
             var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();
-    
-            var pimItems = MapItems(items);
-            var xxx = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
-   //         var filteredItems = FilterByDescription(pimItems, entity);
 
-            return xxx;
+            var pimItems = MapItems(items);
+            var filteredByCategory = await FilterByCategory(pimItems, entity);
+            var filteredByKeywords = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
+            var filteredByDescription = FilterByDescription(pimItems, entity);
+
+            return filteredByKeywords;
+        }
+
+        private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string entity)
+        {
+            var categoryIds = await _categoryService.GetItemGroupIdsByDescription(entity);
+            return pimItems.Where(o => categoryIds.Contains(o.Standardartikelgruppe));
         }
 
         private IEnumerable<PimItem> FilterByKeywordsMatch(
@@ -74,7 +82,7 @@ namespace PimBot.Service.Impl
 
             foreach (var keyword in keywords)
             {
-                if (keyword.Keyword.IndexOf(key, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (CommonUtil.ContainsIgnoreCase(keyword.Keyword, key))
                 {
                     return true;
                 }
@@ -86,7 +94,7 @@ namespace PimBot.Service.Impl
         private IEnumerable<PimItem> FilterByDescription(IEnumerable<PimItem> items, string key)
         {
             return items
-                .Where(o => o.Description.IndexOf(key, StringComparison.OrdinalIgnoreCase) >= 0)
+                .Where(o => CommonUtil.ContainsIgnoreCase(o.Description, key))
                 .ToList();
         }
 

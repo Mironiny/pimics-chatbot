@@ -3,12 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Service;
+using PimBotDp.Services;
 using PimBotDp.State;
 
 namespace PimBot.Services.Impl
 {
     public class CategoryService : ICategoryService
     {
+        public async Task<IEnumerable<string>> GetItemGroupIdsByDescription(string description)
+        {
+            var pimItemGroups = await GetAllItemGroupAsync();
+
+            return pimItemGroups
+                .Where(o => CommonUtil.ContainsIgnoreCase(o.Description, description))
+                .Select(o => o.Code)
+                .ToList();
+        }
+
         public async Task<IEnumerable<PimItemGroup>> GetAllItemGroupAsync()
         {
             var client = ODataClientSingleton.Get();
