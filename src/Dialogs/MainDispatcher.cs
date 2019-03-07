@@ -165,9 +165,23 @@ namespace PimBotDp.Dialogs
                 case Intents.SmallTalk:
                     var inputMessage = context.Activity.Text;
                     var result = await _smallTalkService.GetSmalltalkAnswer(inputMessage);
+                    var customerState1 =
+                        await _customerStateAccessor.GetAsync(context, () => new CustomerState());
 
                     await context.SendActivityAsync(result);
-                    await context.SendActivityAsync(Messages.SuggestHelp);
+
+                    // If user have smalltalk 3 times, show help
+                    if (customerState1.SmallTalkCount == 3)
+                    {
+                        customerState1.SmallTalkCount = 0;
+                        await context.SendActivityAsync(Messages.SuggestHelp);
+                    }
+                    else
+                    {
+                        customerState1.SmallTalkCount += 1;
+                    }
+
+                    await _customerStateAccessor.SetAsync(context, customerState1);
                     break;
 
                 case Intents.None:

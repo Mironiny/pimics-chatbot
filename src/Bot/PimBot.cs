@@ -45,7 +45,7 @@ namespace PimBot
 
             if (loggerFactory == null)
             {
-                throw new System.ArgumentNullException(nameof(loggerFactory));
+                throw new ArgumentNullException(nameof(loggerFactory));
             }
 
             _logger = loggerFactory.CreateLogger<PimBot>();
