@@ -23,7 +23,8 @@ namespace PimBot.Services.Impl
             var client = ODataClientSingleton.Get();
 
             var groups = await client
-                .For(Constants.ItemGroupServiceEndpointName)
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.ItemGroupServiceEndpointName)
                 .FindEntriesAsync();
 
             var pimItemGroups = MapPimItemGroup(groups);

@@ -96,12 +96,23 @@ namespace PimBot.Dialogs.FindItem
         private Attachment CreateAdaptiveCardUsingSdk(PimItem item)
         {
             var card = new AdaptiveCard();
-            card.Body.Add(new AdaptiveTextBlock() { Text = $"**No**: {item.No}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
-            card.Body.Add(new AdaptiveTextBlock() { Text = $"**Description** :{item.Description}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = $"**Price**: {item.Unit_Price}/{item.Base_Unit_of_Measure}", Size = AdaptiveTextSize.Medium,
-                Weight = AdaptiveTextWeight.Bolder
+                Text = $"**No**: {item.No}",
+                Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder,
+            });
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"**Description** :{item.Description}",
+                Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder,
+            });
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"**Price**: {item.Unit_Price}/{item.Base_Unit_of_Measure}",
+                Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder,
             });
 //            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
             return new Attachment()

@@ -6,6 +6,7 @@
         public const string AddItem = "AddItem";
         public const string ShowCart = "ShowCart";
         public const string RemoveItem = "RemoveItem";
+        public const string DetailItem = "DetailItem";
         public const string ShowCategories = "ShowCategories";
         public const string None = "None";
         public const string Confirm = "Confirm";

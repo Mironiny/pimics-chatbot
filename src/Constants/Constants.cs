@@ -2,7 +2,10 @@
 {
     public static class Constants
     {
-        public const string ODataServiceEndpoint = "http://pimicschatbot.westeurope.cloudapp.azure.com:7048/NAV/ODataV4";
+        public const string ODataServiceEndpoint = @"http://pimicschatbot.westeurope.cloudapp.azure.com:7048/NAV/ODataV4";
+        public const string Company = "Company";
+        public const string CompanyName = "CRONUS International Ltd.";
+
         public const string ItemsServiceEndpointName = "ItemsPIM";
         public const string FeaturesServiceEndpointName = "FeaturesPIM";
         public const string KeywordsServiceEndpointName = "KeywordsPIM";

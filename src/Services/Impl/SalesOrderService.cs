@@ -11,7 +11,7 @@ namespace PimBot.Service.Impl
         {
             var client = ODataClientSingleton.Get();
             try
-            {
+            {   // Need to refactor the company
                 var product = await client
                     .For<SalesOrder>("SalesOrder")
                     .Set(CreateSaleOrder(customerState))

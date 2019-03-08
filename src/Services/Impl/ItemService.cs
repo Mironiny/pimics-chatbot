@@ -22,7 +22,8 @@ namespace PimBot.Service.Impl
             var client = ODataClientSingleton.Get();
 
             var items = await client
-                .For(Constants.ItemsServiceEndpointName)
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.ItemsServiceEndpointName)
                 .FindEntriesAsync();
 
             var pimItems = MapItems(items);
@@ -45,7 +46,8 @@ namespace PimBot.Service.Impl
             var client = ODataClientSingleton.Get();
 
             var items = await client
-                .For(Constants.ItemsServiceEndpointName)
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.ItemsServiceEndpointName)
                 .FindEntriesAsync();
 
             var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();

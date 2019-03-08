@@ -9,5 +9,7 @@ namespace PimBot.Service
     public interface IFeatureService
     {
         Task<Dictionary<string, List<PimFeature>>> GetAllFeaturesByItemAsync();
+
+        Task<List<PimFeature>> GetFeaturesByNoAsync(string no);
     }
 }

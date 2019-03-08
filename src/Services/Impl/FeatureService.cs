@@ -12,7 +12,8 @@ namespace PimBot.Services.Impl
         {
             var client = ODataClientSingleton.Get();
             var features = await client
-                .For(Constants.FeaturesServiceEndpointName)
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.FeaturesServiceEndpointName)
                 .FindEntriesAsync();
 
             var pimFeatures = MapFeatures(features);
@@ -20,6 +21,19 @@ namespace PimBot.Services.Impl
             return pimFeatures
                 .GroupBy(i => i.Code)
                 .ToDictionary(group => group.Key, group => group.ToList());
+        }
+
+        public async Task<List<PimFeature>> GetFeaturesByNoAsync(string no)
+        {
+            var client = ODataClientSingleton.Get();
+            var features = await client
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.FeaturesServiceEndpointName)
+                .FindEntriesAsync();
+
+            var pimFeatures = MapFeatures(features);
+
+            return pimFeatures.Where(i => i.Code == no).ToList();
         }
 
         private IEnumerable<PimFeature> MapFeatures(IEnumerable<IDictionary<string, object>> features)
@@ -37,7 +51,7 @@ namespace PimBot.Services.Impl
         private PimFeature MapPimFeature(IDictionary<string, object> keyword)
         {
             var pimFeature = new PimFeature();
-            pimFeature.Source = (string) keyword["Source"];
+            pimFeature.Source = (string)keyword["Source"];
             pimFeature.Code = (string)keyword["Code"];
             pimFeature.Group_System_Number = (string)keyword["Group_System_Number"];
             pimFeature.Source_Type = (string)keyword["Source_Type"];

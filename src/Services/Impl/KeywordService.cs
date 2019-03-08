@@ -13,7 +13,8 @@ namespace PimBot.Services.Impl
         {
             var client = ODataClientSingleton.Get();
             var keywords = await client
-                .For(Constants.KeywordsServiceEndpointName)
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.KeywordsServiceEndpointName)
                 .FindEntriesAsync();
 
             var pimKeywords = MapKeywords(keywords);
