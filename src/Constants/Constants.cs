@@ -10,6 +10,7 @@
         public const string FeaturesServiceEndpointName = "FeaturesPIM";
         public const string KeywordsServiceEndpointName = "KeywordsPIM";
         public const string ItemGroupServiceEndpointName = "ItemGroupsPIM";
+        public const string ProductGroupServiceEndpointName = "ProductGroupsPIM";
 
         // Should be somewhere else
         public const string SecureUserName = "Allium";

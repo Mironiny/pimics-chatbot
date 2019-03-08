@@ -53,7 +53,6 @@ namespace PimBot.Dialogs.FindItem
             if (onTurnProperty.Entities[EntityNames.FindItem].Count() > 0)
             {
                 var firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
-          //      await context.SendActivityAsync("Entity is: " + firstEntity);
 
                 var items = await _itemService.GetAllItemsAsync(firstEntity);
                 var count = items.Count();

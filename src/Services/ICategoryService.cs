@@ -8,6 +8,8 @@ namespace PimBot.Service
     {
         Task<IEnumerable<PimItemGroup>> GetAllItemGroupAsync();
 
+        Task<IEnumerable<PimProductGroup>> GetAllProductGroupAsync();
+
         Task<IEnumerable<string>> GetItemGroupIdsByDescription(string description);
     }
 }

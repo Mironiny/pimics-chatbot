@@ -45,13 +45,13 @@ namespace PimBot.Dialogs.AddItem
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
 
-            var categories = await _categoryService.GetAllItemGroupAsync();
+            var categories = await _categoryService.GetAllProductGroupAsync();
 
-            await context.SendActivityAsync(GetPritableCategories(categories));
+            await context.SendActivityAsync(GetPritableGroup(categories));
             return await stepContext.EndDialogAsync();
         }
 
-        private string GetPritableCategories(IEnumerable<PimItemGroup> categories)
+        private string GetPritableGroup(IEnumerable<PimGroup> categories)
         {
             var categoriesToPrint = categories.Where(i => i.Description.Any());
             string result = Messages.ShowCategoriesAvaliableCategories + Environment.NewLine;
