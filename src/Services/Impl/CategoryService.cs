@@ -134,27 +134,29 @@ namespace PimBot.Services.Impl
         /// <returns></returns>
         private PimProductGroup MapPimProductGroup(IDictionary<string, object> keyword)
         {
-            var productGroup = new PimProductGroup();
-            productGroup.Code = (string)keyword["Code"];
-            productGroup.Description = (string)keyword["Description"];
-            productGroup.Description_2 = (string)keyword["Description_2"];
-            productGroup.System_Status = (string)keyword["System_Status"];
-            productGroup.LocalDescription = (string)keyword["LocalDescription"];
-            productGroup.LocalDescription2 = (string)keyword["LocalDescription2"];
-            productGroup.Base_Unit = (string)keyword["Base_Unit"];
-            productGroup.Standard_Chapter = (string)keyword["Standard_Chapter"];
-            productGroup.Picture_Document_ID = (string)keyword["Picture_Document_ID"];
-            productGroup.Template_Code = (string)keyword["Template_Code"];
-            productGroup.Publication_Group = (string)keyword["Publication_Group"];
-            productGroup.Short_Text = (string)keyword["Short_Text"];
-            productGroup.Created_By = (string)keyword["Created_By"];
-            productGroup.Updated_By = (string)keyword["Updated_By"];
-            productGroup.Additional_Information_1 = (string)keyword["Additional_Information_1"];
-            productGroup.Additional_Information_2 = (string)keyword["Additional_Information_2"];
-            productGroup.Additional_Information_3 = (string)keyword["Additional_Information_3"];
-            productGroup.Additional_Information_4 = (string)keyword["Additional_Information_4"];
-            productGroup.Additional_Information_5 = (string)keyword["Additional_Information_5"];
-            productGroup.ETag = (string)keyword["ETag"];
+            var productGroup = new PimProductGroup
+            {
+                Code = (string)keyword["Code"],
+                Description = (string)keyword["Description"],
+                Description_2 = (string)keyword["Description_2"],
+                System_Status = (string)keyword["System_Status"],
+                LocalDescription = (string)keyword["LocalDescription"],
+                LocalDescription2 = (string)keyword["LocalDescription2"],
+                Base_Unit = (string)keyword["Base_Unit"],
+                Standard_Chapter = (string)keyword["Standard_Chapter"],
+                Picture_Document_ID = (string)keyword["Picture_Document_ID"],
+                Template_Code = (string)keyword["Template_Code"],
+                Publication_Group = (string)keyword["Publication_Group"],
+                Short_Text = (string)keyword["Short_Text"],
+                Created_By = (string)keyword["Created_By"],
+                Updated_By = (string)keyword["Updated_By"],
+                Additional_Information_1 = (string)keyword["Additional_Information_1"],
+                Additional_Information_2 = (string)keyword["Additional_Information_2"],
+                Additional_Information_3 = (string)keyword["Additional_Information_3"],
+                Additional_Information_4 = (string)keyword["Additional_Information_4"],
+                Additional_Information_5 = (string)keyword["Additional_Information_5"],
+                ETag = (string)keyword["ETag"]
+            };
             return productGroup;
         }
     }

@@ -89,7 +89,6 @@ namespace PimBot
                 {
                     await dc.BeginDialogAsync(nameof(MainDispatcher));
                 }
-
             }
             else if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
             {
@@ -105,10 +104,11 @@ namespace PimBot
                         if (member.Id != turnContext.Activity.Recipient.Id)
                         {
                             await turnContext.SendActivityAsync(
-                                $"Hi there, {member.Name} ✌️. {Messages.IntroducingMessage}",
+                                $"{Messages.Greetings}, {member.Name}. {Environment.NewLine} {Messages.IntroducingMessage}",
                                 cancellationToken: cancellationToken);
 
                             await turnContext.SendActivityAsync(Messages.HelpMessage, cancellationToken: cancellationToken);
+                            await turnContext.SendActivityAsync(Messages.WhatCanIDo, cancellationToken: cancellationToken);
                         }
                     }
                 }

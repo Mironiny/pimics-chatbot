@@ -3,12 +3,17 @@
     public static class Messages
     {
         public const string IntroducingMessage =
-            @"Let me introduce myself. My name is PimBot and obviously I'm a bot 🤖 and what is more important - your virtual assistent!";
+            @"Let me introduce myself. My name is **PimBot** 🤖 and I'm your virtual assistant. 
+            My main purpose is to help you with finding goods to fit your demands and manage your orders.";
 
         public const string HelpMessage =
-            @"You can find simple by write *find* and then your desirable item. Also you can add item to your cart by write *add item*.
-            Also you can show your cart simple by write *show cart*. After that, you can confirm your order by writing *confirm*.
-            So, what can I do for you? 😊";
+            @"You can find goods by write *find* and put item you are looking for. If you are not sure what exactly you
+            are looking for, I can help - just write *show categories* and I'm going to provide you all goods categories. 
+            Then ou can add item to your cart by write *add* and then number (No) of your item.   
+            Also, you can show your cart simple by write *show cart*. Finally, you can confirm your order by writing *confirm*.
+            Don't remamber, you can anytime show this help by type *help*.";
+
+        public const string WhatCanIDo = "So, what can I do for you?";
 
         public const string NotUnderstand =
             @"Sorry, I don't **understand** your message 😕.";
@@ -28,6 +33,7 @@
         public const string SuggestHelp = @"For more help simple write *help*.";
 
         // ---------------General ---------------
+        public const string Greetings = @"Greetings";
         public const string Name = @"Name";
         public const string Email = @"Email";
         public const string PhoneNumber = @"Phone number";
