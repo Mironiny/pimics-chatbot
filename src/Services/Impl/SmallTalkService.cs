@@ -36,7 +36,7 @@ namespace PimBot.Services.Impl
                     return jsonResponse.answers[0].answer;
                 }
 
-                return @"Sorry, I don't **understand** your message 😕.";
+                return Messages.NotUnderstand;
             }
         }
 

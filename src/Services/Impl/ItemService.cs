@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PimBot.Dialogs.FindItem;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
@@ -58,7 +59,114 @@ namespace PimBot.Service.Impl
             var filteredByKeywords = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
             var filteredByDescription = FilterByDescription(pimItems, entity);
 
-            return filteredByKeywords;
+            var unitedItems = filteredByDescription
+                .Union(filteredByKeywords)
+                .Union(filteredByDescription);
+
+            return unitedItems;
+        }
+
+        public async Task<List<FeatureToAsk>> GetAllAttributes(IEnumerable<PimItem> item)
+        {
+            var features = await _featuresService.GetAllFeaturesByItemAsync();
+            var pimFeature = features
+                .Where(i => item.ToList()
+                                .FindIndex(f => f.No == i.Key) >= 0).ToList();
+
+            var fff = new List<FeatureToAsk>();
+            foreach (var feature in pimFeature)
+            {
+                foreach (var ftr in feature.Value)
+                {
+                    // Check if already in array
+                    var index = fff.FindIndex(f => f.Number == ftr.Number);
+                    if (!(index >= 0))
+                    {
+                        var featureToAsk = new FeatureToAsk(ftr.Number, ftr.Description, ftr.Order);
+                        featureToAsk.ValuesList = new HashSet<string>();
+                        if (ftr.Value != string.Empty)
+                        {
+                            featureToAsk.ValuesList.Add(ftr.Value);
+                        }
+
+                        fff.Add(featureToAsk);
+                    }
+                    else
+                    {
+                        if (ftr.Value != string.Empty)
+                        {
+                            fff[index].ValuesList.Add(ftr.Value);
+                        }
+                    }
+                }
+            }
+
+            var ff = fff.Where(i => i.ValuesList.Count > 1).ToList();
+            ff.ForEach(i => i.SetAndCheckType());
+            ff.OrderByDescending(i => i.Order);
+
+            return ff;
+        }
+
+        public async Task<IEnumerable<PimItem>> FilterItemsByFeature(IEnumerable<PimItem> items, FeatureToAsk featureToAsk,
+            string value, int index = -1)
+        {
+            var pimItemResult = new List<PimItem>();
+            switch (featureToAsk.Type)
+            {
+                case FeatureType.Alphanumeric:
+                    foreach (var item in items)
+                    {
+                        var features = await _featuresService.GetFeaturesByNoAsync(item.No);
+                        var filteredItem = features.Where(i => i.Number == featureToAsk.Number).ToList();
+                        if (filteredItem.Count() == 0)
+                        {
+                            pimItemResult.Add(item);
+                        }
+                        else
+                        {
+                            if (filteredItem[0].Value == value)
+                            {
+                                pimItemResult.Add(item);
+                            }
+                        }
+                    }
+
+                    return pimItemResult;
+
+                case FeatureType.Numeric:
+                    foreach (var item in items)
+                    {
+                        var features = await _featuresService.GetFeaturesByNoAsync(item.No);
+                        var filteredItem = features.Where(i => i.Number == featureToAsk.Number).ToList();
+                        if (filteredItem.Count() == 0)
+                        {
+                            pimItemResult.Add(item);
+                        }
+                        else
+                        {
+                            if (index == 0)
+                            {
+                                if (Convert.ToDouble(filteredItem[0].Value) <= Convert.ToDouble(value))
+                                {
+                                    pimItemResult.Add(item);
+                                }
+                            }
+
+                            if (index == 1)
+                            {
+                                if (Convert.ToDouble(filteredItem[0].Value) > Convert.ToDouble(value))
+                                {
+                                    pimItemResult.Add(item);
+                                }
+                            }
+                        }
+                    }
+
+                    return pimItemResult;
+                default:
+                    return items;
+            }
         }
 
         private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string entity)

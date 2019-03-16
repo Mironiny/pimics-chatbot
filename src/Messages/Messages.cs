@@ -28,7 +28,7 @@
             @"Here is your cart:";
 
         public const string ShowCartAfter =
-            @"You can confirm your order simple by write *confirm*. Also you can remove some item by typing remove and No.";
+            @"You can confirm your order simple by write *confirm*. Also you can remove some item by typing *remove* and No.";
 
         public const string SuggestHelp = @"For more help simple write *help*.";
 
@@ -53,6 +53,7 @@
         public const string Number = @"No";
         public const string Count = @"Count";
         public const string UnitPrice = @"Unit price";
+        public const string Price = @"Price";
 
         // ---------------Interuption ---------------
         public const string InteruptionCancelConfirm = @"Ok. I've canceled our last activity.";
@@ -71,6 +72,8 @@
 
         // ---------------Find item ---------------
         public const string FindItemAddToCart = @"You can simple add item to your cart by write *add* and item **No**.";
+        public const string FindItemShowAllItem = "Show them all";
+        public const string FindItemSpecialize = "Put details";
 
         // ---------------Get User Info ---------------
         public const string GetUserInfoNewOrder = @"To make a new order I need to contact information about you.";

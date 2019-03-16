@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AdaptiveCards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Service;
@@ -22,6 +23,14 @@ namespace PimBot.Dialogs.FindItem
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
         private readonly IItemService _itemService = new ItemService();
 
+        private static IEnumerable<PimItem> pimItems = new List<PimItem>();
+        private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
+        private static bool AskForFeature = false;
+
+
+        private const string ShowAllItemsPrompt = "ShowAllItemsPrompt";
+        private const string AskForPropertyPrompt = "AskForPropertyPrompt";
+
         // Prompts names
         private const string CountPrompt = "countPrompt";
 
@@ -36,12 +45,15 @@ namespace PimBot.Dialogs.FindItem
             var waterfallSteps = new WaterfallStep[]
             {
                 InitializeStateStepAsync,
-//                PromptForCountStepAsync,
-//                ResolveCountAsync,
+                ResolveShowItemDialog,
+                AskByAttributesDialog,
+                ResolveAttributeFiltering
             };
             AddDialog(new WaterfallDialog(
                 "start",
                 waterfallSteps));
+            AddDialog(new ChoicePrompt(ShowAllItemsPrompt));
+            AddDialog(new ChoicePrompt(AskForPropertyPrompt));
         }
 
         private async Task<DialogTurnResult> InitializeStateStepAsync(
@@ -54,15 +66,46 @@ namespace PimBot.Dialogs.FindItem
             {
                 var firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
 
-                var items = await _itemService.GetAllItemsAsync(firstEntity);
-                var count = items.Count();
-                if (items.Count() == 0)
+                pimItems = await _itemService.GetAllItemsAsync(firstEntity);
+                var count = pimItems.Count();
+                if (pimItems.Count() == 0)
                 {
                     await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**");
+                    return await stepContext.EndDialogAsync();
                 }
-                else if (items.Count() < 10)
+                else
                 {
-                    foreach (var item in items)
+                    await context.SendActivityAsync($"I've found {pimItems.Count()} potentional {firstEntity}.");
+
+                    return await stepContext.PromptAsync(
+                        ShowAllItemsPrompt,
+                        new PromptOptions
+                        {
+                            Choices = ChoiceFactory.ToChoices(new List<string> { Messages.FindItemShowAllItem, Messages.FindItemSpecialize }),
+                        },
+                        cancellationToken);
+                }
+            }
+
+            return await stepContext.EndDialogAsync();
+        }
+
+
+        /// <summary>
+        /// Resolve everything is OK.
+        /// </summary>
+        private async Task<DialogTurnResult> ResolveShowItemDialog(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            var context = stepContext.Context;
+            var choice = stepContext.Result as FoundChoice;
+
+            if (choice.Value.Equals(Messages.FindItemShowAllItem))
+            {
+                if (pimItems.Count() < 10)
+                {
+                    foreach (var item in pimItems)
                     {
                         var response = stepContext.Context.Activity.CreateReply();
                         response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
@@ -73,12 +116,81 @@ namespace PimBot.Dialogs.FindItem
                 }
                 else
                 {
-                    await context.SendActivityAsync(GetPrintableListItems(items));
+                    await context.SendActivityAsync(GetPrintableListItems(pimItems));
                     await context.SendActivityAsync(Messages.FindItemAddToCart);
                 }
+
+                return await stepContext.EndDialogAsync();
+            }
+            else
+            {
+                await context.SendActivityAsync("Ok, let's specialize");
+                return await stepContext.ContinueDialogAsync();
+            }
+        }
+
+        /// <summary>
+        /// Resolve everything is OK.
+        /// </summary>
+        private async Task<DialogTurnResult> AskByAttributesDialog(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            var context = stepContext.Context;
+            if (!AskForFeature)
+            {
+                featuresToAsk = await _itemService.GetAllAttributes(pimItems);
+                AskForFeature = true;
             }
 
-            return await stepContext.EndDialogAsync();
+            if (!featuresToAsk.Any())
+            {
+                await context.SendActivityAsync("There is nothing more to ask.");
+                await stepContext.EndDialogAsync();
+            }
+
+            var feature = featuresToAsk[0];
+
+            return await stepContext.PromptAsync(
+                AskForPropertyPrompt,
+                new PromptOptions
+                {
+                    Prompt = MessageFactory.Text(feature.Description),
+                    Choices = ChoiceFactory.ToChoices(feature.GetPrintableValues()),
+                },
+                cancellationToken);
+        }
+
+        /// <summary>
+        /// Resolve everything is OK.
+        /// </summary>
+        private async Task<DialogTurnResult> ResolveAttributeFiltering(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            var context = stepContext.Context;
+            var choice = stepContext.Result as FoundChoice;
+
+            // Do some filtering
+            if (featuresToAsk[0].Type == FeatureType.Alphanumeric)
+            {
+                pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0], choice.Value);
+            }
+            else
+            {
+                pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0],
+                    featuresToAsk[0].GetAvarageValue().ToString(), choice.Index);
+            }
+
+            if (!featuresToAsk.Any())
+            {
+                await context.SendActivityAsync("There is nothing more to ask.");
+                await stepContext.EndDialogAsync();
+            }
+
+            featuresToAsk.RemoveAt(0);
+            stepContext.ActiveDialog.State["stepIndex"] = 1;
+            return await stepContext.ContinueDialogAsync();
         }
 
         private string GetPrintableListItems(IEnumerable<PimItem> items)
@@ -97,23 +209,23 @@ namespace PimBot.Dialogs.FindItem
             var card = new AdaptiveCard();
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = $"**No**: {item.No}",
+                Text = $"**{Messages.No}**: {item.No}",
                 Size = AdaptiveTextSize.Medium,
                 Weight = AdaptiveTextWeight.Bolder,
             });
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = $"**Description** :{item.Description}",
+                Text = $"**{Messages.Description}**: {item.Description}",
                 Size = AdaptiveTextSize.Medium,
                 Weight = AdaptiveTextWeight.Bolder,
             });
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = $"**Price**: {item.Unit_Price}/{item.Base_Unit_of_Measure}",
+                Text = $"**{Messages.Price}**: {item.Unit_Price}/{item.Base_Unit_of_Measure}",
                 Size = AdaptiveTextSize.Medium,
                 Weight = AdaptiveTextWeight.Bolder,
             });
-//            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
+            //            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
