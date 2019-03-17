@@ -54,6 +54,7 @@
         public const string Count = @"Count";
         public const string UnitPrice = @"Unit price";
         public const string Price = @"Price";
+        public const string Skip = @"Skip";
 
         // ---------------Interuption ---------------
         public const string InteruptionCancelConfirm = @"Ok. I've canceled our last activity.";
@@ -71,9 +72,10 @@
         public const string ShowCategoriesAvaliableCategories = @"This is all available **categories**: ";
 
         // ---------------Find item ---------------
-        public const string FindItemAddToCart = @"You can simple add item to your cart by write *add* and item **No**.";
+        public const string FindItemAddToCart = @"You can simple add item to your cart by write **add** and item No. Also if you want to show more details about item just type **detail** and No.";
         public const string FindItemShowAllItem = "Show them all";
-        public const string FindItemSpecialize = "Put details";
+        public const string FindItemSpecialize = "Put specification.";
+        public const string FindItemSpecializeContinue = "Continue with searching";
 
         // ---------------Get User Info ---------------
         public const string GetUserInfoNewOrder = @"To make a new order I need to contact information about you.";

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using PimBot.Service;
 using PimBot.State;
 
@@ -8,6 +10,50 @@ namespace PimBot.Services.Impl
 {
     public class CategoryService : ICategoryService
     {
+
+        public async Task GetItemGroupsByNo(PimItem item)
+        {
+            var allGroups = await GetAllItemGroupAsync();
+
+            var pimItemGroups = new List<PimItemGroup>();
+            var client = ODataClientSingleton.Get();
+
+            var groups = await client
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.ItemGroupLinks)
+                .Filter($"Number%20eq%20%27{item.No}%27")
+                .FindEntriesAsync();
+
+            foreach (var group in groups)
+            {
+                var pimItemGroup = new PimItemGroup();
+                pimItemGroup.Code = (string)group["Code"];
+                var description = allGroups.Where(i => i.Code == (string) group["Code"]).Select(i => i.Description).First();
+                pimItemGroup.Description = description;
+//
+//                if (description != null && description.Count() > 0)
+//                {
+//                    var tmp = description.ToList()[0];
+//                    pimItemGroup.Description = tmp;
+//                }
+                //                var xx = await client
+                //                    .For(Constants.Company).Key(Constants.CompanyName)
+                //                    .NavigateTo(Constants.ItemGroupServiceEndpointName)
+                //                    .Filter($"Code%20eq%20%27{(string)group["Code"]}%27")
+                //                    .FindEntriesAsync();
+                //
+                //                if (xx != null && xx.Count() > 0)
+                //                {
+                //                    var list = xx.ToList()[0];
+                //                    pimItemGroup.Description = (string)list["Description"];
+                //                }
+                //                item.PimItemGroups.Add(pimItemGroup);
+                pimItemGroups.Add(pimItemGroup);
+            }
+
+         item.PimItemGroups = pimItemGroups;
+        }
+
         /// <summary>
         /// 
         /// </summary>

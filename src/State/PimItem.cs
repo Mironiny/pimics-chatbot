@@ -1,9 +1,15 @@
-﻿namespace PimBot.State
+﻿using System.Collections.Generic;
+
+namespace PimBot.State
 {
     public class PimItem
-    { 
+    {
         // Not in PIM - represents how many item you order
         public int Count { get; set; }
+
+        // Not in PIM
+        public List<PimItemGroup> PimItemGroups { get; set; }
+
         public string No { get; set; }
         public string Systemstatus { get; set; }
         public string Description { get; set; }

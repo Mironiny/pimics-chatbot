@@ -15,6 +15,11 @@ namespace PimBot.Service.Impl
         private readonly IFeatureService _featuresService = new FeatureService();
         private readonly ICategoryService _categoryService = new CategoryService();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="no"></param>
+        /// <returns></returns>
         public async Task<PimItem> FindItemByNo(string no)
         {
             // Refactor to look only for one item
@@ -40,6 +45,11 @@ namespace PimBot.Service.Impl
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<PimItem>> GetAllItemsAsync(string entity)
         {
             var itemList = new List<string>();
@@ -55,6 +65,9 @@ namespace PimBot.Service.Impl
             var featuresByItem = await _featuresService.GetAllFeaturesByItemAsync();
 
             var pimItems = MapItems(items);
+
+            pimItems.ToList().ForEach(i => _categoryService.GetItemGroupsByNo(i));
+
             var filteredByCategory = await FilterByCategory(pimItems, entity);
             var filteredByKeywords = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
             var filteredByDescription = FilterByDescription(pimItems, entity);
@@ -66,6 +79,11 @@ namespace PimBot.Service.Impl
             return unitedItems;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public async Task<List<FeatureToAsk>> GetAllAttributes(IEnumerable<PimItem> item)
         {
             var features = await _featuresService.GetAllFeaturesByItemAsync();
@@ -108,6 +126,14 @@ namespace PimBot.Service.Impl
             return ff;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="featureToAsk"></param>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<PimItem>> FilterItemsByFeature(IEnumerable<PimItem> items, FeatureToAsk featureToAsk,
             string value, int index = -1)
         {
@@ -168,6 +194,27 @@ namespace PimBot.Service.Impl
                     return items;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items)
+        {
+            var categories = new HashSet<PimItemGroup>();
+            foreach (var item in items)
+            {
+                var groups = item.PimItemGroups;
+                if (groups != null)
+                {
+                    categories.UnionWith(groups);
+                }
+            }
+
+            return categories;
+        }
+
 
         private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string entity)
         {

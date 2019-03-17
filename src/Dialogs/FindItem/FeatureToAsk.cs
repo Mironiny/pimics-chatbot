@@ -24,7 +24,6 @@ namespace PimBot.Dialogs.FindItem
 
         public int Order { get; set; }
 
-
         public HashSet<string> ValuesList { get; set; }
 
         public FeatureType Type { get; set; }

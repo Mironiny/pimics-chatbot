@@ -27,6 +27,7 @@ namespace PimBot.Dialogs.FindItem
         private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
         private static bool AskForFeature = false;
 
+        private static int QuestionCounter = 0;
 
         private const string ShowAllItemsPrompt = "ShowAllItemsPrompt";
         private const string AskForPropertyPrompt = "AskForPropertyPrompt";
@@ -47,7 +48,9 @@ namespace PimBot.Dialogs.FindItem
                 InitializeStateStepAsync,
                 ResolveShowItemDialog,
                 AskByAttributesDialog,
-                ResolveAttributeFiltering
+                ResolveAttributeFiltering,
+                AskWhatNext,
+                ResolveShowItems
             };
             AddDialog(new WaterfallDialog(
                 "start",
@@ -68,6 +71,8 @@ namespace PimBot.Dialogs.FindItem
 
                 pimItems = await _itemService.GetAllItemsAsync(firstEntity);
                 var count = pimItems.Count();
+                var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
+
                 if (pimItems.Count() == 0)
                 {
                     await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**");
@@ -75,7 +80,7 @@ namespace PimBot.Dialogs.FindItem
                 }
                 else
                 {
-                    await context.SendActivityAsync($"I've found {pimItems.Count()} potentional {firstEntity}.");
+                    await context.SendActivityAsync($"I've found {pimItems.Count()} potentional {firstEntity} in {groupCount} groups.");
 
                     return await stepContext.PromptAsync(
                         ShowAllItemsPrompt,
@@ -151,12 +156,14 @@ namespace PimBot.Dialogs.FindItem
 
             var feature = featuresToAsk[0];
 
+            var choices = feature.GetPrintableValues();
+            choices.Add(Messages.Skip);
             return await stepContext.PromptAsync(
                 AskForPropertyPrompt,
                 new PromptOptions
                 {
                     Prompt = MessageFactory.Text(feature.Description),
-                    Choices = ChoiceFactory.ToChoices(feature.GetPrintableValues()),
+                    Choices = ChoiceFactory.ToChoices(choices),
                 },
                 cancellationToken);
         }
@@ -171,26 +178,91 @@ namespace PimBot.Dialogs.FindItem
             var context = stepContext.Context;
             var choice = stepContext.Result as FoundChoice;
 
-            // Do some filtering
-            if (featuresToAsk[0].Type == FeatureType.Alphanumeric)
+            if (!(choice.Value == Messages.Skip))
             {
-                pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0], choice.Value);
-            }
-            else
-            {
-                pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0],
-                    featuresToAsk[0].GetAvarageValue().ToString(), choice.Index);
-            }
+                // Raise counter
+                QuestionCounter++;
 
-            if (!featuresToAsk.Any())
-            {
-                await context.SendActivityAsync("There is nothing more to ask.");
-                await stepContext.EndDialogAsync();
+                // Do some filtering
+                if (featuresToAsk[0].Type == FeatureType.Alphanumeric)
+                {
+                    pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0], choice.Value);
+                }
+                else
+                {
+                    pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0],
+                        featuresToAsk[0].GetAvarageValue().ToString(), choice.Index);
+                }
+
+                if (!featuresToAsk.Any())
+                {
+                    await context.SendActivityAsync("There is nothing more to ask.");
+                    await stepContext.EndDialogAsync();
+                }
             }
 
             featuresToAsk.RemoveAt(0);
-            stepContext.ActiveDialog.State["stepIndex"] = 1;
+            if (!(QuestionCounter % 3 == 0))
+            {
+                stepContext.ActiveDialog.State["stepIndex"] = 1;
+            }
+
             return await stepContext.ContinueDialogAsync();
+        }
+
+        /// <summary>
+        /// Resolve everything is OK.
+        /// </summary>
+        private async Task<DialogTurnResult> AskWhatNext(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            var context = stepContext.Context;
+            var groups = _itemService.GetAllItemsCategory(pimItems);
+
+            await context.SendActivityAsync($"I've found {pimItems.Count()} items in {groups.Count()}. ");
+            return await stepContext.PromptAsync(
+                ShowAllItemsPrompt,
+                new PromptOptions
+                {
+                    Choices = ChoiceFactory.ToChoices(new List<string> { Messages.FindItemShowAllItem, Messages.FindItemSpecializeContinue }),
+                },
+                cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> ResolveShowItems(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            var context = stepContext.Context;
+            var choice = stepContext.Result as FoundChoice;
+
+            if (choice.Value.Equals(Messages.FindItemShowAllItem))
+            {
+                if (pimItems.Count() < 10)
+                {
+                    foreach (var item in pimItems)
+                    {
+                        var response = stepContext.Context.Activity.CreateReply();
+                        response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
+                        await context.SendActivityAsync(response);
+                    }
+
+                    await context.SendActivityAsync(Messages.FindItemAddToCart);
+                }
+                else
+                {
+                    await context.SendActivityAsync(GetPrintableListItems(pimItems));
+                    await context.SendActivityAsync(Messages.FindItemAddToCart);
+                }
+
+                return await stepContext.EndDialogAsync();
+            }
+            else
+            {
+                stepContext.ActiveDialog.State["stepIndex"] = 1;
+                return await stepContext.ContinueDialogAsync();
+            }
         }
 
         private string GetPrintableListItems(IEnumerable<PimItem> items)
