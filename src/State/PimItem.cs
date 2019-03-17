@@ -10,6 +10,9 @@ namespace PimBot.State
         // Not in PIM
         public List<PimItemGroup> PimItemGroups { get; set; }
 
+        // Not in PIM
+        public List<PimFeature> PimFeatures { get; set; }
+
         public string No { get; set; }
         public string Systemstatus { get; set; }
         public string Description { get; set; }

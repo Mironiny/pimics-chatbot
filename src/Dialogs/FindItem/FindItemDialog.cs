@@ -25,9 +25,9 @@ namespace PimBot.Dialogs.FindItem
 
         private static IEnumerable<PimItem> pimItems = new List<PimItem>();
         private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
-        private static bool AskForFeature = false;
+        private static bool AskedForFeature;
 
-        private static int QuestionCounter = 0;
+        private static int QuestionCounter;
 
         private const string ShowAllItemsPrompt = "ShowAllItemsPrompt";
         private const string AskForPropertyPrompt = "AskForPropertyPrompt";
@@ -50,7 +50,8 @@ namespace PimBot.Dialogs.FindItem
                 AskByAttributesDialog,
                 ResolveAttributeFiltering,
                 AskWhatNext,
-                ResolveShowItems
+                ResolveShowItems,
+                PrintItems,
             };
             AddDialog(new WaterfallDialog(
                 "start",
@@ -63,6 +64,10 @@ namespace PimBot.Dialogs.FindItem
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
+            // Initalization of static variables
+            AskedForFeature = false;
+            QuestionCounter = 0;
+
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
             if (onTurnProperty.Entities[EntityNames.FindItem].Count() > 0)
@@ -129,7 +134,7 @@ namespace PimBot.Dialogs.FindItem
             }
             else
             {
-                await context.SendActivityAsync("Ok, let's specialize");
+                await context.SendActivityAsync(Messages.FindItemStartSpecialize);
                 return await stepContext.ContinueDialogAsync();
             }
         }
@@ -142,16 +147,17 @@ namespace PimBot.Dialogs.FindItem
             CancellationToken cancellationToken)
         {
             var context = stepContext.Context;
-            if (!AskForFeature)
+            if (!AskedForFeature)
             {
                 featuresToAsk = await _itemService.GetAllAttributes(pimItems);
-                AskForFeature = true;
+                AskedForFeature = true;
             }
 
             if (!featuresToAsk.Any())
             {
-                await context.SendActivityAsync("There is nothing more to ask.");
-                await stepContext.EndDialogAsync();
+                await context.SendActivityAsync(Messages.FindItemNothingToAsk);
+                stepContext.ActiveDialog.State["stepIndex"] = 5;
+                return await stepContext.ContinueDialogAsync();
             }
 
             var feature = featuresToAsk[0];
@@ -162,7 +168,7 @@ namespace PimBot.Dialogs.FindItem
                 AskForPropertyPrompt,
                 new PromptOptions
                 {
-                    Prompt = MessageFactory.Text(feature.Description),
+                    Prompt = MessageFactory.Text($"{GetPrepositon()} **{feature.Description}**?"),
                     Choices = ChoiceFactory.ToChoices(choices),
                 },
                 cancellationToken);
@@ -191,19 +197,26 @@ namespace PimBot.Dialogs.FindItem
                 else
                 {
                     pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0],
-                        featuresToAsk[0].GetAvarageValue().ToString(), choice.Index);
+                        featuresToAsk[0].GetMedianValue().ToString(), choice.Index);
                 }
 
                 if (!featuresToAsk.Any())
                 {
-                    await context.SendActivityAsync("There is nothing more to ask.");
-                    await stepContext.EndDialogAsync();
+                    await context.SendActivityAsync(Messages.FindItemNothingToAsk);
+                    stepContext.ActiveDialog.State["stepIndex"] = 5;
+                    return await stepContext.ContinueDialogAsync();
+                }
+                else if (pimItems.Count() == 1)
+                {
+                    // Jump to end
+                    return await stepContext.ContinueDialogAsync();
                 }
             }
 
             featuresToAsk.RemoveAt(0);
             if (!(QuestionCounter % 3 == 0))
             {
+                // Once in a time ask if user want continue with question 
                 stepContext.ActiveDialog.State["stepIndex"] = 1;
             }
 
@@ -220,7 +233,14 @@ namespace PimBot.Dialogs.FindItem
             var context = stepContext.Context;
             var groups = _itemService.GetAllItemsCategory(pimItems);
 
-            await context.SendActivityAsync($"I've found {pimItems.Count()} items in {groups.Count()}. ");
+            if (pimItems.Count() == 1)
+            {
+                await context.SendActivityAsync($"There is one item which corresponds your answers");
+                stepContext.ActiveDialog.State["stepIndex"] = 5;
+                return await stepContext.ContinueDialogAsync();
+            }
+
+            await context.SendActivityAsync($"I've found {pimItems.Count()} items in {groups.Count()} groups.");
             return await stepContext.PromptAsync(
                 ShowAllItemsPrompt,
                 new PromptOptions
@@ -239,30 +259,40 @@ namespace PimBot.Dialogs.FindItem
 
             if (choice.Value.Equals(Messages.FindItemShowAllItem))
             {
-                if (pimItems.Count() < 10)
-                {
-                    foreach (var item in pimItems)
-                    {
-                        var response = stepContext.Context.Activity.CreateReply();
-                        response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
-                        await context.SendActivityAsync(response);
-                    }
-
-                    await context.SendActivityAsync(Messages.FindItemAddToCart);
-                }
-                else
-                {
-                    await context.SendActivityAsync(GetPrintableListItems(pimItems));
-                    await context.SendActivityAsync(Messages.FindItemAddToCart);
-                }
-
-                return await stepContext.EndDialogAsync();
+                stepContext.ActiveDialog.State["stepIndex"] = 5;
+                return await stepContext.ContinueDialogAsync();
             }
             else
             {
                 stepContext.ActiveDialog.State["stepIndex"] = 1;
                 return await stepContext.ContinueDialogAsync();
             }
+        }
+
+        private async Task<DialogTurnResult> PrintItems(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            var context = stepContext.Context;
+
+            if (pimItems.Count() < 10)
+            {
+                foreach (var item in pimItems)
+                {
+                    var response = stepContext.Context.Activity.CreateReply();
+                    response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
+                    await context.SendActivityAsync(response);
+                }
+
+                await context.SendActivityAsync(Messages.FindItemAddToCart);
+            }
+            else
+            {
+                await context.SendActivityAsync(GetPrintableListItems(pimItems));
+                await context.SendActivityAsync(Messages.FindItemAddToCart);
+            }
+
+            return await stepContext.EndDialogAsync();
         }
 
         private string GetPrintableListItems(IEnumerable<PimItem> items)
@@ -303,6 +333,17 @@ namespace PimBot.Dialogs.FindItem
                 ContentType = AdaptiveCard.ContentType,
                 Content = card
             };
+        }
+
+        private static int position = 0;
+        private string GetPrepositon()
+        {
+            if (position >= Messages.FindItemQuestionStart.Length)
+            {
+                position = 0;
+            }
+
+            return Messages.FindItemQuestionStart[position++];
         }
 
     }

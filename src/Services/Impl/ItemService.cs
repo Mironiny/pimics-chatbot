@@ -22,7 +22,7 @@ namespace PimBot.Service.Impl
         /// <returns></returns>
         public async Task<PimItem> FindItemByNo(string no)
         {
-            // Refactor to look only for one item
+            // Refactor to look only for one items
             var itemList = new List<string>();
 
             var client = ODataClientSingleton.Get();
@@ -66,7 +66,7 @@ namespace PimBot.Service.Impl
 
             var pimItems = MapItems(items);
 
-            pimItems.ToList().ForEach(i => _categoryService.GetItemGroupsByNo(i));
+
 
             var filteredByCategory = await FilterByCategory(pimItems, entity);
             var filteredByKeywords = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
@@ -76,19 +76,26 @@ namespace PimBot.Service.Impl
                 .Union(filteredByKeywords)
                 .Union(filteredByDescription);
 
+            // Initialization of list
+            unitedItems.ToList().ForEach(i => _categoryService.GetItemGroupsByNo(i));
+            foreach (var item in unitedItems)
+            {
+                item.PimFeatures = await _featuresService.GetFeaturesByNoAsync(item.No);
+            }
+
             return unitedItems;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="items"></param>
         /// <returns></returns>
-        public async Task<List<FeatureToAsk>> GetAllAttributes(IEnumerable<PimItem> item)
+        public async Task<List<FeatureToAsk>> GetAllAttributes(IEnumerable<PimItem> items)
         {
             var features = await _featuresService.GetAllFeaturesByItemAsync();
             var pimFeature = features
-                .Where(i => item.ToList()
+                .Where(i => items.ToList()
                                 .FindIndex(f => f.No == i.Key) >= 0).ToList();
 
             var fff = new List<FeatureToAsk>();
@@ -119,10 +126,12 @@ namespace PimBot.Service.Impl
                 }
             }
 
+            // Atributes without value or with one value are meaningless
             var ff = fff.Where(i => i.ValuesList.Count > 1).ToList();
-            ff.ForEach(i => i.SetAndCheckType());
-            ff.OrderByDescending(i => i.Order);
 
+            ff.ForEach(i => i.SetAndCheckType());
+            ff.ForEach(i => i.ComputeInformationGain(items.ToList()));
+            ff.OrderByDescending(i => i.Order).ThenByDescending(i => i.InformationGain);
             return ff;
         }
 
