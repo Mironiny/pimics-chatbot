@@ -51,7 +51,7 @@ namespace PimBot.Dialogs.AddItem
         {
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            if (onTurnProperty.Entities != null || onTurnProperty.Entities[EntityNames.Item].Count() > 0)
+            if (onTurnProperty.Entities[EntityNames.Item] != null && onTurnProperty.Entities[EntityNames.Item].Count() > 0)
             {
                 var item = (string)onTurnProperty.Entities[EntityNames.Item].First;
 
@@ -65,7 +65,7 @@ namespace PimBot.Dialogs.AddItem
 
                 if (!cartState.Items.Exists(x => x.No == item))
                 {
-                    await context.SendActivityAsync($"Sorry, I cannot find {item} in your cart. You can show your cart simple by write *show cart*.");
+                    await context.SendActivityAsync(Messages.RemoveItemForgotItem);
                     return await stepContext.EndDialogAsync();
                 }
                 else
@@ -74,7 +74,7 @@ namespace PimBot.Dialogs.AddItem
                 }
             }
 
-            await context.SendActivityAsync($"Sorry, I cannot find in your cart. You can show your cart simple by write *show cart*.");
+            await context.SendActivityAsync(Messages.RemoveItemForgotItem);
             return await stepContext.EndDialogAsync();
         }
 

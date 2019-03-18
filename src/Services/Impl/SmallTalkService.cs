@@ -33,6 +33,11 @@ namespace PimBot.Services.Impl
                 if (jsonResponse != null || jsonResponse.answers != null || !jsonResponse.answers.Length.Equals(0) ||
                     jsonResponse.answers[0].score > 49)
                 {
+                    if (jsonResponse.answers[0].answer == "No good match found in KB.")
+                    {
+                        return Messages.NotUnderstand;
+                    }
+
                     return jsonResponse.answers[0].answer;
                 }
 

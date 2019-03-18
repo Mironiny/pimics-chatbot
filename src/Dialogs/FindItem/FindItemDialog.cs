@@ -9,28 +9,33 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Dialogs.AddItem;
 using PimBot.Service;
 using PimBot.Service.Impl;
+using PimBot.Services.Impl;
 using PimBot.State;
 
 namespace PimBot.Dialogs.FindItem
 {
     public class FindItemDialog : ComponentDialog
     {
+        private static readonly int ShowItemsDialogIndex = 5;
+        private static bool AskedForFeature;
+        private static int questionCounter;
+
         public const string Name = "Find_item";
         private readonly BotServices _services;
-        private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
-        private IStatePropertyAccessor<CartState> _cartStateAccessor;
-        private readonly IItemService _itemService = new ItemService();
-
-        private static IEnumerable<PimItem> pimItems = new List<PimItem>();
-        private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
-        private static bool AskedForFeature;
-
-        private static int QuestionCounter;
 
         private const string ShowAllItemsPrompt = "ShowAllItemsPrompt";
         private const string AskForPropertyPrompt = "AskForPropertyPrompt";
+
+        private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
+        private IStatePropertyAccessor<CartState> _cartStateAccessor;
+        private readonly IItemService _itemService = new ItemService();
+        private readonly ICategoryService _categoryService = new CategoryService();
+
+        private static IEnumerable<PimItem> pimItems = new List<PimItem>();
+        private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
 
         // Prompts names
         private const string CountPrompt = "countPrompt";
@@ -58,6 +63,7 @@ namespace PimBot.Dialogs.FindItem
                 waterfallSteps));
             AddDialog(new ChoicePrompt(ShowAllItemsPrompt));
             AddDialog(new ChoicePrompt(AskForPropertyPrompt));
+            AddDialog(new ShowCategoriesDialog(services, onTurnAccessor));
         }
 
         private async Task<DialogTurnResult> InitializeStateStepAsync(
@@ -66,16 +72,15 @@ namespace PimBot.Dialogs.FindItem
         {
             // Initalization of static variables
             AskedForFeature = false;
-            QuestionCounter = 0;
+            questionCounter = 0;
 
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            if (onTurnProperty.Entities[EntityNames.FindItem].Count() > 0)
+            if (onTurnProperty.Entities[EntityNames.FindItem] != null && onTurnProperty.Entities[EntityNames.FindItem].Count() > 0)
             {
                 var firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
 
                 pimItems = await _itemService.GetAllItemsAsync(firstEntity);
-                var count = pimItems.Count();
                 var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
 
                 if (pimItems.Count() == 0)
@@ -96,6 +101,10 @@ namespace PimBot.Dialogs.FindItem
                         cancellationToken);
                 }
             }
+
+            await context.SendActivityAsync(Messages.FindItemForgotItem);
+            var categories = await _categoryService.GetAllProductGroupAsync();
+            await context.SendActivityAsync(ShowCategoriesDialog.GetPritableGroup(categories));
 
             return await stepContext.EndDialogAsync();
         }
@@ -156,7 +165,7 @@ namespace PimBot.Dialogs.FindItem
             if (!featuresToAsk.Any())
             {
                 await context.SendActivityAsync(Messages.FindItemNothingToAsk);
-                stepContext.ActiveDialog.State["stepIndex"] = 5;
+                stepContext.ActiveDialog.State["stepIndex"] = ShowItemsDialogIndex;
                 return await stepContext.ContinueDialogAsync();
             }
 
@@ -187,7 +196,7 @@ namespace PimBot.Dialogs.FindItem
             if (!(choice.Value == Messages.Skip))
             {
                 // Raise counter
-                QuestionCounter++;
+                questionCounter++;
 
                 // Do some filtering
                 if (featuresToAsk[0].Type == FeatureType.Alphanumeric)
@@ -203,8 +212,14 @@ namespace PimBot.Dialogs.FindItem
                 if (!featuresToAsk.Any())
                 {
                     await context.SendActivityAsync(Messages.FindItemNothingToAsk);
-                    stepContext.ActiveDialog.State["stepIndex"] = 5;
+                    stepContext.ActiveDialog.State["stepIndex"] = ShowItemsDialogIndex;
                     return await stepContext.ContinueDialogAsync();
+                }
+                else if (pimItems.Count() == 0)
+                {
+                    // Nothing find
+                    await context.SendActivityAsync(Messages.FindItemNotFound);
+                    return await stepContext.EndDialogAsync();
                 }
                 else if (pimItems.Count() == 1)
                 {
@@ -214,7 +229,7 @@ namespace PimBot.Dialogs.FindItem
             }
 
             featuresToAsk.RemoveAt(0);
-            if (!(QuestionCounter % 3 == 0))
+            if (!(questionCounter % 3 == 0))
             {
                 // Once in a time ask if user want continue with question 
                 stepContext.ActiveDialog.State["stepIndex"] = 1;
@@ -235,8 +250,8 @@ namespace PimBot.Dialogs.FindItem
 
             if (pimItems.Count() == 1)
             {
-                await context.SendActivityAsync($"There is one item which corresponds your answers");
-                stepContext.ActiveDialog.State["stepIndex"] = 5;
+                await context.SendActivityAsync(Messages.FindItemFindItem);
+                stepContext.ActiveDialog.State["stepIndex"] = ShowItemsDialogIndex;
                 return await stepContext.ContinueDialogAsync();
             }
 
@@ -259,7 +274,7 @@ namespace PimBot.Dialogs.FindItem
 
             if (choice.Value.Equals(Messages.FindItemShowAllItem))
             {
-                stepContext.ActiveDialog.State["stepIndex"] = 5;
+                stepContext.ActiveDialog.State["stepIndex"] = ShowItemsDialogIndex;
                 return await stepContext.ContinueDialogAsync();
             }
             else

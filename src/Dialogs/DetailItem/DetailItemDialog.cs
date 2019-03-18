@@ -48,7 +48,7 @@ namespace PimBot.Dialogs.AddItem
         {
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            if (onTurnProperty.Entities[EntityNames.Item].Count() > 0)
+            if (onTurnProperty.Entities[EntityNames.Item] != null && onTurnProperty.Entities[EntityNames.Item].Count() > 0)
             {
                 var firstEntity = (string) onTurnProperty.Entities[EntityNames.Item].First;
 
@@ -66,6 +66,7 @@ namespace PimBot.Dialogs.AddItem
                 await context.SendActivityAsync(response);
             }
 
+            await context.SendActivityAsync(Messages.DetailItemForgotItem);
             return await stepContext.EndDialogAsync();
         }
 

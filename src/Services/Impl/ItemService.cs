@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Dialogs.FindItem;
@@ -66,8 +67,6 @@ namespace PimBot.Service.Impl
 
             var pimItems = MapItems(items);
 
-
-
             var filteredByCategory = await FilterByCategory(pimItems, entity);
             var filteredByKeywords = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
             var filteredByDescription = FilterByDescription(pimItems, entity);
@@ -94,23 +93,28 @@ namespace PimBot.Service.Impl
         public async Task<List<FeatureToAsk>> GetAllAttributes(IEnumerable<PimItem> items)
         {
             var features = await _featuresService.GetAllFeaturesByItemAsync();
-            var pimFeature = features
-                .Where(i => items.ToList()
-                                .FindIndex(f => f.No == i.Key) >= 0).ToList();
+            var itemsNos = items.ToList().Select(i => i.No).ToList();
+            var pimFeature = features.Where(f => itemsNos.Contains(f.Key)).ToList();
+
+            //            var pimFeature = features
+            //                .Where(i => items.ToList()
+            //                                .FindIndex(f => f.No == i.Key) >= 0).ToList();
 
             var fff = new List<FeatureToAsk>();
             foreach (var feature in pimFeature)
             {
+                List<string> added = new List<string>();
                 foreach (var ftr in feature.Value)
                 {
                     // Check if already in array
                     var index = fff.FindIndex(f => f.Number == ftr.Number);
                     if (!(index >= 0))
                     {
-                        var featureToAsk = new FeatureToAsk(ftr.Number, ftr.Description, ftr.Order);
+                        var featureToAsk = new FeatureToAsk(ftr.Number, ftr.Description, ftr.Order, ftr.Unit_Shorthand_Description);
                         featureToAsk.ValuesList = new HashSet<string>();
                         if (ftr.Value != string.Empty)
                         {
+                            added.Add(ftr.Description);
                             featureToAsk.ValuesList.Add(ftr.Value);
                         }
 
@@ -118,21 +122,36 @@ namespace PimBot.Service.Impl
                     }
                     else
                     {
-                        if (ftr.Value != string.Empty)
+                        // Check if same item doesnt content same attribut
+                        if (!added.Contains(ftr.Description))
                         {
-                            fff[index].ValuesList.Add(ftr.Value);
+                            if (ftr.Value != string.Empty)
+                            {
+                                added.Add(ftr.Description);
+                                fff[index].ValuesList.Add(ftr.Value);
+                            }
                         }
                     }
                 }
             }
+
+            // Added to question UNIT PRICE
+            var featureToA = new FeatureToAsk("UNITPRICE", "Unit price", 1, string.Empty);
+            featureToA.ValuesList = new HashSet<string>();
+            foreach (var item in items)
+            {
+                featureToA.ValuesList.Add(item.Unit_Price.ToString("F", CultureInfo.CreateSpecificCulture("en-US")));
+            }
+
+            fff.Add(featureToA);
 
             // Atributes without value or with one value are meaningless
             var ff = fff.Where(i => i.ValuesList.Count > 1).ToList();
 
             ff.ForEach(i => i.SetAndCheckType());
             ff.ForEach(i => i.ComputeInformationGain(items.ToList()));
-            ff.OrderByDescending(i => i.Order).ThenByDescending(i => i.InformationGain);
-            return ff;
+            var fuu = ff.OrderByDescending(i => i.Order).ThenByDescending(i => i.InformationGain).ToList();
+            return fuu;
         }
 
         /// <summary>

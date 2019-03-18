@@ -51,7 +51,7 @@ namespace PimBot.Dialogs.AddItem
             return await stepContext.EndDialogAsync();
         }
 
-        private string GetPritableGroup(IEnumerable<PimGroup> categories)
+        public static string GetPritableGroup(IEnumerable<PimGroup> categories)
         {
             var categoriesToPrint = categories.Where(i => i.Description.Any());
             string result = Messages.ShowCategoriesAvaliableCategories + Environment.NewLine;

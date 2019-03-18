@@ -50,7 +50,7 @@ namespace PimBot.Dialogs.AddItem
         {
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            if (onTurnProperty.Entities[EntityNames.Item].Count() > 0)
+            if (onTurnProperty.Entities[EntityNames.Item] != null && onTurnProperty.Entities[EntityNames.Item].Count() > 0)
             {
                 var firstEntity = (string)onTurnProperty.Entities[EntityNames.Item].First;
 
@@ -71,9 +71,13 @@ namespace PimBot.Dialogs.AddItem
 
                 cartState.Items.Add(pimItem);
                 await _cartStateAccessor.SetAsync(context, cartState);
+                return await stepContext.NextAsync();
             }
-
-            return await stepContext.NextAsync();
+            else
+            {
+                await context.SendActivityAsync("You have to provide No of item which you want order.");
+                return await stepContext.EndDialogAsync();
+            }
         }
 
         private async Task<DialogTurnResult> PromptForCountStepAsync(

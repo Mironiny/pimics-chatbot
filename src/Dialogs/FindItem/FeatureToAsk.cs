@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using MathNet.Numerics.Statistics;
 using PimBot.State;
+using System.Globalization;
 
 namespace PimBot.Dialogs.FindItem
 {
@@ -12,11 +13,12 @@ namespace PimBot.Dialogs.FindItem
 
     public class FeatureToAsk
     {
-        public FeatureToAsk(string number, string description, int order)
+        public FeatureToAsk(string number, string description, int order, string unit)
         {
             Number = number;
             Description = description;
             Order = order;
+            Unit = unit;
         }
 
         public string Number { get; set; }
@@ -24,6 +26,8 @@ namespace PimBot.Dialogs.FindItem
         public string Description { get; set; }
 
         public int Order { get; set; }
+
+        public string Unit { get; set; }
 
         public double InformationGain { get; set; }
 
@@ -52,13 +56,11 @@ namespace PimBot.Dialogs.FindItem
                     return ValuesList.ToList();
 
                 case FeatureType.Numeric:
-                    var intList = ValuesList.Select(int.Parse).ToList();
-                    List<double> doubles = intList.Select<int, double>(i => i).ToList();
-                    var median = doubles.Median();
+                    var median = GetMedianValue();
                     return new List<string>()
                     {
-                        $"to {median}",
-                        $"from {median}",
+                        $"to {median} {(Type == FeatureType.Numeric ? Unit : string.Empty)}",
+                        $"from {median} {(Type == FeatureType.Numeric ? Unit : string.Empty)}",
                     };
 
                 default:
@@ -70,9 +72,9 @@ namespace PimBot.Dialogs.FindItem
         {
             if (Type == FeatureType.Numeric)
             {
-                var intList = ValuesList.Select(int.Parse).ToList();
-                List<double> doubles = intList.Select<int, double>(i => i).ToList();
-                var median = doubles.Median();
+                var intList = ValuesList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+              //  List<double> doubles = intList.Select<int, double>(i => i).ToList();
+                var median = intList.Median();
                 return median;
             }
 
@@ -81,13 +83,7 @@ namespace PimBot.Dialogs.FindItem
 
         private bool IsDigitsOnly(string str)
         {
-            foreach (char c in str)
-            {
-                if (c < '0' || c > '9')
-                    return false;
-            }
-
-            return true;
+            return double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double unusedValue);
         }
 
         /// <summary>
