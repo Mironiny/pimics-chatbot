@@ -22,6 +22,7 @@ namespace PimBot.Dialogs.FindItem
         private static readonly int ShowItemsDialogIndex = 5;
         private static bool AskedForFeature;
         private static int questionCounter;
+        private static List<string> questionAkedList = new List<string>();
 
         public const string Name = "Find_item";
         private readonly BotServices _services;
@@ -73,6 +74,7 @@ namespace PimBot.Dialogs.FindItem
             // Initalization of static variables
             AskedForFeature = false;
             questionCounter = 0;
+            questionAkedList = new List<string>();
 
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
@@ -193,11 +195,11 @@ namespace PimBot.Dialogs.FindItem
             var context = stepContext.Context;
             var choice = stepContext.Result as FoundChoice;
 
+            // Raise counter
+            questionCounter++;
+
             if (!(choice.Value == Messages.Skip))
             {
-                // Raise counter
-                questionCounter++;
-
                 // Do some filtering
                 if (featuresToAsk[0].Type == FeatureType.Alphanumeric)
                 {
@@ -208,6 +210,11 @@ namespace PimBot.Dialogs.FindItem
                     pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0],
                         featuresToAsk[0].GetMedianValue().ToString(), choice.Index);
                 }
+
+                questionAkedList.Add(featuresToAsk[0].Number);
+
+                featuresToAsk = await _itemService.GetAllAttributes(pimItems);
+                featuresToAsk = RemoveFromList(featuresToAsk, questionAkedList);
 
                 if (!featuresToAsk.Any())
                 {
@@ -227,9 +234,14 @@ namespace PimBot.Dialogs.FindItem
                     return await stepContext.ContinueDialogAsync();
                 }
             }
+            else
+            {
+                questionAkedList.Add(featuresToAsk[0].Number);
+                featuresToAsk.RemoveAt(0);
+            }
 
-            featuresToAsk.RemoveAt(0);
-            if (!(questionCounter % 3 == 0))
+  //          featuresToAsk.RemoveAt(0);
+            if (!(questionCounter % Constants.QuestionLimit == 0))
             {
                 // Once in a time ask if user want continue with question 
                 stepContext.ActiveDialog.State["stepIndex"] = 1;
@@ -359,6 +371,21 @@ namespace PimBot.Dialogs.FindItem
             }
 
             return Messages.FindItemQuestionStart[position++];
+        }
+
+        private List<FeatureToAsk> RemoveFromList(List<FeatureToAsk> features, List<string> numbers)
+        {
+            foreach (var number in numbers)
+            {
+                var item = featuresToAsk.SingleOrDefault(x => x.Number == number);
+                if (item != null)
+                {
+                    featuresToAsk.Remove(item);
+                }
+            }
+
+            return features;
+
         }
 
     }

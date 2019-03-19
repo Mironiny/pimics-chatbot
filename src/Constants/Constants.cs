@@ -28,6 +28,9 @@
         public const string endpoint_key = "a363fcfd-b747-4b52-86fc-4bf6d999a6e3";
         public const string route = "/knowledgebases/42bc7b3f-f585-4df2-99ab-e7ea5ce7ebf3/generateAnswer";
 
+        // Find item engine
         public const string UnitPriceType = "UnitPriceType";
+        // Descripe after how many question will bot ask if you want to show all question or continue searching
+        public const int QuestionLimit = 5;
     }
 }
