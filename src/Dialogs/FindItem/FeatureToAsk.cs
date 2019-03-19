@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Graph;
 using MathNet.Numerics.Statistics;
+using Microsoft.Graph;
 using PimBot.State;
-using System.Globalization;
 
 namespace PimBot.Dialogs.FindItem
 {

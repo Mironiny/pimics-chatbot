@@ -96,10 +96,6 @@ namespace PimBot.Service.Impl
             var itemsNos = items.ToList().Select(i => i.No).ToList();
             var pimFeature = features.Where(f => itemsNos.Contains(f.Key)).ToList();
 
-            //            var pimFeature = features
-            //                .Where(i => items.ToList()
-            //                                .FindIndex(f => f.No == i.Key) >= 0).ToList();
-
             var fff = new List<FeatureToAsk>();
             foreach (var feature in pimFeature)
             {
@@ -136,7 +132,7 @@ namespace PimBot.Service.Impl
             }
 
             // Added to question UNIT PRICE
-            var featureToA = new FeatureToAsk("UNITPRICE", "Unit price", 1, string.Empty);
+            var featureToA = new FeatureToAsk(Constants.UnitPriceType, "Unit price", 1, string.Empty);
             featureToA.ValuesList = new HashSet<string>();
             foreach (var item in items)
             {
@@ -189,6 +185,19 @@ namespace PimBot.Service.Impl
                     return pimItemResult;
 
                 case FeatureType.Numeric:
+                    // Special case for Unit Price
+                    if (featureToAsk.Number == Constants.UnitPriceType)
+                    {
+                        if (index == 0)
+                        {
+                           return items.Where(i => Convert.ToDouble(i.Unit_Price) <= Convert.ToDouble(value)).ToList();
+                        }
+                        else if (index == 1)
+                        {
+                            return items.Where(i => Convert.ToDouble(i.Unit_Price) > Convert.ToDouble(value)).ToList();
+                        }
+                    }
+
                     foreach (var item in items)
                     {
                         var features = await _featuresService.GetFeaturesByNoAsync(item.No);
