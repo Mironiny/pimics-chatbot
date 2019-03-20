@@ -42,6 +42,13 @@ namespace PimBot.Service
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
+        Task<string> FindSimilarItemsByDescription(string description);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items);
     }
 }

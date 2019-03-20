@@ -9,7 +9,7 @@ namespace PimBot.Services.Impl
 {
     public class KeywordService : IKeywordService
     {
-        public async Task<Dictionary<string, List<PimKeyword>>> GetAllKeywordsByItemAsync()
+        public async Task<IEnumerable<PimKeyword>> GetAllKeywordsAsync()
         {
             var client = ODataClientSingleton.Get();
             var keywords = await client
@@ -17,8 +17,12 @@ namespace PimBot.Services.Impl
                 .NavigateTo(Constants.KeywordsServiceEndpointName)
                 .FindEntriesAsync();
 
-            var pimKeywords = MapKeywords(keywords);
+            return MapKeywords(keywords);
+        }
 
+        public async Task<Dictionary<string, List<PimKeyword>>> GetAllKeywordsByItemAsync()
+        {
+            var pimKeywords = await GetAllKeywordsAsync();
             return pimKeywords
                 .GroupBy(i => i.Code)
                 .ToDictionary(group => group.Key, group => group.ToList());

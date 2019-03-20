@@ -24,11 +24,15 @@ namespace PimBot.Dialogs.FindItem
         private static int questionCounter;
         private static List<string> questionAkedList = new List<string>();
 
+        // Variable serve for savings didYouMean recomendation. If is empty that means that we should not look against this variable
+        private static string didYouMean = null;
+
         public const string Name = "Find_item";
         private readonly BotServices _services;
 
         private const string ShowAllItemsPrompt = "ShowAllItemsPrompt";
         private const string AskForPropertyPrompt = "AskForPropertyPrompt";
+        private const string DidYouMeanPrompt = "DidYouMean";
 
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
@@ -63,6 +67,7 @@ namespace PimBot.Dialogs.FindItem
                 "start",
                 waterfallSteps));
             AddDialog(new ChoicePrompt(ShowAllItemsPrompt));
+            AddDialog(new ConfirmPrompt(DidYouMeanPrompt));
             AddDialog(new ChoicePrompt(AskForPropertyPrompt));
             AddDialog(new ShowCategoriesDialog(services, onTurnAccessor));
         }
@@ -78,17 +83,43 @@ namespace PimBot.Dialogs.FindItem
 
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            if (onTurnProperty.Entities[EntityNames.FindItem] != null && onTurnProperty.Entities[EntityNames.FindItem].Count() > 0)
+
+            if (didYouMean != null || (onTurnProperty.Entities[EntityNames.FindItem] != null && onTurnProperty.Entities[EntityNames.FindItem].Count() > 0))
             {
-                var firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
+                string firstEntity;
+                if (didYouMean == null)
+                {
+                    firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
+                }
+                else
+                {
+                    firstEntity = didYouMean;
+                }
 
                 pimItems = await _itemService.GetAllItemsAsync(firstEntity);
                 var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
 
+                if (didYouMean != null)
+                {
+                    didYouMean = null;
+                }
+
                 if (pimItems.Count() == 0)
                 {
                     await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**");
-                    return await stepContext.EndDialogAsync();
+
+                    // Try to find if user doesnt do type
+                    didYouMean = await _itemService.FindSimilarItemsByDescription(firstEntity);
+
+                    var opts = new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = $"Did you mean {didYouMean}?",
+                        },
+                    };
+                    return await stepContext.PromptAsync(DidYouMeanPrompt, opts);
                 }
                 else
                 {
@@ -121,6 +152,21 @@ namespace PimBot.Dialogs.FindItem
         {
             var context = stepContext.Context;
             var choice = stepContext.Result as FoundChoice;
+
+            // There were no file find and user get didyoumean message
+            if (choice == null)
+            {
+                if ((bool)stepContext.Result)
+                {
+                    stepContext.ActiveDialog.State["stepIndex"] = -1;
+                    return await stepContext.ContinueDialogAsync();
+                }
+                else
+                {
+                    didYouMean = null;
+                    return await stepContext.EndDialogAsync();
+                }
+            }
 
             if (choice.Value.Equals(Messages.FindItemShowAllItem))
             {
@@ -240,7 +286,7 @@ namespace PimBot.Dialogs.FindItem
                 featuresToAsk.RemoveAt(0);
             }
 
-  //          featuresToAsk.RemoveAt(0);
+            //          featuresToAsk.RemoveAt(0);
             if (!(questionCounter % Constants.QuestionLimit == 0))
             {
                 // Once in a time ask if user want continue with question 

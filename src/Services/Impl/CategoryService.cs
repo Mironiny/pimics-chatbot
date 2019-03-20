@@ -30,24 +30,6 @@ namespace PimBot.Services.Impl
                 pimItemGroup.Code = (string)group["Code"];
                 var description = allGroups.Where(i => i.Code == (string) group["Code"]).Select(i => i.Description).First();
                 pimItemGroup.Description = description;
-//
-//                if (description != null && description.Count() > 0)
-//                {
-//                    var tmp = description.ToList()[0];
-//                    pimItemGroup.Description = tmp;
-//                }
-                //                var xx = await client
-                //                    .For(Constants.Company).Key(Constants.CompanyName)
-                //                    .NavigateTo(Constants.ItemGroupServiceEndpointName)
-                //                    .Filter($"Code%20eq%20%27{(string)group["Code"]}%27")
-                //                    .FindEntriesAsync();
-                //
-                //                if (xx != null && xx.Count() > 0)
-                //                {
-                //                    var list = xx.ToList()[0];
-                //                    pimItemGroup.Description = (string)list["Description"];
-                //                }
-                //                item.PimItemGroups.Add(pimItemGroup);
                 pimItemGroups.Add(pimItemGroup);
             }
 

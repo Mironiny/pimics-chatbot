@@ -252,6 +252,38 @@ namespace PimBot.Service.Impl
             return categories;
         }
 
+        public async Task<string> FindSimilarItemsByDescription(string description)
+        {
+            var client = ODataClientSingleton.Get();
+
+            var items = await client
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo(Constants.ItemsServiceEndpointName)
+                .FindEntriesAsync();
+
+            var pimItems = MapItems(items);
+
+            var keywords = await _keywordService.GetAllKeywordsAsync();
+            var groups = await _categoryService.GetAllItemGroupAsync();
+            var groupsProduct = await _categoryService.GetAllProductGroupAsync();
+
+
+            var unitedItems = pimItems.Select(i => i.Description)
+                .Union(keywords.Select(k => k.Keyword))
+                .Union(groups.Select(g => g.Description))
+                .Union(groupsProduct.Select(g => g.Description))
+                .ToList();
+
+            var orderedItems = unitedItems.OrderBy(i => CommonUtil.ComputeLevenshteinDistance(i, description)).ToList();
+            if (orderedItems != null)
+            {
+                return orderedItems[0];
+            }
+
+            return null;
+        }
+
+
 
         private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string entity)
         {
