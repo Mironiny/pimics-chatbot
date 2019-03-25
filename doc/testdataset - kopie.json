@@ -1,0 +1,353 @@
+[
+  {
+      "text": "Find xiaomi redmi note 5",
+      "intent": "FindItem",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 5,
+              "endPos": 24
+          }
+      ]
+  },
+  {
+      "text": "Find box",
+      "intent": "FindItem",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 5,
+              "endPos": 8
+          }
+      ]
+  },
+  {
+      "text": "looking for paper",
+      "intent": "FindItem",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 12,
+              "endPos": 17
+          }
+      ]
+  },
+  {
+      "text": "I'm looking for a pen",
+      "intent": "FindItem",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 16,
+              "endPos": 19
+          }
+      ]
+  },
+  {
+      "text": "Detail phone",
+      "intent": "DetailItem ",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 7,
+              "endPos": 12
+          }
+      ]
+  },
+  {
+      "text": "Detail 152255",
+      "intent": "DetailItem ",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 7,
+              "endPos": 13
+          }
+      ]
+  },
+  {
+      "text": "Detail 152255",
+      "intent": "DetailItem ",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 7,
+              "endPos": 13
+          }
+      ]
+  },
+  {
+        "text": "show me detail 152255",
+        "intent": "DetailItem ",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 15,
+                "endPos": 22
+            }
+        ]
+    },
+  {
+      "text": "What electronic devices you have?",
+      "intent": "FindItem",
+      "entities":
+      [
+          {
+              "entity": "itemAdd",
+              "startPos": 5,
+              "endPos": 23
+          }
+      ]
+  },
+    {
+        "text": "Add car",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 4,
+                "endPos": 7
+            }
+        ]
+    },
+    {
+        "text": "Add item to cart",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 4,
+                "endPos": 8
+            }
+        ]
+    },
+    {
+        "text": "Add cat to order",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 4,
+                "endPos": 7
+            }
+        ]
+    },
+    {
+        "text": "Please add glass",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 10,
+                "endPos": 15
+            }
+        ]
+    },
+    {
+        "text": "Please add glass to cart",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 10,
+                "endPos": 15
+            }
+        ]
+    },
+    {
+        "text": "Please add mouse to order",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 10,
+                "endPos": 15
+            }
+        ]
+    },
+    {
+        "text": "Can you add roses",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 12,
+                "endPos": 17
+            }
+        ]
+    },
+    {
+        "text": "Can you add phone to cart",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 12,
+                "endPos": 17
+            }
+        ]
+    },
+    {
+        "text": "Can you add rocket to order",
+        "intent": "AddItem",
+        "entities":
+        [
+            {
+                "entity": "itemAdd",
+                "startPos": 12,
+                "endPos": 18
+            }
+        ]
+    },
+    {
+        "text": "Can you confirm order?",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Please confirm order",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Confirm order",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Approve order",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Approve",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Bot please affirm order",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Finish order",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Bot can you finish order",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Can you approve order",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Would you be so nice and approve order?",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Bot, would you be so nice and confirm order?",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Confirm",
+        "intent": "Confirm",
+        "entities": []
+    },
+    {
+        "text": "Help",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "Help me",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "Help me plese",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "Bot I need help",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "I need your help",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "I don't know know what should I do",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "Can you provide me little help",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "I need assistance",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "Assistance",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "Assistance please",
+        "intent": "Utilities.Help",
+        "entities": []
+    },
+    {
+        "text": "Hi",
+        "intent": "SmallTalk",
+        "entities": []
+    },
+    {
+        "text": "Good morning",
+        "intent": "SmallTalk",
+        "entities": []
+    },
+    {
+        "text": "Hello",
+        "intent": "SmallTalk",
+        "entities": []
+    },
+    {
+        "text": "How are you?",
+        "intent": "SmallTalk",
+        "entities": []
+    },
+    {
+        "text": "What is going on?",
+        "intent": "SmallTalk",
+        "entities": []
+    }
+]

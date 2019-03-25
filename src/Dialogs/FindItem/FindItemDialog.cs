@@ -121,6 +121,11 @@ namespace PimBot.Dialogs.FindItem
                     };
                     return await stepContext.PromptAsync(DidYouMeanPrompt, opts);
                 }
+                else if (pimItems.Count() == 1)
+                {
+                    stepContext.ActiveDialog.State["stepIndex"] = ShowItemsDialogIndex;
+                    return await stepContext.ContinueDialogAsync();
+                }
                 else
                 {
                     await context.SendActivityAsync($"I've found {pimItems.Count()} potentional {firstEntity} in {groupCount} groups.");

@@ -604,7 +604,7 @@ namespace PimBot.Dialogs.AddItem
             // Save name, if prompted.
             if (whatToChange == null)
             {
-                var isSave = await _salesOrder.CreateOrder(new CustomerState());
+                var isSave = await _salesOrder.CreateOrder(customerState);
                 if (isSave == true)
                 {
                     await stepContext.Context.SendActivityAsync(Messages.GetUserInfoPromptIsOrderOk);
