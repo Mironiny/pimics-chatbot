@@ -8,7 +8,7 @@ using PimBot.State;
 
 namespace PimBot.Services.Impl
 {
-    public class CustomerService
+    public class CustomerService : ICustomerService
     {
         private static IStorage dataStore;
 
@@ -17,7 +17,7 @@ namespace PimBot.Services.Impl
             dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
             {
                 AuthKey = Constants.CosmosDBKey,
-                CollectionId = Constants.CosmosDBCollectionName,
+                CollectionId = "customers",
                 CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
                 DatabaseId = Constants.CosmosDBDatabaseName,
             });

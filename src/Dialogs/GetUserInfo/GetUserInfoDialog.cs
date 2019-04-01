@@ -10,6 +10,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Service;
 using PimBot.Service.Impl;
+using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
 
@@ -22,8 +23,7 @@ namespace PimBot.Dialogs.AddItem
     {
         private readonly ISalesOrderService _salesOrder = new SalesOrderService();
         private readonly IItemService _itemService = new ItemService();
-        private readonly CustomerService _customerService = new CustomerService();
-
+        private readonly ICustomerService _customerService = new CustomerService();
 
         // Prompts names
         private const string NamePrompt = "NamePrompt";
@@ -118,38 +118,38 @@ namespace PimBot.Dialogs.AddItem
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-//           await stepContext.Context.SendActivityAsync(stepContext.Context.Activity.From.Id);
-//           Activity replyToConversation = stepContext.Context.Activity.CreateReply();
-//            replyToConversation.Attachments = new List<Attachment>();
-//
-//            replyToConversation.Attachments.Add(new Attachment
-//            {
-//                ContentType = OAuthCard.ContentType,
-//                Content = new OAuthCard
-//                {
-//                    Text = "Please sign in",
-//                    ConnectionName = " ",
-//                    Buttons = new[]
-//                    {
-//                        new CardAction
-//                        {
-//                            Title = "Sign In",
-//                            Text = "Sign In",
-//                            Type = ActionTypes.Signin,
-//                        },
-//                    },
-//                },
-//            });
-//
-//            await stepContext.Context.SendActivityAsync(replyToConversation);
-//
-//            await stepContext.EndDialogAsync();
-//            var response = stepContext.Context.Activity.CreateReply();
-//
-//            response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk() };
-//            await stepContext.Context.SendActivityAsync(response);
-//
-//            var tmp = await _salesOrder.GetSalesOrderByCustomer("John Haddock Insurance Co.");
+            //           await stepContext.Context.SendActivityAsync(stepContext.Context.Activity.From.Id);
+            //           Activity replyToConversation = stepContext.Context.Activity.CreateReply();
+            //            replyToConversation.Attachments = new List<Attachment>();
+            //
+            //            replyToConversation.Attachments.Add(new Attachment
+            //            {
+            //                ContentType = OAuthCard.ContentType,
+            //                Content = new OAuthCard
+            //                {
+            //                    Text = "Please sign in",
+            //                    ConnectionName = " ",
+            //                    Buttons = new[]
+            //                    {
+            //                        new CardAction
+            //                        {
+            //                            Title = "Sign In",
+            //                            Text = "Sign In",
+            //                            Type = ActionTypes.Signin,
+            //                        },
+            //                    },
+            //                },
+            //            });
+            //
+            //            await stepContext.Context.SendActivityAsync(replyToConversation);
+            //
+            //            await stepContext.EndDialogAsync();
+            //            var response = stepContext.Context.Activity.CreateReply();
+            //
+            //            response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk() };
+            //            await stepContext.Context.SendActivityAsync(response);
+            //
+            //            var tmp = await _salesOrder.GetSalesOrderByCustomer("John Haddock Insurance Co.");
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
             await stepContext.Context.SendActivityAsync(Messages.GetUserInfoNewOrder);
@@ -164,7 +164,7 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
             if (string.IsNullOrWhiteSpace(customerState.Name))
             {
@@ -190,13 +190,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var name = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.Name) && name != null)
             {
                 customerState.Name = name;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.Email))
@@ -225,13 +225,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var email = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.Email) && email != null)
             {
                 customerState.Email = email;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.PhoneNumber))
@@ -260,13 +260,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var phone = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.PhoneNumber) && phone != null)
             {
                 customerState.PhoneNumber = phone;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.Address))
@@ -295,13 +295,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var adress = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.Address) && adress != null)
             {
                 customerState.Address = adress;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.PostCode))
@@ -330,13 +330,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var postCode = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.PostCode) && postCode != null)
             {
                 customerState.PostCode = postCode;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.City))
@@ -365,13 +365,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var city = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.City) && city != null)
             {
                 customerState.City = city;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (customerState.IsShippingAdressMatch == null)
@@ -398,12 +398,12 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             if (customerState.IsShippingAdressMatch == null)
             {
                 bool isShippingAdressSet = (bool)stepContext.Result;
                 customerState.IsShippingAdressMatch = isShippingAdressSet;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (customerState.IsShippingAdressMatch == true)
@@ -422,7 +422,7 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
             if (string.IsNullOrWhiteSpace(customerState.ShippingName))
             {
@@ -450,13 +450,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var shippingName = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.ShippingName) && shippingName != null)
             {
                 customerState.ShippingName = shippingName;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.ShippingAddress))
@@ -485,14 +485,14 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var shippingAddress = stepContext.Result as string;
 
             // Save postcode, if prompted.
             if (string.IsNullOrWhiteSpace(customerState.ShippingAddress) && shippingAddress != null)
             {
                 customerState.ShippingAddress = shippingAddress;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.ShippingPostCode))
@@ -521,13 +521,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var shippingPostCode = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.ShippingPostCode) && shippingPostCode != null)
             {
                 customerState.ShippingPostCode = shippingPostCode;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             if (string.IsNullOrWhiteSpace(customerState.ShippingCity))
@@ -556,13 +556,13 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var shippingCity = stepContext.Result as string;
 
             if (string.IsNullOrWhiteSpace(customerState.ShippingCity) && shippingCity != null)
             {
                 customerState.ShippingCity = shippingCity;
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
             }
 
             return await stepContext.NextAsync();
@@ -577,7 +577,7 @@ namespace PimBot.Dialogs.AddItem
         {
             //TODO use case when is shipping adress not same
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
             await stepContext.Context.SendActivityAsync(GetPrintableCustomerInfo(customerState));
 
@@ -600,7 +600,7 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
             bool confirmCustomerInfo = (bool)stepContext.Result;
 
@@ -634,7 +634,7 @@ namespace PimBot.Dialogs.AddItem
             CancellationToken cancellationToken)
         {
             CustomerState customerState =
-                await _customerStateAccessor.GetAsync(stepContext.Context, () => new CustomerState());
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
             var whatToChange = stepContext.Result as FoundChoice;
 
             // Save name, if prompted.
@@ -701,7 +701,7 @@ namespace PimBot.Dialogs.AddItem
                         break;
                 }
 
-                await _customerStateAccessor.SetAsync(stepContext.Context, customerState);
+                await _customerService.UpdateCustomerState(customerState);
                 stepContext.ActiveDialog.State["stepIndex"] = DialogIndex[whatToChange.Value];
                 return await stepContext.ContinueDialogAsync();
             }
@@ -713,6 +713,7 @@ namespace PimBot.Dialogs.AddItem
         private string GetPrintableCustomerInfo(CustomerState customerState)
         {
             string result = Messages.GetUserInfoCustomerInformation + Environment.NewLine;
+            result += $"**{Messages.Login}**: {customerState.Login}" + Environment.NewLine;
             result += $"**{Messages.Name}**: {customerState.Name}" + Environment.NewLine;
             result += $"**{Messages.Email}**: {customerState.Email}" + Environment.NewLine;
             result += $"**{Messages.PhoneNumber}**: {customerState.PhoneNumber}" + Environment.NewLine;

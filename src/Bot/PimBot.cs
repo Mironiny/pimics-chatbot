@@ -69,23 +69,22 @@ namespace PimBot
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
-            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
-            {
-                AuthKey = Constants.CosmosDBKey,
-                CollectionId = Constants.CosmosDBCollectionName,
-                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
-                DatabaseId = Constants.CosmosDBDatabaseName,
-            });
-
             // If user come from webchat bot should get user info
             if (turnContext.Activity.Name == "webchat/join")
             {
-                await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString());
-                var x = (JObject)turnContext.Activity.Value;
-                await turnContext.SendActivityAsync(x.Count.ToString());
-                var name = JObject.Parse(x.ToString())["name"];
+                await turnContext.SendActivityAsync(
+                    $"{Messages.Greetings}, {turnContext.Activity.From.Id}. {Environment.NewLine} {Messages.IntroducingMessage}",
+                    cancellationToken: cancellationToken);
 
-                await turnContext.SendActivityAsync(name.ToString());
+                await turnContext.SendActivityAsync(Messages.HelpMessage, cancellationToken: cancellationToken);
+                await turnContext.SendActivityAsync(Messages.WhatCanIDo, cancellationToken: cancellationToken);
+
+//                await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString());
+//                var x = (JObject)turnContext.Activity.Value;
+//                await turnContext.SendActivityAsync(x.Count.ToString());
+//                var name = JObject.Parse(x.ToString())["name"];
+
+//                await turnContext.SendActivityAsync(name.ToString());
             }
 
             // Classic reaction to message
@@ -114,8 +113,9 @@ namespace PimBot
                     await dc.BeginDialogAsync(nameof(MainDispatcher));
                 }
             }
-            else if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
+            else if (turnContext.Activity.ChannelId == "emulator" && turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
             {
+                await turnContext.SendActivityAsync(turnContext.Activity.ChannelId, cancellationToken: cancellationToken);
                 if (turnContext.Activity.MembersAdded != null)
                 {
                     // Iterate over all new members added to the conversation

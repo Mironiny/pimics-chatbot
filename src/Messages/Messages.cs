@@ -26,6 +26,7 @@
         // ---------------General ---------------
         public const string Greetings = @"Greetings";
         public const string Name = @"Name";
+        public const string Login = @"Login";
         public const string Email = @"Email";
         public const string PhoneNumber = @"Phone number";
         public const string Address = @"Address";
