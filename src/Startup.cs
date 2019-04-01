@@ -110,27 +110,17 @@ namespace Microsoft.BotBuilderSamples
                 throw new InvalidOperationException($"The .bot file does not contain an endpoint with name '{environment}'.");
             }
 
-            // Memory Storage is for local bot debugging only. When the bot
-            // is restarted, everything stored in memory will be gone.
+            // For testing
             IStorage dataStore = new MemoryStorage();
-
-            // For production bots use the Azure Blob or
-            // Azure CosmosDB storage providers. For the Azure
-            // based storage providers, add the Microsoft.Bot.Builder.Azure
-            // Nuget package to your solution. That package is found at:
-            // https://www.nuget.org/packages/Microsoft.Bot.Builder.Azure/
-            // Un-comment the following lines to use Azure Blob Storage
-            // // Storage configuration name or ID from the .bot file.
-            // const string StorageConfigurationId = "<STORAGE-NAME-OR-ID-FROM-BOT-FILE>";
-            // var blobConfig = botConfig.FindServiceByNameOrId(StorageConfigurationId);
-            // if (!(blobConfig is BlobStorageService blobStorageConfig))
-            // {
-            //    throw new InvalidOperationException($"The .bot file does not contain an blob storage with name '{StorageConfigurationId}'.");
-            // }
-            // // Default container name.
-            // const string DefaultBotContainer = "botstate";
-            // var storageContainer = string.IsNullOrWhiteSpace(blobStorageConfig.Container) ? DefaultBotContainer : blobStorageConfig.Container;
-            // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobStorageConfig.ConnectionString, storageContainer);
+            
+            // For publishing
+//            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
+//            {
+//                AuthKey = Constants.CosmosDBKey,
+//                CollectionId = Constants.CosmosDBCollectionName,
+//                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
+//                DatabaseId = Constants.CosmosDBDatabaseName,
+//            });
 
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);
@@ -138,6 +128,7 @@ namespace Microsoft.BotBuilderSamples
 
             var userState = new UserState(dataStore);
             services.AddSingleton(userState);
+
             var blobStorage = new AzureBlobTranscriptStore(Constants.AzureBlogStorageConnectionString,
                 Constants.BlobTranscriptStorageContainerName);
 

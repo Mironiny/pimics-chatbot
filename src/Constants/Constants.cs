@@ -23,6 +23,12 @@
 
         public const string BlobTranscriptStorageContainerName = "AllConversations";
 
+        // CosmosDB
+        public const string CosmosServiceEndpoint = "https://pimbotdp.documents.azure.com:443/";
+        public const string CosmosDBKey = "DCjdl5L3K3TWXV1ByEq995qFKd4auYO0mDJliVC6IgcKxW8XMBXnx74mKzRq70p1zR0y6pOpamqkIl9KOynm0w==";
+        public const string CosmosDBDatabaseName = "bot-cosmos-sql-db";
+        public const string CosmosDBCollectionName = "bot-storage";
+
         // QNA Maker
         public const string host = "https://qnapimbotdp.azurewebsites.net/qnamaker";
         public const string endpoint_key = "a363fcfd-b747-4b52-86fc-4bf6d999a6e3";

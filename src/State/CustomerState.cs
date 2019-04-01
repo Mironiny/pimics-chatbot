@@ -4,7 +4,11 @@
     {
         public int SmallTalkCount { get; set; }
 
-        public string Id { get; set; }
+        public string Login { get; set; }
+
+        public string CustomerNo { get; set; }
+
+        public bool IsAuthenticated { get; set; }
 
         public string Email { get; set; }
 

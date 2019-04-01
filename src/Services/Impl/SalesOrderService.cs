@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AdaptiveCards.Rendering;
 using PimBot.State;
 
@@ -9,6 +10,20 @@ namespace PimBot.Service.Impl
 {
     public class SalesOrderService : ISalesOrderService
     {
+        public async Task<IEnumerable<SalesOrder>> GetSalesOrderByCustomer(string customerNo)
+        {
+            var client = ODataClientSingleton.Get();
+
+            var orders = await client
+                .For(Constants.Company).Key(Constants.CompanyName)
+                .NavigateTo("SalesOrder")
+         //       .Filter($"Sell_to_Customer_Name%20eq%20%27{customerNo}%27")
+                .FindEntriesAsync();
+
+            var mapOrders = MapOrder(orders).Where(o => o.Sell_to_Customer_Name == customerNo).ToList();
+            return mapOrders;
+        }
+
         public async Task<bool> CreateOrder(CustomerState customerState)
         {
             var client = ODataClientSingleton.Get();
@@ -167,6 +182,7 @@ namespace PimBot.Service.Impl
 
             return order;
         }
+
     }
 
 

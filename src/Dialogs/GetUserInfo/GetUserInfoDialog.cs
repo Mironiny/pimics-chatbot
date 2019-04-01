@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveCards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -9,6 +10,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Service;
 using PimBot.Service.Impl;
+using PimBot.Services.Impl;
 using PimBot.State;
 
 namespace PimBot.Dialogs.AddItem
@@ -20,6 +22,8 @@ namespace PimBot.Dialogs.AddItem
     {
         private readonly ISalesOrderService _salesOrder = new SalesOrderService();
         private readonly IItemService _itemService = new ItemService();
+        private readonly CustomerService _customerService = new CustomerService();
+
 
         // Prompts names
         private const string NamePrompt = "NamePrompt";
@@ -114,6 +118,38 @@ namespace PimBot.Dialogs.AddItem
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
+//           await stepContext.Context.SendActivityAsync(stepContext.Context.Activity.From.Id);
+//           Activity replyToConversation = stepContext.Context.Activity.CreateReply();
+//            replyToConversation.Attachments = new List<Attachment>();
+//
+//            replyToConversation.Attachments.Add(new Attachment
+//            {
+//                ContentType = OAuthCard.ContentType,
+//                Content = new OAuthCard
+//                {
+//                    Text = "Please sign in",
+//                    ConnectionName = " ",
+//                    Buttons = new[]
+//                    {
+//                        new CardAction
+//                        {
+//                            Title = "Sign In",
+//                            Text = "Sign In",
+//                            Type = ActionTypes.Signin,
+//                        },
+//                    },
+//                },
+//            });
+//
+//            await stepContext.Context.SendActivityAsync(replyToConversation);
+//
+//            await stepContext.EndDialogAsync();
+//            var response = stepContext.Context.Activity.CreateReply();
+//
+//            response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk() };
+//            await stepContext.Context.SendActivityAsync(response);
+//
+//            var tmp = await _salesOrder.GetSalesOrderByCustomer("John Haddock Insurance Co.");
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
             await stepContext.Context.SendActivityAsync(Messages.GetUserInfoNewOrder);
@@ -747,6 +783,32 @@ namespace PimBot.Dialogs.AddItem
                 await promptContext.Context.SendActivityAsync(Messages.GetUserInfoEmailIsNotValid);
                 return false;
             }
+        }
+
+        private Attachment CreateAdaptiveCardUsingSdk()
+        {
+            var card = new AdaptiveCard();
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"User name",
+                Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder,
+            });
+            card.Body.Add(new AdaptiveTextInput() { Style = AdaptiveTextInputStyle.Text, Id = "userName" });
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"Password",
+                Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder,
+                Color = AdaptiveTextColor.Light,
+            });
+
+            //            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
+            return new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card
+            };
         }
     }
 }

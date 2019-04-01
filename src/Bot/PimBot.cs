@@ -8,11 +8,14 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using Microsoft.CognitiveServices.ContentModerator.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 using PimBot.Service;
 using PimBot.Service.Impl;
@@ -66,6 +69,26 @@ namespace PimBot
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
+            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
+            {
+                AuthKey = Constants.CosmosDBKey,
+                CollectionId = Constants.CosmosDBCollectionName,
+                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
+                DatabaseId = Constants.CosmosDBDatabaseName,
+            });
+
+            // If user come from webchat bot should get user info
+            if (turnContext.Activity.Name == "webchat/join")
+            {
+                await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString());
+                var x = (JObject)turnContext.Activity.Value;
+                await turnContext.SendActivityAsync(x.Count.ToString());
+                var name = JObject.Parse(x.ToString())["name"];
+
+                await turnContext.SendActivityAsync(name.ToString());
+            }
+
+            // Classic reaction to message
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
                 // Found intent from the input
@@ -105,7 +128,7 @@ namespace PimBot
                         if (member.Id != turnContext.Activity.Recipient.Id)
                         {
                             await turnContext.SendActivityAsync(
-                                $"{Messages.Greetings}, {member.Name}. {Environment.NewLine} {Messages.IntroducingMessage}",
+                                $"{Messages.Greetings}, {turnContext.Activity.From.Id}. {Environment.NewLine} {Messages.IntroducingMessage}",
                                 cancellationToken: cancellationToken);
 
                             await turnContext.SendActivityAsync(Messages.HelpMessage, cancellationToken: cancellationToken);
