@@ -44,6 +44,28 @@
       ]
    },
    {
+      "text":"What electronic devices you have?",
+      "intent":"FindItem",
+      "entities":[
+         {
+            "entity":"itemAdd",
+            "startPos":5,
+            "endPos":23
+         }
+      ]
+   },
+   {
+      "text":"I want a dog",
+      "intent":"FindItem",
+      "entities":[
+         {
+            "entity":"itemAdd",
+            "startPos":7,
+            "endPos":12
+         }
+      ]
+   },
+   {
       "text":"Remove phone",
       "intent":"RemoveItem",
       "entities":[
@@ -139,17 +161,6 @@
             "entity":"itemAdd",
             "startPos":7,
             "endPos":13
-         }
-      ]
-   },
-   {
-      "text":"What electronic devices you have?",
-      "intent":"FindItem",
-      "entities":[
-         {
-            "entity":"itemAdd",
-            "startPos":5,
-            "endPos":23
          }
       ]
    },
@@ -388,6 +399,34 @@
    {
       "text":"Categories please",
       "intent":"ShowCategories",
+      "entities":[
+
+      ]
+   },
+   {
+      "text":"Show orders",
+      "intent":"ShowOrders",
+      "entities":[
+
+      ]
+   },
+   {
+      "text":"Show order",
+      "intent":"ShowOrders",
+      "entities":[
+
+      ]
+   },
+   {
+      "text":"display order",
+      "intent":"ShowOrders",
+      "entities":[
+
+      ]
+   },
+   {
+      "text":"what have i ordered",
+      "intent":"ShowOrders",
       "entities":[
 
       ]

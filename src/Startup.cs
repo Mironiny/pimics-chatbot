@@ -152,7 +152,14 @@ namespace Microsoft.BotBuilderSamples
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");
-                    await context.SendActivityAsync("Sorry, it looks like something went wrong.");
+                    if (exception is System.Net.Http.HttpRequestException)
+                    {
+                        await context.SendActivityAsync("Sorry, PIM server is currently down. Please contact the administrator.");
+                    }
+                    else
+                    {
+                        await context.SendActivityAsync("Sorry, it looks like something went wrong.");
+                    }
                 };
             });
         }

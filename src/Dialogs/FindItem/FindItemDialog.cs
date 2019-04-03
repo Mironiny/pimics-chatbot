@@ -84,19 +84,27 @@ namespace PimBot.Dialogs.FindItem
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
 
-            if (didYouMean != null || (onTurnProperty.Entities[EntityNames.FindItem] != null && onTurnProperty.Entities[EntityNames.FindItem].Count() > 0))
+            if (didYouMean != null || (onTurnProperty.Entities[EntityNames.FindItem] != null &&
+                                       onTurnProperty.Entities[EntityNames.FindItem].Count() > 0))
             {
                 string firstEntity;
                 if (didYouMean == null)
                 {
-                    firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
+                    firstEntity = (string) onTurnProperty.Entities[EntityNames.FindItem].First;
                 }
                 else
                 {
                     firstEntity = didYouMean;
                 }
-
                 pimItems = await _itemService.GetAllItemsAsync(firstEntity);
+
+
+//                try
+//                {
+//                    pimItems = await _itemService.GetAllItemsAsync(firstEntity);
+//                }
+//                catch (Exc)
+
                 var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
 
                 if (didYouMean != null)
