@@ -42,7 +42,7 @@ namespace PimBot.State
 
         public List<OrderState> Orders { get; set; }
 
-        public List<CartState> Cart { get; set; }
+        public CartState Cart { get; set; }
 
     }
 }

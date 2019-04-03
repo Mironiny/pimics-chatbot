@@ -31,6 +31,8 @@ namespace PimBot.Services.Impl
             {
                 var customerState = new CustomerState();
                 customerState.Login = id;
+                customerState.Cart = new CartState();
+                customerState.Cart.Items = new List<PimItem>();
                 var changes = new Dictionary<string, object>();
                 {
                     changes.Add(id, customerState);

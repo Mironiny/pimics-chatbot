@@ -7,11 +7,11 @@
             My main purpose is to help you with finding goods to fit your demands and manage your orders.";
 
         public const string HelpMessage =
-            @"You can find goods by write **find** and put item you are looking for. If you are not sure what exactly you
-            are looking for, I can help - just write **show categories** and I'm going to provide you all goods categories. 
+            @"You can find goods by write **find** and put item you are looking for. If you are not sure what exactly you are looking for, I can 
+            help - just write **show categories** and I'm going to provide you all goods categories. 
             Then you can add item to your cart by write **add** and then number (No) of your item.   
-            Also I can show your cart simple by write **show cart**. Finally, you can confirm your order by writing **confirm**.
-            Don't remamber, you can anytime show this help by type **help**.";
+            Also I can show your cart simple by write **show cart** and your order by write **show orders**. Finally, you can confirm your order by writing **confirm**.
+            Don't remember, you can anytime show this help by type **help**.";
 
         public const string WhatCanIDo = "So, what can I do for you?";
 

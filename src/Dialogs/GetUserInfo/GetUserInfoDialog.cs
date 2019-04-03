@@ -124,8 +124,10 @@ namespace PimBot.Dialogs.AddItem
         {
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            var cartState = await _cartStateAccessor.GetAsync(context, () => new CartState());
-            if (cartState.Items == null || cartState.Items.Count <= 0)
+            CustomerState customerState =
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
+
+            if (customerState.Cart == null || customerState.Cart.Items == null || customerState.Cart.Items.Count <= 0)
             {
                 await context.SendActivityAsync(Messages.FindItemEmptyCart);
                 return await stepContext.EndDialogAsync();
@@ -614,13 +616,12 @@ namespace PimBot.Dialogs.AddItem
         {
             CustomerState customerState =
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
-            var cartState = await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
             var whatToChange = stepContext.Result as FoundChoice;
 
             // Save name, if prompted.
             if (whatToChange == null)
             {
-                await stepContext.Context.SendActivityAsync(ShowCartDialog.GetPrintableCart(cartState, "order"));
+                await stepContext.Context.SendActivityAsync(ShowCartDialog.GetPrintableCart(customerState.Cart, "order"));
                 await stepContext.Context.SendActivityAsync(GetPrintableCustomerInfo(customerState));
 
                 var opts = new PromptOptions
@@ -697,7 +698,6 @@ namespace PimBot.Dialogs.AddItem
         {
             CustomerState customerState =
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
-            var cartState = await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
 
             bool confirmedOrder = (bool)stepContext.Result;
 
@@ -709,13 +709,13 @@ namespace PimBot.Dialogs.AddItem
                     customerState.Orders = new List<OrderState>();
                 }
 
-                var order = new OrderState(cartState.Items, DateTime.Now, OrderStatus.OrderProcessing);
+                var order = new OrderState(new List<PimItem>(customerState.Cart.Items), DateTime.Now, OrderStatus.OrderProcessing);
                 customerState.Orders.Add(order);
                 await _customerService.UpdateCustomerState(customerState);
 
                 // Clean cart
-                cartState.Items.Clear();
-                await _cartStateAccessor.SetAsync(stepContext.Context, cartState);
+                customerState.Cart.Items.Clear();
+                await _customerService.UpdateCustomerState(customerState);
 
                 // Send to backend
                 await stepContext.Context.SendActivityAsync(Messages.GetUserInfoProcessingOrder);

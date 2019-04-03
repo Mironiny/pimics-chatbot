@@ -8,6 +8,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.BotBuilderSamples;
 using PimBot.Service;
 using PimBot.Service.Impl;
+using PimBot.Services;
+using PimBot.Services.Impl;
 using PimBot.State;
 
 namespace PimBot.Dialogs.AddItem
@@ -20,6 +22,7 @@ namespace PimBot.Dialogs.AddItem
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
+        private readonly ICustomerService _customerService = new CustomerService();
 
         // Prompts names
         private const string CountPrompt = "countPrompt";
@@ -47,16 +50,17 @@ namespace PimBot.Dialogs.AddItem
         {
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
-            var cartState =
-                await _cartStateAccessor.GetAsync(context, () => new CartState());
-            if (cartState.Items == null || cartState.Items.Count == 0)
+            CustomerState customerState =
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
+
+            if (customerState.Cart.Items == null || customerState.Cart.Items.Count == 0)
             {
                 await context.SendActivityAsync(Messages.EmptyCart);
                 await context.SendActivityAsync(Messages.SuggestHelp);
             }
             else
             {
-                var itemsInCart = GetPrintableCart(cartState);
+                var itemsInCart = GetPrintableCart(customerState.Cart);
 
                 await context.SendActivityAsync(itemsInCart);
                 await context.SendActivityAsync(Messages.ShowCartAfter);
@@ -75,7 +79,7 @@ namespace PimBot.Dialogs.AddItem
                     itemsInCart += $"* **{Messages.Number}**: {item.No} {Environment.NewLine}";
                     itemsInCart += $"**{Messages.Description}**: {item.Description} {Environment.NewLine}";
                     itemsInCart += $"**{Messages.Count}**: {item.Count} {item.Base_Unit_of_Measure} {Environment.NewLine}";
-                    itemsInCart += $"**{Messages.UnitPrice}**: {item.Unit_Price} {Environment.NewLine}";
+                    itemsInCart += $"**{Messages.UnitPrice}**: {item.Unit_Price} {Environment.NewLine} {Environment.NewLine}";
                 }
             }
 

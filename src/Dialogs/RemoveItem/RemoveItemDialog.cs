@@ -7,6 +7,8 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Services;
+using PimBot.Services.Impl;
 using PimBot.State;
 
 namespace PimBot.Dialogs.AddItem
@@ -17,6 +19,7 @@ namespace PimBot.Dialogs.AddItem
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
+        private readonly ICustomerService _customerService = new CustomerService();
 
         // Prompts names
         private const string ConfirmPrompt = "confirmPrompt";
@@ -24,11 +27,7 @@ namespace PimBot.Dialogs.AddItem
         public RemoveItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
             : base(Name)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-            _services = services;
+            _services = services ?? throw new ArgumentNullException(nameof(services));
             _onTurnAccessor = onTurnAccessor;
             _cartStateAccessor = cartStateAccessor;
 
@@ -56,14 +55,10 @@ namespace PimBot.Dialogs.AddItem
                 var item = (string)onTurnProperty.Entities[EntityNames.Item].First;
 
                 // Check if item exists in cart
-                CartState cartState =
-                    await _cartStateAccessor.GetAsync(context, () => new CartState());
-                if (cartState.Items == null)
-                {
-                    cartState.Items = new List<PimItem>();
-                }
+                CustomerState customerState =
+                    await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-                if (!cartState.Items.Exists(x => x.No == item))
+                if (!customerState.Cart.Items.Exists(x => x.No == item))
                 {
                     await context.SendActivityAsync(Messages.RemoveItemForgotItem);
                     return await stepContext.EndDialogAsync();
@@ -100,16 +95,17 @@ namespace PimBot.Dialogs.AddItem
             bool isConfirmed = (bool)stepContext.Result;
             if (isConfirmed)
             {
-                CartState cartState =
-                    await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
+                CustomerState customerState =
+                    await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-                var nameToRemove = cartState.Items[cartState.Items.Count - 1].Description;
-                var item = cartState.Items.SingleOrDefault(x => x.Description == nameToRemove);
+                var nameToRemove = customerState.Cart.Items[customerState.Cart.Items.Count - 1].Description;
+                var item = customerState.Cart.Items.SingleOrDefault(x => x.Description == nameToRemove);
                 if (item != null)
                 {
-                    cartState.Items.Remove(item);
+                    customerState.Cart.Items.Remove(item);
                 }
 
+                await _customerService.UpdateCustomerState(customerState);
                 await stepContext.Context.SendActivityAsync("Ok, removed.");
                 return await stepContext.EndDialogAsync();
             }

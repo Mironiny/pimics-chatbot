@@ -8,6 +8,8 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Service;
 using PimBot.Service.Impl;
+using PimBot.Services;
+using PimBot.Services.Impl;
 using PimBot.State;
 
 namespace PimBot.Dialogs.AddItem
@@ -23,6 +25,7 @@ namespace PimBot.Dialogs.AddItem
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
+        private readonly ICustomerService _customerService = new CustomerService();
 
         public AddItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
                     : base(Name)
@@ -62,15 +65,11 @@ namespace PimBot.Dialogs.AddItem
                     return await stepContext.EndDialogAsync();
                 }
 
-                CartState cartState =
-                    await _cartStateAccessor.GetAsync(context, () => new CartState());
-                if (cartState.Items == null)
-                {
-                    cartState.Items = new List<PimItem>();
-                }
+                CustomerState customerState =
+                    await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-                cartState.Items.Add(pimItem);
-                await _cartStateAccessor.SetAsync(context, cartState);
+                customerState.Cart.Items.Add(pimItem);
+                await _customerService.UpdateCustomerState(customerState);
                 return await stepContext.NextAsync();
             }
             else
@@ -84,10 +83,10 @@ namespace PimBot.Dialogs.AddItem
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            CartState cartState =
-                await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
+            CustomerState customerState =
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-            var item = cartState.Items[cartState.Items.Count - 1].Description;
+            var item = customerState.Cart.Items[customerState.Cart.Items.Count - 1].Description;
 
             var opts = new PromptOptions
             {
@@ -115,11 +114,11 @@ namespace PimBot.Dialogs.AddItem
             int outputCount;
             int.TryParse(inputCount, out outputCount);
 
-            CartState cartState =
-                await _cartStateAccessor.GetAsync(context, () => new CartState());
+            CustomerState customerState =
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-            cartState.Items[cartState.Items.Count - 1].Count = outputCount;
-            await _cartStateAccessor.SetAsync(context, cartState);
+            customerState.Cart.Items[customerState.Cart.Items.Count - 1].Count = outputCount;
+            await _customerService.UpdateCustomerState(customerState);
 
             await stepContext.Context.SendActivityAsync(Messages.AddToCartAdded);
             return await stepContext.EndDialogAsync();

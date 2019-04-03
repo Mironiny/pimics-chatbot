@@ -74,19 +74,19 @@ namespace PimBot.Dialogs.AddItem
             card.Body.Add(new AdaptiveTextBlock()
             {
                 Text = $"**Status**: processing",
-                Size = AdaptiveTextSize.Medium,
+                Size = AdaptiveTextSize.Small,
                 Weight = AdaptiveTextWeight.Bolder,
             });
             card.Body.Add(new AdaptiveTextBlock()
             {
                 Text = $"**Created at**: {order.CreateDateTime}",
-                Size = AdaptiveTextSize.Medium,
+                Size = AdaptiveTextSize.Small,
                 Weight = AdaptiveTextWeight.Bolder,
             });
             card.Body.Add(new AdaptiveTextBlock()
             {
                 Text = $"{ShowCartDialog.GetPrintableCart(order, "order")}",
-                Size = AdaptiveTextSize.Medium,
+                Size = AdaptiveTextSize.Small,
                 Weight = AdaptiveTextWeight.Bolder,
             });
 
