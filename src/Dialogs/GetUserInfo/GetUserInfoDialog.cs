@@ -39,6 +39,7 @@ namespace PimBot.Dialogs.AddItem
         private const string ShippingCityPrompt = "ShippingCityPrompt";
         private const string ConfirmUserInfoPrompt = "ConfirmUserInfoPrompt";
         private const string CorrectValuePrompt = "CorrectValuePrompt";
+        private const string ConfirmOrderPrompt = "ConfirmOrderPrompt";
 
         public const string Name = "GetUserInfo";
         private readonly BotServices _services;
@@ -95,6 +96,8 @@ namespace PimBot.Dialogs.AddItem
                 ConfirmCustomerInfo,
                 ResolveConfirmCustomerInfo,
                 ResolveIsEverythingOk,
+                ConfirmOrder,
+
             };
             AddDialog(new WaterfallDialog(
                 "start",
@@ -112,46 +115,22 @@ namespace PimBot.Dialogs.AddItem
             AddDialog(new ChoicePrompt(CorrectValuePrompt));
             AddDialog(new TextPrompt(ShippingCityPrompt));
             AddDialog(new ConfirmPrompt(ConfirmUserInfoPrompt));
+            AddDialog(new ConfirmPrompt(ConfirmOrderPrompt));
         }
 
         private async Task<DialogTurnResult> InitializeStateStepAsync(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            //           await stepContext.Context.SendActivityAsync(stepContext.Context.Activity.From.Id);
-            //           Activity replyToConversation = stepContext.Context.Activity.CreateReply();
-            //            replyToConversation.Attachments = new List<Attachment>();
-            //
-            //            replyToConversation.Attachments.Add(new Attachment
-            //            {
-            //                ContentType = OAuthCard.ContentType,
-            //                Content = new OAuthCard
-            //                {
-            //                    Text = "Please sign in",
-            //                    ConnectionName = " ",
-            //                    Buttons = new[]
-            //                    {
-            //                        new CardAction
-            //                        {
-            //                            Title = "Sign In",
-            //                            Text = "Sign In",
-            //                            Type = ActionTypes.Signin,
-            //                        },
-            //                    },
-            //                },
-            //            });
-            //
-            //            await stepContext.Context.SendActivityAsync(replyToConversation);
-            //
-            //            await stepContext.EndDialogAsync();
-            //            var response = stepContext.Context.Activity.CreateReply();
-            //
-            //            response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk() };
-            //            await stepContext.Context.SendActivityAsync(response);
-            //
-            //            var tmp = await _salesOrder.GetSalesOrderByCustomer("John Haddock Insurance Co.");
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
+            var cartState = await _cartStateAccessor.GetAsync(context, () => new CartState());
+            if (cartState.Items == null || cartState.Items.Count <= 0)
+            {
+                await context.SendActivityAsync(Messages.FindItemEmptyCart);
+                return await stepContext.EndDialogAsync();
+            }
+
             await stepContext.Context.SendActivityAsync(Messages.GetUserInfoNewOrder);
             return await stepContext.NextAsync();
         }
@@ -635,22 +614,24 @@ namespace PimBot.Dialogs.AddItem
         {
             CustomerState customerState =
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
+            var cartState = await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
             var whatToChange = stepContext.Result as FoundChoice;
 
             // Save name, if prompted.
             if (whatToChange == null)
             {
-                var isSave = await _salesOrder.CreateOrder(customerState);
-                if (isSave == true)
-                {
-                    await stepContext.Context.SendActivityAsync(Messages.GetUserInfoPromptIsOrderOk);
-                }
-                else
-                {
-                    await stepContext.Context.SendActivityAsync(Messages.GetUserInfoServerIssue);
-                }
+                await stepContext.Context.SendActivityAsync(ShowCartDialog.GetPrintableCart(cartState, "order"));
+                await stepContext.Context.SendActivityAsync(GetPrintableCustomerInfo(customerState));
 
-                return await stepContext.EndDialogAsync();
+                var opts = new PromptOptions
+                {
+                    Prompt = new Activity
+                    {
+                        Type = ActivityTypes.Message,
+                        Text = Messages.GetUserInfoConfirmOrder,
+                    },
+                };
+                return await stepContext.PromptAsync(ConfirmUserInfoPrompt, opts);
             }
             else
             {
@@ -705,6 +686,36 @@ namespace PimBot.Dialogs.AddItem
                 stepContext.ActiveDialog.State["stepIndex"] = DialogIndex[whatToChange.Value];
                 return await stepContext.ContinueDialogAsync();
             }
+        }
+
+        /// <summary>
+        /// Resolve CUSTOMER INFR.
+        /// </summary>
+        private async Task<DialogTurnResult> ConfirmOrder(
+            WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
+        {
+            CustomerState customerState =
+                await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
+            var cartState = await _cartStateAccessor.GetAsync(stepContext.Context, () => new CartState());
+
+            bool confirmedOrder = (bool)stepContext.Result;
+
+            if (confirmedOrder)
+            {
+                // Clean cart
+                cartState.Items.Clear();
+                await _cartStateAccessor.SetAsync(stepContext.Context, cartState);
+
+                // Send to backend
+                await stepContext.Context.SendActivityAsync(Messages.GetUserInfoProcessingOrder);
+            }
+            else
+            {
+                await stepContext.Context.SendActivityAsync(Messages.GetUserInfoProcessingOrder);
+            }
+
+            return await stepContext.EndDialogAsync();
         }
 
         /// <summary>

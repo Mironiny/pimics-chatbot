@@ -111,16 +111,16 @@ namespace Microsoft.BotBuilderSamples
             }
 
             // For testing
-//            IStorage dataStore = new MemoryStorage();
+            IStorage dataStore = new MemoryStorage();
             
             // For publishing
-            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
-            {
-                AuthKey = Constants.CosmosDBKey,
-                CollectionId = Constants.CosmosDBCollectionName,
-                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
-                DatabaseId = Constants.CosmosDBDatabaseName,
-            });
+//            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
+//            {
+//                AuthKey = Constants.CosmosDBKey,
+//                CollectionId = Constants.CosmosDBCollectionName,
+//                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
+//                DatabaseId = Constants.CosmosDBDatabaseName,
+//            });
 
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);
@@ -143,7 +143,7 @@ namespace Microsoft.BotBuilderSamples
                 options.Middleware.Add(new TestMiddleware());
 
                 // For logging every single conversations
-                options.Middleware.Add(new TranscriptLoggerMiddleware(blobStorage));
+//                options.Middleware.Add(new TranscriptLoggerMiddleware(blobStorage));
                 options.Middleware.Add(new ShowTypingMiddleware());
                 var middleware = options.Middleware;
 
@@ -155,32 +155,6 @@ namespace Microsoft.BotBuilderSamples
                     await context.SendActivityAsync("Sorry, it looks like something went wrong.");
                 };
             });
-
-            // Create and register state accessors.
-            // Accessors created here are passed into the IBot-derived class on every turn.
-            //            services.AddSingleton<PimBotStateAccesors>(sp =>
-            //            {
-            //                var options = sp.GetRequiredService<IOptions<BotFrameworkOptions>>().Value;
-            //                if (options == null)
-            //                {
-            //                    throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
-            //                }
-            //
-            //                var userState1 = options.State.OfType<UserState>().FirstOrDefault();
-            //                if (userState1 == null)
-            //                {
-            //                    throw new InvalidOperationException("UserState must be defined and added before adding user-scoped state accessors.");
-            //                }
-            //
-            //                // Create the custom state accessor.
-            //                // State accessors enable other components to read and write individual properties of state.
-            //                var accessors = new PimBotStateAccesors(userState1)
-            //                {
-            //                    PimBotState = userState1.CreateProperty<PimBotState>(PimBotStateAccesors.PimUserName),
-            //                };
-            //
-            //                return accessors;
-            //            });
         }
 
         /// <summary>

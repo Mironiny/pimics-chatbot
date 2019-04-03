@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PimBot.State;
+using System;
+using System.Linq;
 
 namespace PimBot.Services
 {
@@ -7,6 +9,13 @@ namespace PimBot.Services
         public static bool ContainsIgnoreCase(string sentance, string key)
         {
             return sentance.IndexOf(key, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        public static bool CompareTokenByToken(string sentence, string key)
+        {
+            string[] tokens = sentence.Split(new char[] {' ', '.', ','});
+            tokens.Where(t => ContainsIgnoreCase(key, t)).ToString();
+            return tokens.Any();
         }
 
         /// <summary>

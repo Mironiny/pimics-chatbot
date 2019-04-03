@@ -64,7 +64,7 @@
             @"Your cart is **empty** now. To add item to your cart simple type **add** and then your desirable item.";
 
         public const string ShowCartTitle =
-            @"Here is your cart:";
+            @"Here is your ";
 
         public const string ShowCartAfter =
             @"You can confirm your order simple by write **confirm**. Also you can remove some item by typing **remove** and No.";
@@ -88,6 +88,7 @@
         public const string FindItemFindItem = "There is one item which corresponds your answers.";
         public const string FindItemNotFound = "Sorry, I haven't found any item to match your criteria. For new search please write **find**.";
         public const string FindItemForgotItem = "You forgot add what you are looking for. I can provide you a little help.";
+        public const string FindItemEmptyCart = "Your cart is **empty** now. Please add something to your cart to create new **order**. You can find goods by write **find**. ";
 
         public static readonly string[] FindItemQuestionStart = new string[]
             {
@@ -96,7 +97,6 @@
                 "What do you think about",
                 "",
             };
-
 
         // ---------------Get User Info ---------------
         public const string GetUserInfoNewOrder = @"To make a new order I need to contact information about you.";
@@ -107,7 +107,7 @@
         public const string GetUserInfoPromptPostCode = @"What is your **post code**?";
         public const string GetUserInfoPromptCity = @"What is your **city**?";
         public const string GetUserInfoPromptShippingMatch = @"Is this address also your shipping address?";
-        public const string GetUserInfoPromptIsOrderOk = @"Is all information correct";
+        public const string GetUserInfoPromptIsOrderOk = @"Are all the information correct?";
         public const string GetUserInfoContinueWithOrder = @"Okey, let's continue with the order";
         public const string GetUserInfoPromptChange = @"What customer information do you want to change?";
         public const string GetUserInfoPromptEdit = @"Please, choose what do you want change.";
@@ -119,6 +119,8 @@
         public const string GetUserInfoPromptShippingPostCode = @"What is your **shipping post code**?";
         public const string GetUserInfoPromptShippingCity = @"What is your **shipping city**?";
         public const string GetUserInfoEmailIsNotValid = @"Sorry, your email is not valid. Please, try it again.";
-
+        public const string GetUserInfoConfirmOrder = @"Are you **confirm** the order?";
+        public const string GetUserInfoProcessingOrder = @"Your order has been sent for processing. You will receive an email with the next instructions. You can show your orders by writing **show orders**.";
+        public const string GetUserInfoNotConfirmedOrder = @"Your order has been aborted.";
     }
 }

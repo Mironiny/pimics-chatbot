@@ -63,7 +63,7 @@ namespace PimBot.Service.Impl
                 .FindEntriesAsync();
 
             var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();
-            var featuresByItem = await _featuresService.GetAllFeaturesByItemAsync();
+      //      var featuresByItem = await _featuresService.GetAllFeaturesByItemAsync();
 
             var pimItems = MapItems(items);
 
@@ -310,7 +310,7 @@ namespace PimBot.Service.Impl
 
             foreach (var keyword in keywords)
             {
-                if (CommonUtil.ContainsIgnoreCase(keyword.Keyword, key))
+                if (CommonUtil.ContainsIgnoreCase(keyword.Keyword, key) || CommonUtil.ContainsIgnoreCase(key, keyword.Keyword))
                 {
                     return true;
                 }
@@ -322,7 +322,8 @@ namespace PimBot.Service.Impl
         private IEnumerable<PimItem> FilterByDescription(IEnumerable<PimItem> items, string key)
         {
             return items
-                .Where(o => CommonUtil.ContainsIgnoreCase(o.Description, key))
+                .Where(o => CommonUtil.ContainsIgnoreCase(o.Description, key) || CommonUtil.ContainsIgnoreCase(key, o.Description))
+                                                            //                  || CommonUtil.CompareTokenByToken(o.Description, key))
                 .ToList();
         }
 

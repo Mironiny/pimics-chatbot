@@ -115,7 +115,6 @@ namespace PimBot
             }
             else if (turnContext.Activity.ChannelId == "emulator" && turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
             {
-                await turnContext.SendActivityAsync(turnContext.Activity.ChannelId, cancellationToken: cancellationToken);
                 if (turnContext.Activity.MembersAdded != null)
                 {
                     // Iterate over all new members added to the conversation

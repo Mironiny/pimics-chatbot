@@ -56,19 +56,7 @@ namespace PimBot.Dialogs.AddItem
             }
             else
             {
-                string itemsInCart = Messages.ShowCartTitle + Environment.NewLine;
-                foreach (var item in cartState.Items)
-                {
-                    if (item.Count > 0)
-                    {
-                        itemsInCart += $"* **{Messages.Number}**: {item.No} {Environment.NewLine}";
-                        itemsInCart += $"**{Messages.Description}**: {item.Description} {Environment.NewLine}";
-                        itemsInCart += $"**{Messages.Count}**: {item.Count} {item.Base_Unit_of_Measure} {Environment.NewLine}";
-                        itemsInCart += $"**{Messages.UnitPrice}**: {item.Unit_Price} {Environment.NewLine}";
-                    }
-                }
-
-                itemsInCart += $"\n\n {Messages.ShowCartFullPrice} {GetFullPrice(cartState.Items)}";
+                var itemsInCart = GetPrintableCart(cartState);
 
                 await context.SendActivityAsync(itemsInCart);
                 await context.SendActivityAsync(Messages.ShowCartAfter);
@@ -77,7 +65,26 @@ namespace PimBot.Dialogs.AddItem
             return await stepContext.EndDialogAsync();
         }
 
-        private decimal GetFullPrice(List<PimItem> items)
+        public static string GetPrintableCart(CartState cartState, string label = "cart")
+        {
+            string itemsInCart = Messages.ShowCartTitle + label + ":" + Environment.NewLine;
+            foreach (var item in cartState.Items)
+            {
+                if (item.Count > 0)
+                {
+                    itemsInCart += $"* **{Messages.Number}**: {item.No} {Environment.NewLine}";
+                    itemsInCart += $"**{Messages.Description}**: {item.Description} {Environment.NewLine}";
+                    itemsInCart += $"**{Messages.Count}**: {item.Count} {item.Base_Unit_of_Measure} {Environment.NewLine}";
+                    itemsInCart += $"**{Messages.UnitPrice}**: {item.Unit_Price} {Environment.NewLine}";
+                }
+            }
+
+            itemsInCart += $"{Environment.NewLine} _________________________________ ";
+            itemsInCart += $"\n\n {Environment.NewLine} {Messages.ShowCartFullPrice} **{GetFullPrice(cartState.Items)}**";
+            return itemsInCart;
+        }
+
+        private static decimal GetFullPrice(List<PimItem> items)
         {
             return items.Sum(item => item.Unit_Price * item.Count);
         }
