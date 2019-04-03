@@ -5,6 +5,7 @@
         public const string FindItem = "FindItem";
         public const string AddItem = "AddItem";
         public const string ShowCart = "ShowCart";
+        public const string ShowOrders = "ShowOrders";
         public const string RemoveItem = "RemoveItem";
         public const string DetailItem = "DetailItem";
         public const string ShowCategories = "ShowCategories";

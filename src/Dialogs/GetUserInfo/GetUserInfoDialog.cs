@@ -703,6 +703,16 @@ namespace PimBot.Dialogs.AddItem
 
             if (confirmedOrder)
             {
+                // Save order
+                if (customerState.Orders == null)
+                {
+                    customerState.Orders = new List<OrderState>();
+                }
+
+                var order = new OrderState(cartState.Items, DateTime.Now, OrderStatus.OrderProcessing);
+                customerState.Orders.Add(order);
+                await _customerService.UpdateCustomerState(customerState);
+
                 // Clean cart
                 cartState.Items.Clear();
                 await _cartStateAccessor.SetAsync(stepContext.Context, cartState);

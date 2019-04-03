@@ -1,4 +1,7 @@
-﻿namespace PimBot.State
+﻿using System.Collections.Generic;
+using PimBot.Service.Impl;
+
+namespace PimBot.State
 {
     public class CustomerState
     {
@@ -36,6 +39,10 @@
         public string ShippingPostCode { get; set; }
 
         public string ShippingCity { get; set; }
+
+        public List<OrderState> Orders { get; set; }
+
+        public List<CartState> Cart { get; set; }
 
     }
 }

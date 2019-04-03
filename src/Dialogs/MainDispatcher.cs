@@ -59,6 +59,7 @@ namespace PimBotDp.Dialogs
             AddDialog(new GetUserInfoDialog(services, onTurnAccessor, _cartStateAccessor, _customerStateAccessor));
             AddDialog(new FindItemDialog(services, onTurnAccessor, _cartStateAccessor));
             AddDialog(new ShowCartDialog(services, onTurnAccessor, _cartStateAccessor));
+            AddDialog(new ShowOrdersDialog(services, onTurnAccessor));
             AddDialog(new ShowCategoriesDialog(services, onTurnAccessor));
             AddDialog(new DetailItemDialog(services, onTurnAccessor));
         }
@@ -162,6 +163,9 @@ namespace PimBotDp.Dialogs
 
                 case Intents.ShowCart:
                     return await dc.BeginDialogAsync(ShowCartDialog.Name);
+
+                case Intents.ShowOrders:
+                    return await dc.BeginDialogAsync(ShowOrdersDialog.Name);
 
                 case Intents.DetailItem:
                     return await dc.BeginDialogAsync(DetailItemDialog.Name);

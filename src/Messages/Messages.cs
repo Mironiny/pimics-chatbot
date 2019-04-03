@@ -69,6 +69,9 @@
         public const string ShowCartAfter =
             @"You can confirm your order simple by write **confirm**. Also you can remove some item by typing **remove** and No.";
 
+        // ---------------Show orders ---------------
+        public const string ShowOrdersNoOrder = @"Sorry, you don't have any active orders.";
+
         // ---------------Show categories ---------------
         public const string ShowCategoriesAvaliableCategories = @"This is all available **categories**: ";
 
