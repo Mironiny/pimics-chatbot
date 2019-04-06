@@ -13,7 +13,6 @@
         public const string ProductGroupServiceEndpointName = "ProductGroupsPIM";
         public const string ItemGroupLinks = "ItemGroupLinks";
 
-
         // Should be somewhere else
         public const string SecureUserName = "Allium";
         public const string SecureUserPassword = "#Allium12345$";

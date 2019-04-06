@@ -96,16 +96,11 @@ namespace PimBot.Dialogs.FindItem
                 {
                     firstEntity = didYouMean;
                 }
+
+                // Get all items
                 pimItems = await _itemService.GetAllItemsAsync(firstEntity);
 
-
-//                try
-//                {
-//                    pimItems = await _itemService.GetAllItemsAsync(firstEntity);
-//                }
-//                catch (Exc)
-
-                var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
+//                var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
 
                 if (didYouMean != null)
                 {
@@ -124,7 +119,7 @@ namespace PimBot.Dialogs.FindItem
                         Prompt = new Activity
                         {
                             Type = ActivityTypes.Message,
-                            Text = $"Did you mean {didYouMean}?",
+                            Text = string.Format(Messages.FindItemDidYouMean, didYouMean),
                         },
                     };
                     return await stepContext.PromptAsync(DidYouMeanPrompt, opts);
@@ -136,12 +131,14 @@ namespace PimBot.Dialogs.FindItem
                 }
                 else
                 {
-                    await context.SendActivityAsync($"I've found {pimItems.Count()} potentional {firstEntity} in {groupCount} groups.");
+                    var prompt = string.Format(Messages.FindItemFound, pimItems.Count(), firstEntity) + Messages.WhatToDoPrompt;
 
                     return await stepContext.PromptAsync(
                         ShowAllItemsPrompt,
                         new PromptOptions
                         {
+                            Prompt = MessageFactory.Text(prompt),
+                            RetryPrompt = MessageFactory.Text(prompt + Messages.CancelPrompt),
                             Choices = ChoiceFactory.ToChoices(new List<string> { Messages.FindItemShowAllItem, Messages.FindItemSpecialize }),
                         },
                         cancellationToken);
@@ -234,11 +231,13 @@ namespace PimBot.Dialogs.FindItem
 
             var choices = feature.GetPrintableValues();
             choices.Add(Messages.Skip);
+            var prompt = $"{GetPrepositon()} **{feature.Description}**?";
             return await stepContext.PromptAsync(
                 AskForPropertyPrompt,
                 new PromptOptions
                 {
-                    Prompt = MessageFactory.Text($"{GetPrepositon()} **{feature.Description}**?"),
+                    Prompt = MessageFactory.Text(prompt),
+                    RetryPrompt = MessageFactory.Text(prompt + Messages.CancelPrompt),
                     Choices = ChoiceFactory.ToChoices(choices),
                 },
                 cancellationToken);
@@ -299,7 +298,6 @@ namespace PimBot.Dialogs.FindItem
                 featuresToAsk.RemoveAt(0);
             }
 
-            //          featuresToAsk.RemoveAt(0);
             if (!(questionCounter % Constants.QuestionLimit == 0))
             {
                 // Once in a time ask if user want continue with question 
@@ -317,7 +315,6 @@ namespace PimBot.Dialogs.FindItem
             CancellationToken cancellationToken)
         {
             var context = stepContext.Context;
-            var groups = _itemService.GetAllItemsCategory(pimItems);
 
             if (pimItems.Count() == 1)
             {
@@ -326,7 +323,7 @@ namespace PimBot.Dialogs.FindItem
                 return await stepContext.ContinueDialogAsync();
             }
 
-            await context.SendActivityAsync($"I've found {pimItems.Count()} items in {groups.Count()} groups.");
+            await context.SendActivityAsync($"I've found {pimItems.Count()} items.");
             return await stepContext.PromptAsync(
                 ShowAllItemsPrompt,
                 new PromptOptions
@@ -413,11 +410,12 @@ namespace PimBot.Dialogs.FindItem
                 Size = AdaptiveTextSize.Medium,
                 Weight = AdaptiveTextWeight.Bolder,
             });
-            //            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
+            card.Actions.Add(new AdaptiveSubmitAction() { Title = Messages.FindItemAddToCartButton, Data = $"add {item.No}"});
+            card.Actions.Add(new AdaptiveSubmitAction() { Title = Messages.FindItemShowDetailButton, Data = $"detail {item.No}" });
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
-                Content = card
+                Content = card,
             };
         }
 

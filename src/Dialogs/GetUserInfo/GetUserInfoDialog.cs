@@ -825,7 +825,7 @@ namespace PimBot.Dialogs.AddItem
                 Color = AdaptiveTextColor.Light,
             });
 
-            //            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Submit" });
+//            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Add to cart" });
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,

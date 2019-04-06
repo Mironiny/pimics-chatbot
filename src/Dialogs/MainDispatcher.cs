@@ -90,6 +90,8 @@ namespace PimBotDp.Dialogs
                     await _conversationState.SaveChangesAsync(innerDc.Context);
                     await _userState.SaveChangesAsync(innerDc.Context);
                     await innerDc.Context.SendActivityAsync(Messages.InteruptionCancelConfirm);
+                    await innerDc.Context.SendActivityAsync(Messages.IsThereAnythingICanDo);
+
                     return await innerDc.CancelAllDialogsAsync();
                 }
                 else

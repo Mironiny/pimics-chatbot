@@ -152,13 +152,13 @@ namespace Microsoft.BotBuilderSamples
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");
-                    if (exception is System.Net.Http.HttpRequestException)
+                    if (exception is System.Net.Http.HttpRequestException || exception is System.Net.Sockets.SocketException)
                     {
-                        await context.SendActivityAsync("Sorry, PIM server is currently down. Please contact the administrator.");
+                        await context.SendActivityAsync(Messages.ServerIssue);
                     }
                     else
                     {
-                        await context.SendActivityAsync("Sorry, it looks like something went wrong.");
+                        await context.SendActivityAsync(Messages.SomethingWrong);
                     }
                 };
             });

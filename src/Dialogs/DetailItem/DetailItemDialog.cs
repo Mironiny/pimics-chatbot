@@ -66,7 +66,6 @@ namespace PimBot.Dialogs.AddItem
                 await context.SendActivityAsync(response);
             }
 
-            await context.SendActivityAsync(Messages.DetailItemForgotItem);
             return await stepContext.EndDialogAsync();
         }
 
@@ -91,6 +90,8 @@ namespace PimBot.Dialogs.AddItem
                     Weight = AdaptiveTextWeight.Bolder,
                 });
             }
+
+            card.Actions.Add(new AdaptiveSubmitAction() { Title = Messages.FindItemAddToCartButton, Data = $"add {item.No}" });
 
             return new Attachment()
             {

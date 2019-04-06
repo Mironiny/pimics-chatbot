@@ -19,7 +19,14 @@
             @"Sorry, I don't **understand** your message 😕.";
 
         public const string ServerIssue =
-            @"Sorry, **I cannot connect** to the PIM server 😕. Admin should check if server is running.";
+            @"Sorry, PIM server is currently down. Please contact the administrator.";
+
+        public const string SomethingWrong =
+            @"Sorry, it looks like something went wrong.";
+
+        public const string WhatToDoPrompt = @"What to do?";
+
+        public const string CancelPrompt = @" Don't remember, you can cancel this action by write **cancel**.";
 
         public const string SuggestHelp = @"For more help simple write **help**.";
 
@@ -82,6 +89,8 @@
         public const string RemoveItemForgotItem = @"Sorry, I cannot find in your cart. You can show your cart simple by write *show cart*.";
 
         // ---------------Find item ---------------
+        public const string FindItemDidYouMean = "Did you mean {0}?";
+        public const string FindItemFound = "I've found {0} potentional **{1}**. ";
         public const string FindItemAddToCart = @"You can simple add item to your cart by write **add** and item No. Also if you want to show more details about item just type **detail** and No.";
         public const string FindItemShowAllItem = "Show all items.";
         public const string FindItemSpecialize = "Let you ask me.";
@@ -92,6 +101,8 @@
         public const string FindItemNotFound = "Sorry, I haven't found any item to match your criteria. For new search please write **find**.";
         public const string FindItemForgotItem = "You forgot add what you are looking for. I can provide you a little help.";
         public const string FindItemEmptyCart = "Your cart is **empty** now. Please add something to your cart to create new **order**. You can find goods by write **find**. ";
+        public const string FindItemAddToCartButton = "Add to cart";
+        public const string FindItemShowDetailButton = "Show details";
 
         public static readonly string[] FindItemQuestionStart = new string[]
             {
