@@ -106,12 +106,12 @@ namespace PimBot.Dialogs.AddItem
                 }
 
                 await _customerService.UpdateCustomerState(customerState);
-                await stepContext.Context.SendActivityAsync("Ok, removed.");
+                await stepContext.Context.SendActivityAsync(Messages.RemoveItemRemoved);
                 return await stepContext.EndDialogAsync();
             }
             else
             {
-                await stepContext.Context.SendActivityAsync("Ok, never mind.");
+                await stepContext.Context.SendActivityAsync(Messages.RemoveItemChangeMind);
                 return await stepContext.EndDialogAsync();
             }
         }
@@ -124,18 +124,17 @@ namespace PimBot.Dialogs.AddItem
             bool isNumeric = int.TryParse(count, out n);
             if (!isNumeric)
             {
-                await promptContext.Context.SendActivityAsync($"Sorry, please add just number.");
+                await promptContext.Context.SendActivityAsync(Messages.RemoveItemNotNumber);
                 return false;
             }
 
             if (n < 1)
             {
-                await promptContext.Context.SendActivityAsync($"Sorry, count has to be greater than 0.");
+                await promptContext.Context.SendActivityAsync(Messages.RemoveItemGreater);
                 return false;
             }
 
             return true;
         }
-
     }
 }

@@ -73,7 +73,6 @@ namespace PimBot.Dialogs.FindItem
             if (Type == FeatureType.Numeric)
             {
                 var intList = ValuesList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
-              //  List<double> doubles = intList.Select<int, double>(i => i).ToList();
                 var median = intList.Median();
                 return median;
             }
@@ -116,7 +115,6 @@ namespace PimBot.Dialogs.FindItem
                         count += item.PimFeatures.Where(i => i.Number == Number && i.Value == feature).Count();
                     }
 
-                    // OJEB (nevim jeslti funguje)
                     double entrop = 0;
                     for (int i = 0; i < count; i++)
                     {

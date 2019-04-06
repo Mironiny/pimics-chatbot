@@ -17,7 +17,7 @@ namespace PimBot.Services.Impl
             dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
             {
                 AuthKey = Constants.CosmosDBKey,
-                CollectionId = "customers",
+                CollectionId = Constants.CosmosDBCustomersCollectionId,
                 CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
                 DatabaseId = Constants.CosmosDBDatabaseName,
             });

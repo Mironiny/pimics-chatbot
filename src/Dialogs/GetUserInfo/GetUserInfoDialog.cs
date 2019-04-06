@@ -156,6 +156,11 @@ namespace PimBot.Dialogs.AddItem
                         Type = ActivityTypes.Message,
                         Text = Messages.GetUserInfoPromptName,
                     },
+                    RetryPrompt = new Activity
+                    {
+                        Type = ActivityTypes.Message,
+                        Text = Messages.GetUserInfoPromptName + Messages.CancelPrompt,
+                    },
                 };
                 return await stepContext.PromptAsync(NamePrompt, opts);
             }
@@ -186,6 +191,11 @@ namespace PimBot.Dialogs.AddItem
                     var opts = new PromptOptions
                     {
                         Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = Messages.GetUserInfoPromptEmail,
+                        },
+                        RetryPrompt = new Activity
                         {
                             Type = ActivityTypes.Message,
                             Text = Messages.GetUserInfoPromptEmail,
@@ -805,32 +815,6 @@ namespace PimBot.Dialogs.AddItem
                 await promptContext.Context.SendActivityAsync(Messages.GetUserInfoEmailIsNotValid);
                 return false;
             }
-        }
-
-        private Attachment CreateAdaptiveCardUsingSdk()
-        {
-            var card = new AdaptiveCard();
-            card.Body.Add(new AdaptiveTextBlock()
-            {
-                Text = $"User name",
-                Size = AdaptiveTextSize.Medium,
-                Weight = AdaptiveTextWeight.Bolder,
-            });
-            card.Body.Add(new AdaptiveTextInput() { Style = AdaptiveTextInputStyle.Text, Id = "userName" });
-            card.Body.Add(new AdaptiveTextBlock()
-            {
-                Text = $"Password",
-                Size = AdaptiveTextSize.Medium,
-                Weight = AdaptiveTextWeight.Bolder,
-                Color = AdaptiveTextColor.Light,
-            });
-
-//            card.Actions.Add(new AdaptiveSubmitAction() { Title = "Add to cart" });
-            return new Attachment()
-            {
-                ContentType = AdaptiveCard.ContentType,
-                Content = card
-            };
         }
     }
 }

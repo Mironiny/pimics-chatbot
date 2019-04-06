@@ -27,6 +27,7 @@
         public const string CosmosDBKey = "DCjdl5L3K3TWXV1ByEq995qFKd4auYO0mDJliVC6IgcKxW8XMBXnx74mKzRq70p1zR0y6pOpamqkIl9KOynm0w==";
         public const string CosmosDBDatabaseName = "bot-cosmos-sql-db";
         public const string CosmosDBCollectionName = "bot-storage";
+        public const string CosmosDBCustomersCollectionId = "customers";
 
         // QNA Maker
         public const string host = "https://qnapimbotdp.azurewebsites.net/qnamaker";

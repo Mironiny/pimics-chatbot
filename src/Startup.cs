@@ -9,19 +9,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.BotFramework;
-using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Bot.Builder.PersonalityChat;
-using Microsoft.Bot.Builder.PersonalityChat.Core;
 using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using PimBot;
-using PimBot.State;
-using PimBotDp.Middleware;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -138,9 +132,6 @@ namespace Microsoft.BotBuilderSamples
                 options.ChannelProvider = new ConfigurationChannelProvider(Configuration);
 
                 ILogger logger = _loggerFactory.CreateLogger<PimBot.PimBot>();
-
-                // Add Midleware
-                options.Middleware.Add(new TestMiddleware());
 
                 // For logging every single conversations
 //                options.Middleware.Add(new TranscriptLoggerMiddleware(blobStorage));

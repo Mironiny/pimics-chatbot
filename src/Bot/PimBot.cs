@@ -30,7 +30,6 @@ namespace PimBot
 
         private readonly IItemService _itemService = new ItemService();
 
-        private readonly PimBotStateAccesors _pimBotStateAccesors;
         private readonly BotServices _services;
         private readonly UserState _userState;
         private readonly ConversationState _conversationState;

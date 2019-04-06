@@ -74,7 +74,7 @@ namespace PimBot.Dialogs.AddItem
             }
             else
             {
-                await context.SendActivityAsync("You have to provide No of item which you want order.");
+                await context.SendActivityAsync(Messages.AddItemNoItem);
                 return await stepContext.EndDialogAsync();
             }
         }
@@ -87,18 +87,18 @@ namespace PimBot.Dialogs.AddItem
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
             var item = customerState.Cart.Items[customerState.Cart.Items.Count - 1].Description;
-
+            var prompt = string.Format(Messages.AddItemHowManyPrompt, item);
             var opts = new PromptOptions
             {
                 Prompt = new Activity
                 {
                     Type = ActivityTypes.Message,
-                    Text = $"How many **{item}** do you want order?",
+                    Text = prompt,
                 },
                 RetryPrompt = new Activity
                 {
                     Type = ActivityTypes.Message,
-                    Text = $"How many **{item}** do you want order?",
+                    Text = prompt + Messages.CancelPrompt,
                 },
             };
             return await stepContext.PromptAsync(CountPrompt, opts);

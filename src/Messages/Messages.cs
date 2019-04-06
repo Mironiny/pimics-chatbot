@@ -1,5 +1,8 @@
 ﻿namespace PimBot
 {
+    /// <summary>
+    /// Every Chatbot messages. Note that is supported Markdown.
+    /// </summary>
     public static class Messages
     {
         public const string IntroducingMessage =
@@ -64,6 +67,8 @@
         public const string AddToCartValidationOnlyNumber = @"Sorry, please add just number.";
         public const string AddToCartValidationPositiveNumber = @"Sorry, count has to be greater than 0.";
         public const string AddItemForgotItem = "You forgot add item what you want order.";
+        public const string AddItemNoItem = "You have to provide No of item which you want order.";
+        public const string AddItemHowManyPrompt = "How many **{0}** do you want order?";
 
         // ---------------Show cart ---------------
         public const string ShowCartFullPrice = @"Full price is";
@@ -87,6 +92,10 @@
 
         // ---------------Remove item ---------------
         public const string RemoveItemForgotItem = @"Sorry, I cannot find in your cart. You can show your cart simple by write *show cart*.";
+        public const string RemoveItemRemoved = @"Ok, removed.";
+        public const string RemoveItemChangeMind = @"Ok, never mind.";
+        public const string RemoveItemNotNumber = @"Sorry, please add just number.";
+        public const string RemoveItemGreater = @"Sorry, count has to be greater than 0.";
 
         // ---------------Find item ---------------
         public const string FindItemDidYouMean = "Did you mean {0}?";
