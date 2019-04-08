@@ -16,6 +16,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PimBot;
+using PimBot.Repositories.Impl;
+using PimBot.Service;
+using PimBot.Service.Impl;
+using PimBot.Services.Impl;
+using PimBotDp.Services;
+using PimBotDp.Services.Impl;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -61,6 +67,7 @@ namespace Microsoft.BotBuilderSamples
         /// <param name="services">Specifies the contract for a <see cref="IServiceCollection"/> of service descriptors.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+
             var secretKey = Configuration.GetSection("botFileSecret")?.Value;
             var botFilePath = Configuration.GetSection("botFilePath")?.Value;
             if (!File.Exists(botFilePath))
@@ -89,6 +96,17 @@ namespace Microsoft.BotBuilderSamples
             // Add BotServices singleton.
             // Create the connected services from .bot file.
             services.AddSingleton(sp => new BotServices(botConfig));
+
+            // Create PimBotServiceProvider
+            var featureService = new FeatureService(new FeatureRepository());
+            var keywordService = new KeywordService(new KeywordRepository());
+            var categoryService = new CategoryService(new CategoryRepository());
+            var itemService = new ItemService(new ItemRepository(), featureService, keywordService, categoryService);
+            var serviceProvider = new PimBotServiceProvider(itemService, keywordService, featureService, categoryService);
+
+            services.AddSingleton<IPimbotServiceProvider>(serviceProvider);
+
+            services.AddScoped<IKeywordService, KeywordService>();
 
             // Retrieve current endpoint.
             var environment = _isProduction ? "production" : "development";
@@ -119,6 +137,8 @@ namespace Microsoft.BotBuilderSamples
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);
             services.AddSingleton(conversationState);
+
+            services.AddScoped<IKeywordService, KeywordService>();
 
             var userState = new UserState(dataStore);
             services.AddSingleton(userState);

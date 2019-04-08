@@ -11,6 +11,7 @@ using PimBot.Dialogs.FindItem;
 using PimBot.Service;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Services;
 
 namespace PimBotDp.Dialogs
 {
@@ -31,7 +32,7 @@ namespace PimBotDp.Dialogs
         private readonly DialogSet _dialogs;
 
         public MainDispatcher(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, UserState userState, ConversationState conversationState,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory, IPimbotServiceProvider provider)
             : base(nameof(MainDispatcher))
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
@@ -54,14 +55,14 @@ namespace PimBotDp.Dialogs
 
             _cartStateAccessor = userState.CreateProperty<CartState>(nameof(CartState));
             _dialogs = new DialogSet(_mainDispatcherAccessor);
-            AddDialog(new AddItemDialog(services, onTurnAccessor, _cartStateAccessor));
+            AddDialog(new AddItemDialog(services, onTurnAccessor, _cartStateAccessor, provider));
             AddDialog(new RemoveItemDialog(services, onTurnAccessor, _cartStateAccessor));
-            AddDialog(new GetUserInfoDialog(services, onTurnAccessor, _cartStateAccessor, _customerStateAccessor));
-            AddDialog(new FindItemDialog(services, onTurnAccessor, _cartStateAccessor));
-            AddDialog(new ShowCartDialog(services, onTurnAccessor, _cartStateAccessor));
-            AddDialog(new ShowOrdersDialog(services, onTurnAccessor));
-            AddDialog(new ShowCategoriesDialog(services, onTurnAccessor));
-            AddDialog(new DetailItemDialog(services, onTurnAccessor));
+            AddDialog(new GetUserInfoDialog(services, onTurnAccessor, _cartStateAccessor, _customerStateAccessor, provider));
+            AddDialog(new FindItemDialog(services, onTurnAccessor, _cartStateAccessor, provider));
+            AddDialog(new ShowCartDialog(services, onTurnAccessor, _cartStateAccessor, provider));
+            AddDialog(new ShowOrdersDialog(services, onTurnAccessor, provider));
+            AddDialog(new ShowCategoriesDialog(services, onTurnAccessor, provider));
+            AddDialog(new DetailItemDialog(services, onTurnAccessor, provider));
         }
 
         protected override async Task<DialogTurnResult> OnBeginDialogAsync(DialogContext innerDc, object options,

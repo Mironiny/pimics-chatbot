@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -7,10 +6,10 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Service;
-using PimBot.Service.Impl;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Services;
 
 namespace PimBot.Dialogs.AddItem
 {
@@ -20,19 +19,22 @@ namespace PimBot.Dialogs.AddItem
 
         // Prompts names
         private const string CountPrompt = "countPrompt";
-
-        private readonly IItemService _itemService = new ItemService();
+        private readonly IItemService _itemService;
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
         private readonly ICustomerService _customerService = new CustomerService();
 
-        public AddItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
-                    : base(Name)
+        public AddItemDialog(BotServices services,
+            IStatePropertyAccessor<OnTurnState> onTurnAccessor,
+            IStatePropertyAccessor<CartState> cartStateAccessor,
+            IPimbotServiceProvider provider)
+            : base(Name)
         {
             _services = services;
             _onTurnAccessor = onTurnAccessor;
             _cartStateAccessor = cartStateAccessor;
+            _itemService = provider.ItemService;
 
             // Add dialogs
             var waterfallSteps = new WaterfallStep[]

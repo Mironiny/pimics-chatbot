@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Dialogs.FindItem;
+using PimBot.Repositories;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
@@ -12,9 +13,20 @@ namespace PimBot.Service.Impl
 {
     public class ItemService : IItemService
     {
-        private readonly IKeywordService _keywordService = new KeywordService();
-        private readonly IFeatureService _featuresService = new FeatureService();
-        private readonly ICategoryService _categoryService = new CategoryService();
+
+        private IItemRepository _itemRepository;
+        private readonly IKeywordService _keywordService;
+        private readonly IFeatureService _featuresService;
+        private readonly ICategoryService _categoryService;
+
+        public ItemService(IItemRepository itemRepository, IFeatureService featureService, IKeywordService keywordService, ICategoryService categoryService)
+        {
+            _itemRepository = itemRepository;
+            _featuresService = featureService;
+            _keywordService = keywordService;
+            _categoryService = categoryService;
+        }
+
 
         /// <summary>
         /// 
@@ -24,16 +36,7 @@ namespace PimBot.Service.Impl
         public async Task<PimItem> FindItemByNo(string no)
         {
             // Refactor to look only for one items
-            var itemList = new List<string>();
-
-            var client = ODataClientSingleton.Get();
-
-            var items = await client
-                .For(Constants.Company).Key(Constants.CompanyName)
-                .NavigateTo(Constants.ItemsServiceEndpointName)
-                .FindEntriesAsync();
-
-            var pimItems = MapItems(items);
+            var pimItems = await _itemRepository.GetAll();
 
             var pimItem = pimItems.Where(o => o.No.Equals(no, StringComparison.OrdinalIgnoreCase)).ToList();
             if (pimItem == null || !pimItem.Any())
@@ -53,19 +56,8 @@ namespace PimBot.Service.Impl
         /// <returns></returns>
         public async Task<IEnumerable<PimItem>> GetAllItemsAsync(string entity)
         {
-            var itemList = new List<string>();
-
-            var client = ODataClientSingleton.Get();
-
-            var items = await client
-                .For(Constants.Company).Key(Constants.CompanyName)
-                .NavigateTo(Constants.ItemsServiceEndpointName)
-                .FindEntriesAsync();
-
+            var pimItems = await _itemRepository.GetAll();
             var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();
-      //      var featuresByItem = await _featuresService.GetAllFeaturesByItemAsync();
-
-            var pimItems = MapItems(items);
 
             var filteredByCategory = await FilterByCategory(pimItems, entity);
             var filteredByKeywords = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
@@ -190,7 +182,7 @@ namespace PimBot.Service.Impl
                     {
                         if (index == 0)
                         {
-                           return items.Where(i => Convert.ToDouble(i.Unit_Price) <= Convert.ToDouble(value)).ToList();
+                            return items.Where(i => Convert.ToDouble(i.Unit_Price) <= Convert.ToDouble(value)).ToList();
                         }
                         else if (index == 1)
                         {
@@ -254,19 +246,11 @@ namespace PimBot.Service.Impl
 
         public async Task<string> FindSimilarItemsByDescription(string description)
         {
-            var client = ODataClientSingleton.Get();
-
-            var items = await client
-                .For(Constants.Company).Key(Constants.CompanyName)
-                .NavigateTo(Constants.ItemsServiceEndpointName)
-                .FindEntriesAsync();
-
-            var pimItems = MapItems(items);
+            var pimItems = await _itemRepository.GetAll();
 
             var keywords = await _keywordService.GetAllKeywordsAsync();
             var groups = await _categoryService.GetAllItemGroupAsync();
             var groupsProduct = await _categoryService.GetAllProductGroupAsync();
-
 
             var unitedItems = pimItems.Select(i => i.Description)
                 .Union(keywords.Select(k => k.Keyword))
@@ -282,8 +266,6 @@ namespace PimBot.Service.Impl
 
             return null;
         }
-
-
 
         private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string entity)
         {
@@ -323,7 +305,7 @@ namespace PimBot.Service.Impl
         {
             return items
                 .Where(o => CommonUtil.ContainsIgnoreCase(o.Description, key) || CommonUtil.ContainsIgnoreCase(key, o.Description))
-                                                            //                  || CommonUtil.CompareTokenByToken(o.Description, key))
+                //                  || CommonUtil.CompareTokenByToken(o.Description, key))
                 .ToList();
         }
 

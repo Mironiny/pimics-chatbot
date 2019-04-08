@@ -13,6 +13,7 @@ using PimBot.Service.Impl;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Services;
 
 namespace PimBot.Dialogs.AddItem
 {
@@ -21,18 +22,19 @@ namespace PimBot.Dialogs.AddItem
         public const string Name = "Show_orders";
         private readonly ICustomerService _customerService = new CustomerService();
 
-        private readonly IItemService _itemService = new ItemService();
+        private readonly IItemService _itemService;
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
 
         // Prompts names
         private const string CountPrompt = "countPrompt";
 
-        public ShowOrdersDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor)
+        public ShowOrdersDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IPimbotServiceProvider provider)
             : base(Name)
         {
             _services = services;
             _onTurnAccessor = onTurnAccessor;
+            _itemService = provider.ItemService;
 
             // Add dialogs
             var waterfallSteps = new WaterfallStep[]

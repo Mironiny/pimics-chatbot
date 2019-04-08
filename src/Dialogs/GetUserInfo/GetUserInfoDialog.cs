@@ -13,6 +13,7 @@ using PimBot.Service.Impl;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Services;
 
 namespace PimBot.Dialogs.AddItem
 {
@@ -22,7 +23,7 @@ namespace PimBot.Dialogs.AddItem
     public class GetUserInfoDialog : ComponentDialog
     {
         private readonly ISalesOrderService _salesOrder = new SalesOrderService();
-        private readonly IItemService _itemService = new ItemService();
+        private readonly IItemService _itemService;
         private readonly ICustomerService _customerService = new CustomerService();
 
         // Prompts names
@@ -66,13 +67,15 @@ namespace PimBot.Dialogs.AddItem
 
         public GetUserInfoDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor,
             IStatePropertyAccessor<CartState> cartStateAccessor,
-            IStatePropertyAccessor<CustomerState> customerStateAccessor)
+            IStatePropertyAccessor<CustomerState> customerStateAccessor,
+            IPimbotServiceProvider provider)
             : base(Name)
         {
             _services = services;
             _onTurnAccessor = onTurnAccessor;
             _cartStateAccessor = cartStateAccessor;
             _customerStateAccessor = customerStateAccessor;
+            _itemService = provider.ItemService;
 
             // Add dialogs
             var waterfallSteps = new WaterfallStep[]

@@ -12,6 +12,7 @@ using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Services;
 
 namespace PimBot.Dialogs.AddItem
 {
@@ -19,18 +20,20 @@ namespace PimBot.Dialogs.AddItem
     {
         public const string Name = "DetailItem";
 
-        private readonly IItemService _itemService = new ItemService();
-        private readonly IFeatureService _featureService = new FeatureService();
+        private readonly IItemService _itemService;
+        private readonly IFeatureService _featureService;
 
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
 
-        public DetailItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor)
+        public DetailItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IPimbotServiceProvider provider)
             : base(Name)
         {
             _services = services;
             _onTurnAccessor = onTurnAccessor;
+            _itemService = provider.ItemService;
+            _featureService = provider.FeatureService;
 
             // Add dialogs
             var waterfallSteps = new WaterfallStep[]

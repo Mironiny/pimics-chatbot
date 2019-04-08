@@ -14,6 +14,7 @@ using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Services;
 
 namespace PimBot.Dialogs.FindItem
 {
@@ -36,8 +37,8 @@ namespace PimBot.Dialogs.FindItem
 
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
-        private readonly IItemService _itemService = new ItemService();
-        private readonly ICategoryService _categoryService = new CategoryService();
+        private readonly IItemService _itemService;
+        private readonly ICategoryService _categoryService;
 
         private static IEnumerable<PimItem> pimItems = new List<PimItem>();
         private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
@@ -45,12 +46,14 @@ namespace PimBot.Dialogs.FindItem
         // Prompts names
         private const string CountPrompt = "countPrompt";
 
-        public FindItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor)
+        public FindItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor, IPimbotServiceProvider provider)
             : base(Name)
         {
             _services = services;
             _onTurnAccessor = onTurnAccessor;
             _cartStateAccessor = cartStateAccessor;
+            _itemService = provider.ItemService;
+            _categoryService = provider.CategoryService;
 
             // Add dialogs
             var waterfallSteps = new WaterfallStep[]
@@ -69,7 +72,7 @@ namespace PimBot.Dialogs.FindItem
             AddDialog(new ChoicePrompt(ShowAllItemsPrompt));
             AddDialog(new ConfirmPrompt(DidYouMeanPrompt));
             AddDialog(new ChoicePrompt(AskForPropertyPrompt));
-            AddDialog(new ShowCategoriesDialog(services, onTurnAccessor));
+            AddDialog(new ShowCategoriesDialog(services, onTurnAccessor, provider));
         }
 
         private async Task<DialogTurnResult> InitializeStateStepAsync(

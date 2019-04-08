@@ -21,6 +21,7 @@ using PimBot.Service;
 using PimBot.Service.Impl;
 using PimBot.State;
 using PimBotDp.Dialogs;
+using PimBotDp.Services;
 
 namespace PimBot
 {
@@ -28,7 +29,7 @@ namespace PimBot
     {
         public static readonly string LuisConfiguration = "pimbotdp";
 
-        private readonly IItemService _itemService = new ItemService();
+//        private readonly IItemService _itemService = new ItemService();
 
         private readonly BotServices _services;
         private readonly UserState _userState;
@@ -36,8 +37,10 @@ namespace PimBot
         private readonly IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private readonly IStatePropertyAccessor<DialogState> _dialogStateAccessor;
         private readonly ILogger _logger;
+        private readonly IKeywordService _keywordService;
 
-        public PimBot(BotServices services, UserState userState, ConversationState conversationState, ILoggerFactory loggerFactory)
+
+        public PimBot(BotServices services, UserState userState, ConversationState conversationState, ILoggerFactory loggerFactory, IPimbotServiceProvider provider)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
@@ -61,7 +64,7 @@ namespace PimBot
             }
 
             Dialogs = new DialogSet(_dialogStateAccessor);
-            Dialogs.Add(new MainDispatcher(services, _onTurnAccessor, userState, conversationState, loggerFactory));
+            Dialogs.Add(new MainDispatcher(services, _onTurnAccessor, userState, conversationState, loggerFactory, provider));
         }
 
         private DialogSet Dialogs { get; set; }
