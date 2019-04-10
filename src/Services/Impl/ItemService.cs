@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using PimBot.Dialogs.FindItem;
 using PimBot.Repositories;
 using PimBot.Services;
-using PimBot.Services.Impl;
 using PimBot.State;
 
 namespace PimBot.Service.Impl
@@ -14,7 +13,7 @@ namespace PimBot.Service.Impl
     public class ItemService : IItemService
     {
 
-        private IItemRepository _itemRepository;
+        private readonly IItemRepository _itemRepository;
         private readonly IKeywordService _keywordService;
         private readonly IFeatureService _featuresService;
         private readonly ICategoryService _categoryService;
@@ -26,7 +25,6 @@ namespace PimBot.Service.Impl
             _keywordService = keywordService;
             _categoryService = categoryService;
         }
-
 
         /// <summary>
         /// 
@@ -50,18 +48,18 @@ namespace PimBot.Service.Impl
         }
 
         /// <summary>
-        /// 
+        /// Method returns every items which match item description or category description or has keywords with same value.
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="description">Value to look for in item description, category and keywords</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PimItem>> GetAllItemsAsync(string entity)
+        public async Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description)
         {
             var pimItems = await _itemRepository.GetAll();
-            var keywordsByItemSet = await _keywordService.GetAllKeywordsByItemAsync();
+            var keywordsByItemSet = await _keywordService.GetAllKeywordsGroupByItemCodeAsync();
 
-            var filteredByCategory = await FilterByCategory(pimItems, entity);
-            var filteredByKeywords = FilterByKeywordsMatch(pimItems, entity, keywordsByItemSet);
-            var filteredByDescription = FilterByDescription(pimItems, entity);
+            var filteredByCategory = await FilterByCategory(pimItems, description);
+            var filteredByKeywords = FilterByKeywordsMatch(pimItems, description, keywordsByItemSet);
+            var filteredByDescription = FilterByItemDescription(pimItems, description);
 
             var unitedItems = filteredByDescription
                 .Union(filteredByKeywords)
@@ -78,35 +76,38 @@ namespace PimBot.Service.Impl
         }
 
         /// <summary>
-        /// 
+        /// Method choose from inputs items features to ask. It's sorts features by order and computed information gain.
         /// </summary>
         /// <param name="items"></param>
-        /// <returns></returns>
-        public async Task<List<FeatureToAsk>> GetAllAttributes(IEnumerable<PimItem> items)
+        /// <returns>Ordered features to ask</returns>
+        public async Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items)
         {
             var features = await _featuresService.GetAllFeaturesByItemAsync();
             var itemsNos = items.ToList().Select(i => i.No).ToList();
-            var pimFeature = features.Where(f => itemsNos.Contains(f.Key)).ToList();
+            var featuresByInputItems = features.Where(f => itemsNos.Contains(f.Key)).ToList();
 
-            var fff = new List<FeatureToAsk>();
-            foreach (var feature in pimFeature)
+            var featureToAsks = new List<FeatureToAsk>();
+            foreach (var feature in featuresByInputItems)
             {
                 List<string> added = new List<string>();
                 foreach (var ftr in feature.Value)
                 {
-                    // Check if already in array
-                    var index = fff.FindIndex(f => f.Number == ftr.Number);
+                    // Check if already in feature to ask
+                    var index = featureToAsks.FindIndex(f => f.Number == ftr.Number);
                     if (!(index >= 0))
                     {
+                        // Add to feature to ask
                         var featureToAsk = new FeatureToAsk(ftr.Number, ftr.Description, ftr.Order, ftr.Unit_Shorthand_Description);
                         featureToAsk.ValuesList = new HashSet<string>();
+
+                        // Added new feature value
                         if (ftr.Value != string.Empty)
                         {
                             added.Add(ftr.Description);
                             featureToAsk.ValuesList.Add(ftr.Value);
                         }
 
-                        fff.Add(featureToAsk);
+                        featureToAsks.Add(featureToAsk);
                     }
                     else
                     {
@@ -116,30 +117,39 @@ namespace PimBot.Service.Impl
                             if (ftr.Value != string.Empty)
                             {
                                 added.Add(ftr.Description);
-                                fff[index].ValuesList.Add(ftr.Value);
+                                featureToAsks[index].ValuesList.Add(ftr.Value);
                             }
                         }
                     }
                 }
             }
 
-            // Added to question UNIT PRICE
-            var featureToA = new FeatureToAsk(Constants.UnitPriceType, "Unit price", 1, string.Empty);
-            featureToA.ValuesList = new HashSet<string>();
+            // Added to features to ask the unit price which is by default not in features
+            var unitPriceFeature = new FeatureToAsk(Constants.UnitPriceType, Messages.UnitPrice, 1, string.Empty);
+            unitPriceFeature.ValuesList = new HashSet<string>();
             foreach (var item in items)
             {
-                featureToA.ValuesList.Add(item.Unit_Price.ToString("F", CultureInfo.CreateSpecificCulture("en-US")));
+                unitPriceFeature.ValuesList.Add(item.Unit_Price.ToString("F", CultureInfo.CreateSpecificCulture("en-US")));
             }
 
-            fff.Add(featureToA);
+            featureToAsks.Add(unitPriceFeature);
 
-            // Atributes without value or with one value are meaningless
-            var ff = fff.Where(i => i.ValuesList.Count > 1).ToList();
+            // Features without value or with one value are meaningless - they don't help
+            var filteredFeatureToAsk = featureToAsks.Where(i => i.ValuesList.Count > 1).ToList();
 
-            ff.ForEach(i => i.SetAndCheckType());
-            ff.ForEach(i => i.ComputeInformationGain(items.ToList()));
-            var fuu = ff.OrderByDescending(i => i.Order).ThenByDescending(i => i.InformationGain).ToList();
-            return fuu;
+            // Set type of feature - numeric, text, etc
+            filteredFeatureToAsk.ForEach(i => i.SetAndCheckType());
+
+            // For every feature compute information gain
+            filteredFeatureToAsk.ForEach(i => i.ComputeInformationGain(items.ToList()));
+
+            // Order features by Order and information gain
+            var orderedFeaturesToAsk = filteredFeatureToAsk
+                .OrderByDescending(i => i.Order)
+                .ThenByDescending(i => i.InformationGain)
+                .ToList();
+
+            return orderedFeaturesToAsk;
         }
 
         /// <summary>
@@ -225,7 +235,7 @@ namespace PimBot.Service.Impl
         }
 
         /// <summary>
-        /// 
+        /// Get all categories which match input items.
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
@@ -301,11 +311,10 @@ namespace PimBot.Service.Impl
             return false;
         }
 
-        private IEnumerable<PimItem> FilterByDescription(IEnumerable<PimItem> items, string key)
+        private IEnumerable<PimItem> FilterByItemDescription(IEnumerable<PimItem> items, string key)
         {
             return items
                 .Where(o => CommonUtil.ContainsIgnoreCase(o.Description, key) || CommonUtil.ContainsIgnoreCase(key, o.Description))
-                //                  || CommonUtil.CompareTokenByToken(o.Description, key))
                 .ToList();
         }
 

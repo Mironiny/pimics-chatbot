@@ -11,8 +11,6 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Dialogs.AddItem;
 using PimBot.Service;
-using PimBot.Service.Impl;
-using PimBot.Services.Impl;
 using PimBot.State;
 using PimBotDp.Services;
 
@@ -20,31 +18,29 @@ namespace PimBot.Dialogs.FindItem
 {
     public class FindItemDialog : ComponentDialog
     {
-        private static readonly int ShowItemsDialogIndex = 5;
-        private static bool AskedForFeature;
-        private static int questionCounter;
-        private static List<string> questionAkedList = new List<string>();
-
-        // Variable serve for savings didYouMean recomendation. If is empty that means that we should not look against this variable
-        private static string didYouMean = null;
-
         public const string Name = "Find_item";
-        private readonly BotServices _services;
 
         private const string ShowAllItemsPrompt = "ShowAllItemsPrompt";
         private const string AskForPropertyPrompt = "AskForPropertyPrompt";
         private const string DidYouMeanPrompt = "DidYouMean";
+        private const string CountPrompt = "countPrompt";
 
-        private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
-        private IStatePropertyAccessor<CartState> _cartStateAccessor;
-        private readonly IItemService _itemService;
-        private readonly ICategoryService _categoryService;
-
+        private static readonly int ShowItemsDialogIndex = 5;
+        private static bool askedForFeature;
+        private static int questionCounter;
+        private static List<string> questionAkedList = new List<string>();
         private static IEnumerable<PimItem> pimItems = new List<PimItem>();
         private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
 
-        // Prompts names
-        private const string CountPrompt = "countPrompt";
+        // Variable serve for savings didYouMean recomendation. If is empty that means that we should not look against this variable
+        private static string didYouMean = null;
+
+        private readonly IItemService _itemService;
+        private readonly ICategoryService _categoryService;
+        private readonly BotServices _services;
+
+        private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
+        private IStatePropertyAccessor<CartState> _cartStateAccessor;
 
         public FindItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IStatePropertyAccessor<CartState> cartStateAccessor, IPimbotServiceProvider provider)
             : base(Name)
@@ -80,7 +76,7 @@ namespace PimBot.Dialogs.FindItem
             CancellationToken cancellationToken)
         {
             // Initalization of static variables
-            AskedForFeature = false;
+            askedForFeature = false;
             questionCounter = 0;
             questionAkedList = new List<string>();
 
@@ -93,7 +89,7 @@ namespace PimBot.Dialogs.FindItem
                 string firstEntity;
                 if (didYouMean == null)
                 {
-                    firstEntity = (string) onTurnProperty.Entities[EntityNames.FindItem].First;
+                    firstEntity = (string)onTurnProperty.Entities[EntityNames.FindItem].First;
                 }
                 else
                 {
@@ -101,9 +97,8 @@ namespace PimBot.Dialogs.FindItem
                 }
 
                 // Get all items
-                pimItems = await _itemService.GetAllItemsAsync(firstEntity);
-
-//                var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
+                pimItems = await _itemService.GetAllItemsByMatchAsync(firstEntity);
+                //                var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
 
                 if (didYouMean != null)
                 {
@@ -114,7 +109,7 @@ namespace PimBot.Dialogs.FindItem
                 {
                     await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**");
 
-                    // Try to find if user doesnt do type
+                    // Try to find if user doesnt do type error
                     didYouMean = await _itemService.FindSimilarItemsByDescription(firstEntity);
 
                     var opts = new PromptOptions
@@ -154,7 +149,6 @@ namespace PimBot.Dialogs.FindItem
 
             return await stepContext.EndDialogAsync();
         }
-
 
         /// <summary>
         /// Resolve everything is OK.
@@ -217,10 +211,10 @@ namespace PimBot.Dialogs.FindItem
             CancellationToken cancellationToken)
         {
             var context = stepContext.Context;
-            if (!AskedForFeature)
+            if (!askedForFeature)
             {
-                featuresToAsk = await _itemService.GetAllAttributes(pimItems);
-                AskedForFeature = true;
+                featuresToAsk = await _itemService.GetAllFeaturesToAsk(pimItems);
+                askedForFeature = true;
             }
 
             if (!featuresToAsk.Any())
@@ -268,13 +262,16 @@ namespace PimBot.Dialogs.FindItem
                 }
                 else
                 {
-                    pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0],
-                        featuresToAsk[0].GetMedianValue().ToString(), choice.Index);
+                    pimItems = await _itemService.FilterItemsByFeature(
+                        pimItems,
+                        featuresToAsk[0],
+                        featuresToAsk[0].GetMedianValue().ToString(),
+                        choice.Index);
                 }
 
                 questionAkedList.Add(featuresToAsk[0].Number);
 
-                featuresToAsk = await _itemService.GetAllAttributes(pimItems);
+                featuresToAsk = await _itemService.GetAllFeaturesToAsk(pimItems);
                 featuresToAsk = RemoveFromList(featuresToAsk, questionAkedList);
 
                 if (!featuresToAsk.Any())
@@ -303,7 +300,7 @@ namespace PimBot.Dialogs.FindItem
 
             if (!(questionCounter % Constants.QuestionLimit == 0))
             {
-                // Once in a time ask if user want continue with question 
+                // Once in a time ask if user want continue with question
                 stepContext.ActiveDialog.State["stepIndex"] = 1;
             }
 
@@ -413,7 +410,7 @@ namespace PimBot.Dialogs.FindItem
                 Size = AdaptiveTextSize.Medium,
                 Weight = AdaptiveTextWeight.Bolder,
             });
-            card.Actions.Add(new AdaptiveSubmitAction() { Title = Messages.FindItemAddToCartButton, Data = $"add {item.No}"});
+            card.Actions.Add(new AdaptiveSubmitAction() { Title = Messages.FindItemAddToCartButton, Data = $"add {item.No}" });
             card.Actions.Add(new AdaptiveSubmitAction() { Title = Messages.FindItemShowDetailButton, Data = $"detail {item.No}" });
             return new Attachment()
             {
@@ -423,6 +420,7 @@ namespace PimBot.Dialogs.FindItem
         }
 
         private static int position = 0;
+
         private string GetPrepositon()
         {
             if (position >= Messages.FindItemQuestionStart.Length)
@@ -445,8 +443,6 @@ namespace PimBot.Dialogs.FindItem
             }
 
             return features;
-
         }
-
     }
 }

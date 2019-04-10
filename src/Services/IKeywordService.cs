@@ -8,6 +8,6 @@ namespace PimBot.Service
     {
         Task<IEnumerable<PimKeyword>> GetAllKeywordsAsync();
 
-        Task<Dictionary<string, List<PimKeyword>>> GetAllKeywordsByItemAsync();
+        Task<Dictionary<string, List<PimKeyword>>> GetAllKeywordsGroupByItemCodeAsync();
     }
 }

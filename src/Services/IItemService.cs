@@ -10,12 +10,12 @@ namespace PimBot.Service
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="description"></param>
         /// <returns></returns>
-        Task<IEnumerable<PimItem>> GetAllItemsAsync(string item);
+        Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description);
 
         /// <summary>
-        /// Find item by No. If there is no match return null.
+        /// Find description by No. If there is no match return null.
         /// </summary>
         Task<PimItem> FindItemByNo(string no);
 
@@ -24,7 +24,7 @@ namespace PimBot.Service
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        Task<List<FeatureToAsk>> GetAllAttributes(IEnumerable<PimItem> items);
+        Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items);
 
         /// <summary>
         /// 

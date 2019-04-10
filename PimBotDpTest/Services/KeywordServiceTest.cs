@@ -1,20 +1,17 @@
 using Moq;
 using NUnit.Framework;
 using PimBot.Repositories;
-using PimBot.Repositories.Impl;
-using PimBot.Services;
-using PimBot.State;
-using System.Collections.Generic;
 using System.Linq;
 using PimBotDpTest.Utils;
 using PimBot.Services.Impl;
 using System.Threading.Tasks;
+using PimBot.Service;
 
 namespace Tests
 {
     public class KeywordServiceTest
     {
-        private KeywordService keywordService;
+        private IKeywordService keywordService;
 
         [SetUp]
         public void Setup()
@@ -22,9 +19,8 @@ namespace Tests
             var mock = new Mock<IKeywordRepository>();
             var keywords = FakeDataGenerator.CreateDummyKeywords();
 
-            mock.Setup(foo => foo.GetAll()).ReturnsAsync(keywords);
+            mock.Setup(r => r.GetAll()).ReturnsAsync(keywords);
             keywordService = new KeywordService(mock.Object);
-
         }
 
         [Test]
@@ -59,16 +55,46 @@ namespace Tests
         }
 
         [Test]
-        public async Task GetAllKeywordsByItemAsync_KeywordProperty_Test()
+        public async Task GetAllKeywordsGroupByItemCodeAsync_KeywordsKeys_Test()
         {
             // Given
             var keywords = FakeDataGenerator.CreateDummyKeywords().ToList();
 
             // When
-            var returnedKeywords = await keywordService.GetAllKeywordsByItemAsync();
-            Assert.NotNull(returnedKeywords);
+            var returnedKeywords = await keywordService.GetAllKeywordsGroupByItemCodeAsync();
 
+            // Then
+            Assert.NotNull(returnedKeywords);
+            Assert.AreEqual(2, returnedKeywords.Keys.Count);
         }
 
+        [Test]
+        public async Task GetAllKeywordsGroupByItemCodeAsync_CountOfValues_Test()
+        {
+            // Given
+            var keywords = FakeDataGenerator.CreateDummyKeywords().ToList();
+
+            // When
+            var returnedKeywords = await keywordService.GetAllKeywordsGroupByItemCodeAsync();
+
+            // Then
+            Assert.NotNull(returnedKeywords);
+            Assert.AreEqual(1, returnedKeywords["1000"].Count);
+            Assert.AreEqual(2, returnedKeywords["1001"].Count);
+        }
+
+        [Test]
+        public async Task GetAllKeywordsGroupByItemCodeAsync_Values_Test()
+        {
+            // Given
+            var keywords = FakeDataGenerator.CreateDummyKeywords().ToList();
+
+            // When
+            var returnedKeywords = await keywordService.GetAllKeywordsGroupByItemCodeAsync();
+
+            // Then
+            Assert.NotNull(returnedKeywords);
+            Assert.AreEqual("cellphone", returnedKeywords["1000"].ToList().First().Keyword);
+        }
     }
 }
