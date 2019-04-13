@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using AdaptiveCards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -34,7 +33,7 @@ namespace PimBot.Dialogs.FindItem
         private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
 
         // Variable serve for savings didYouMean recomendation. If is empty that means that we should not look against this variable
-        private static string didYouMean = null;
+        public static string didYouMean = null;
 
         private readonly IItemService _itemService;
         private readonly ICategoryService _categoryService;
@@ -108,7 +107,7 @@ namespace PimBot.Dialogs.FindItem
 
                 if (pimItems.Count() == 0)
                 {
-                    await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**");
+                    await context.SendActivityAsync($"{Messages.NotFound} **{firstEntity}**.");
 
                     // Try to find if user doesnt do type error
                     didYouMean = await _itemService.FindSimilarItemsByDescription(firstEntity);
@@ -378,13 +377,6 @@ namespace PimBot.Dialogs.FindItem
                     var pictureUrl = await _itemService.GetImageUrl(item);
 
                     var response = stepContext.Context.Activity.CreateReply();
-
-                    response.Attachments.Add(new Attachment()
-                    {
-                        ContentUrl = pictureUrl,
-                        ContentType = "image/jpeg",
-                    });
-                    await context.SendActivityAsync(response);
 
                     response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item, pictureUrl) };
                     await context.SendActivityAsync(response);

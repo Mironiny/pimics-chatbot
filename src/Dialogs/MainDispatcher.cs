@@ -88,6 +88,7 @@ namespace PimBotDp.Dialogs
             {
                 if (innerDc.ActiveDialog != null)
                 {
+                    FindItemDialog.didYouMean = null;
                     await _conversationState.SaveChangesAsync(innerDc.Context);
                     await _userState.SaveChangesAsync(innerDc.Context);
                     await innerDc.Context.SendActivityAsync(Messages.InteruptionCancelConfirm);
