@@ -16,11 +16,8 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            var mock = new Mock<IKeywordRepository>();
-            var keywords = FakeDataGenerator.CreateDummyKeywords();
-
-            mock.Setup(r => r.GetAll()).ReturnsAsync(keywords);
-            keywordService = new KeywordService(mock.Object);
+            IKeywordRepository mock = MockServiceGenerator.CreateKeywordRepository();
+            keywordService = new KeywordService(mock);
         }
 
         [Test]
@@ -65,7 +62,7 @@ namespace Tests
 
             // Then
             Assert.NotNull(returnedKeywords);
-            Assert.AreEqual(2, returnedKeywords.Keys.Count);
+            Assert.AreEqual(3, returnedKeywords.Keys.Count);
         }
 
         [Test]
@@ -94,7 +91,7 @@ namespace Tests
 
             // Then
             Assert.NotNull(returnedKeywords);
-            Assert.AreEqual("cellphone", returnedKeywords["1000"].ToList().First().Keyword);
+            Assert.AreEqual("chair", returnedKeywords["1000"].ToList().First().Keyword);
         }
     }
 }

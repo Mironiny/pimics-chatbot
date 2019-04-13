@@ -31,15 +31,9 @@ namespace PimBot.Services.Impl
                 .ToList();
         }
 
-        public async Task<IEnumerable<PimItemGroup>> GetAllItemGroupAsync()
-        {
-            return await _categoryRepository.GetAllItemGroup();
-        }
+        public async Task<IEnumerable<PimItemGroup>> GetAllItemGroupAsync() => await _categoryRepository.GetAllItemGroup();
 
-        public async Task<IEnumerable<PimProductGroup>> GetAllProductGroupAsync()
-        {
-            return await _categoryRepository.GetAllProductGroup();
-        }
+        public async Task<IEnumerable<PimProductGroup>> GetAllProductGroupAsync() => await _categoryRepository.GetAllProductGroup();
 
         public async Task GetItemGroupsByNo(PimItem item)
         {

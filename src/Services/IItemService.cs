@@ -12,22 +12,22 @@ namespace PimBot.Service
         /// </summary>
         /// <param name="description"></param>
         /// <returns></returns>
-        Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description);
+        Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description); //tested
 
         /// <summary>
         /// Find description by No. If there is no match return null.
         /// </summary>
-        Task<PimItem> FindItemByNo(string no);
+        Task<PimItem> FindItemByNo(string no); //tested
 
         /// <summary>
-        /// 
+        /// Get features to ask sorted by important of asking.
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items);
+        Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items); //tested
 
         /// <summary>
-        /// 
+        /// Filter items by feature
         /// </summary>
         /// <param name="items"></param>
         /// <param name="featureToAsk"></param>
@@ -42,13 +42,16 @@ namespace PimBot.Service
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        Task<string> FindSimilarItemsByDescription(string description);
+        Task<string> FindSimilarItemsByDescription(string description); //tested
 
         /// <summary>
-        /// 
+        /// Get all items by category //
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items);
+        IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items); //tested
+
+        Task<string> GetImageUrl(PimItem item);
+
     }
 }

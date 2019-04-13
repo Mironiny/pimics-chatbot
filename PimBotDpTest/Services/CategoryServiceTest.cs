@@ -17,11 +17,8 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            var mock = new Mock<ICategoryRepository>();
-            var itemGroups = FakeDataGenerator.CreateDummyItemGroup();
-
-            mock.Setup(r => r.GetAllItemGroup()).ReturnsAsync(itemGroups);
-            categoryService = new CategoryService(mock.Object);
+            ICategoryRepository mock = MockServiceGenerator.CreateCategoryRepository();
+            categoryService = new CategoryService(mock);
         }
 
         [Test]

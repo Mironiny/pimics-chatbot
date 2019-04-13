@@ -7,7 +7,6 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.BotBuilderSamples;
 using PimBot.Service;
-using PimBot.Service.Impl;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;

@@ -16,11 +16,8 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            var mock = new Mock<IFeaturesRepository>();
-            var features = FakeDataGenerator.CreateDummyFeatures();
-
-            mock.Setup(r => r.GetAll()).ReturnsAsync(features);
-            featureService = new FeatureService(mock.Object);
+            IFeaturesRepository mock = MockServiceGenerator.CreateFeaturesRepositoryMock();
+            featureService = new FeatureService(mock);
         }
 
         //
@@ -37,7 +34,7 @@ namespace Tests
 
             // Then
             Assert.NotNull(returnedFeatures);
-            Assert.AreEqual(2, returnedFeatures.Count);
+            Assert.AreEqual(3, returnedFeatures.Count);
         }
 
         [Test]
@@ -51,8 +48,8 @@ namespace Tests
 
             // Then
             Assert.NotNull(returnedFeatures);
-            Assert.AreEqual(1, returnedFeatures["1000"].Count);
-            Assert.AreEqual(2, returnedFeatures["1001"].Count);
+            Assert.AreEqual(4, returnedFeatures["1000"].Count);
+            Assert.AreEqual(4, returnedFeatures["1001"].Count);
         }
 
         [Test]
@@ -67,7 +64,7 @@ namespace Tests
             // Then
             Assert.NotNull(returnedFeatures);
             Assert.AreEqual("Weight", returnedFeatures["1000"].First().Description);
-            Assert.AreEqual("14", returnedFeatures["1000"].First().Value);
+            Assert.AreEqual("10", returnedFeatures["1000"].First().Value);
 
         }
 
@@ -99,9 +96,9 @@ namespace Tests
 
             // Then
             Assert.NotNull(returnedFeatures);
-            Assert.AreEqual(1, returnedFeatures.Count);
+            Assert.AreEqual(4, returnedFeatures.Count);
             Assert.AreEqual("Weight", returnedFeatures.First().Description);
-            Assert.AreEqual("14", returnedFeatures.First().Value);
+            Assert.AreEqual("10", returnedFeatures.First().Value);
         }
 
         [Test]
@@ -115,7 +112,7 @@ namespace Tests
 
             // Then
             Assert.NotNull(returnedFeatures);
-            Assert.AreEqual(2, returnedFeatures.Count);
+            Assert.AreEqual(4, returnedFeatures.Count);
         }
 
     }

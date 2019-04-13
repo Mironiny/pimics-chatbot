@@ -65,16 +65,28 @@ namespace PimBot.Dialogs.AddItem
 
                 var features = await _featureService.GetFeaturesByNoAsync(pimItem.No);
                 var response = stepContext.Context.Activity.CreateReply();
-                response.Attachments = new List<Attachment>() { CreateAdaptiveCardDetailUsingSdk(pimItem, features) };
+                var pictureUrl = await _itemService.GetImageUrl(pimItem);
+
+                response.Attachments = new List<Attachment>() { CreateAdaptiveCardDetailUsingSdk(pimItem, features, pictureUrl) };
                 await context.SendActivityAsync(response);
             }
 
             return await stepContext.EndDialogAsync();
         }
 
-        private Attachment CreateAdaptiveCardDetailUsingSdk(PimItem item, List<PimFeature> features)
+        private Attachment CreateAdaptiveCardDetailUsingSdk(PimItem item, List<PimFeature> features, string pictureUrl)
         {
             var card = new AdaptiveCard();
+            Uri uri;
+            if (pictureUrl != null && Uri.TryCreate(pictureUrl, UriKind.RelativeOrAbsolute, out uri))
+            {
+                card.Body.Add(new AdaptiveImage()
+                {
+                    Type = "Image",
+                    Url = uri,
+                    Size = AdaptiveImageSize.Large
+                });
+            }
             card.Body.Add(new AdaptiveTextBlock() { Text = $"**No**: {item.No}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
             card.Body.Add(new AdaptiveTextBlock() { Text = $"**Description**: {item.Description}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
             card.Body.Add(new AdaptiveTextBlock()

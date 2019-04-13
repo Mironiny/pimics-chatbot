@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using MathNet.Numerics.Statistics;
-using Microsoft.Graph;
 using PimBot.State;
 
 namespace PimBot.Dialogs.FindItem
@@ -80,7 +78,7 @@ namespace PimBot.Dialogs.FindItem
             return -1;
         }
 
-        private bool IsDigitsOnly(string str)
+        public bool IsDigitsOnly(string str)
         {
             return double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double unusedValue);
         }

@@ -29,8 +29,6 @@ namespace PimBot
     {
         public static readonly string LuisConfiguration = "pimbotdp";
 
-//        private readonly IItemService _itemService = new ItemService();
-
         private readonly BotServices _services;
         private readonly UserState _userState;
         private readonly ConversationState _conversationState;
@@ -38,7 +36,6 @@ namespace PimBot
         private readonly IStatePropertyAccessor<DialogState> _dialogStateAccessor;
         private readonly ILogger _logger;
         private readonly IKeywordService _keywordService;
-
 
         public PimBot(BotServices services, UserState userState, ConversationState conversationState, ILoggerFactory loggerFactory, IPimbotServiceProvider provider)
         {
@@ -80,13 +77,6 @@ namespace PimBot
 
                 await turnContext.SendActivityAsync(Messages.HelpMessage, cancellationToken: cancellationToken);
                 await turnContext.SendActivityAsync(Messages.WhatCanIDo, cancellationToken: cancellationToken);
-
-//                await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString());
-//                var x = (JObject)turnContext.Activity.Value;
-//                await turnContext.SendActivityAsync(x.Count.ToString());
-//                var name = JObject.Parse(x.ToString())["name"];
-
-//                await turnContext.SendActivityAsync(name.ToString());
             }
 
             // Classic reaction to message

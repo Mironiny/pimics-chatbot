@@ -122,17 +122,17 @@ namespace Microsoft.BotBuilderSamples
                 throw new InvalidOperationException($"The .bot file does not contain an endpoint with name '{environment}'.");
             }
 
-            // For testing
-            IStorage dataStore = new MemoryStorage();
+            // For testing and develop
+//            IStorage dataStore = new MemoryStorage();
             
             // For publishing
-//            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
-//            {
-//                AuthKey = Constants.CosmosDBKey,
-//                CollectionId = Constants.CosmosDBCollectionName,
-//                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
-//                DatabaseId = Constants.CosmosDBDatabaseName,
-//            });
+            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
+            {
+                AuthKey = Constants.CosmosDBKey,
+                CollectionId = Constants.CosmosDBCollectionName,
+                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
+                DatabaseId = Constants.CosmosDBDatabaseName,
+            });
 
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);

@@ -16,8 +16,8 @@ namespace PimBot.Services.Impl
                 // POST method
                 request.Method = HttpMethod.Post;
 
-                // Add host + service to get full URI
-                request.RequestUri = new Uri(Constants.host + Constants.route);
+                // Add Host + service to get full URI
+                request.RequestUri = new Uri(Constants.Host + Constants.Route);
 
                 // set question
                 string question = @"{'question': '" + inputMessage + @"','top': 1}";
@@ -25,7 +25,7 @@ namespace PimBot.Services.Impl
                 request.Content = new StringContent(question, Encoding.UTF8, "application/json");
 
                 // set authorization
-                request.Headers.Add("Authorization", "EndpointKey " + Constants.endpoint_key);
+                request.Headers.Add("Authorization", "EndpointKey " + Constants.EndpointKey);
 
                 // Send request to Azure service, get response
                 var response = client.SendAsync(request).Result;

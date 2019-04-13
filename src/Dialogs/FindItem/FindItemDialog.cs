@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using AdaptiveCards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -182,7 +183,17 @@ namespace PimBot.Dialogs.FindItem
                     foreach (var item in pimItems)
                     {
                         var response = stepContext.Context.Activity.CreateReply();
-                        response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
+                        var pictureUrl = await _itemService.GetImageUrl(item);
+//                        response.Attachments.Add(new Attachment()
+//                        {
+//                            ContentUrl = pictureUrl,
+//                            ContentType = "image/jpeg",
+//                        });
+//
+//                        await context.SendActivityAsync(response);
+
+
+                        response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item, pictureUrl) };
                         await context.SendActivityAsync(response);
                     }
 
@@ -358,12 +369,24 @@ namespace PimBot.Dialogs.FindItem
         {
             var context = stepContext.Context;
 
+            var reply1 = stepContext.Context.Activity.CreateReply();
+
             if (pimItems.Count() < 10)
             {
                 foreach (var item in pimItems)
                 {
+                    var pictureUrl = await _itemService.GetImageUrl(item);
+
                     var response = stepContext.Context.Activity.CreateReply();
-                    response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item) };
+
+                    response.Attachments.Add(new Attachment()
+                    {
+                        ContentUrl = pictureUrl,
+                        ContentType = "image/jpeg",
+                    });
+                    await context.SendActivityAsync(response);
+
+                    response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item, pictureUrl) };
                     await context.SendActivityAsync(response);
                 }
 
@@ -389,9 +412,26 @@ namespace PimBot.Dialogs.FindItem
             return result;
         }
 
-        private Attachment CreateAdaptiveCardUsingSdk(PimItem item)
+        private Attachment CreateAdaptiveCardUsingSdk(PimItem item, string pictureUrl)
         {
             var card = new AdaptiveCard();
+
+            if (pictureUrl != null)
+            {
+                var x = pictureUrl.Length;
+            }
+
+            Uri uri;
+            if (pictureUrl != null && Uri.TryCreate(pictureUrl, UriKind.RelativeOrAbsolute, out uri))
+            {
+                card.Body.Add(new AdaptiveImage()
+                {
+                    Type = "Image",
+                    Url = uri,
+                    Size = AdaptiveImageSize.Large
+                });
+            }
+
             card.Body.Add(new AdaptiveTextBlock()
             {
                 Text = $"**{Messages.No}**: {item.No}",
