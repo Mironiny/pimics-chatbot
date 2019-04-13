@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Moq;
 using PimBot.Repositories;
@@ -15,6 +16,16 @@ namespace PimBotDpTest.Utils
             var items = FakeDataGenerator.CreateDummyItems();
 
             mock.Setup(r => r.GetAll()).ReturnsAsync(items);
+            return mock.Object;
+        }
+
+        public static IPictureRepository CreatePictureRepositoryMock()
+        {
+            var mock = new Mock<IPictureRepository>();
+            var pictures = FakeDataGenerator.CreateDummyItems();
+            var x = new List<string>();
+
+            mock.Setup(r => r.GetPictureUrlByPictureDocumentId("id"));
             return mock.Object;
         }
 

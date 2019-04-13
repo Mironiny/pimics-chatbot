@@ -101,7 +101,7 @@ namespace Microsoft.BotBuilderSamples
             var featureService = new FeatureService(new FeatureRepository());
             var keywordService = new KeywordService(new KeywordRepository());
             var categoryService = new CategoryService(new CategoryRepository());
-            var itemService = new ItemService(new ItemRepository(), featureService, keywordService, categoryService);
+            var itemService = new ItemService(new ItemRepository(), featureService, keywordService, categoryService, new PictureRepository());
             var serviceProvider = new PimBotServiceProvider(itemService, keywordService, featureService, categoryService);
 
             services.AddSingleton<IPimbotServiceProvider>(serviceProvider);

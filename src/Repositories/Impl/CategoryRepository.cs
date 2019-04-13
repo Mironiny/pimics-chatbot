@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using PimBot.Service;
 using PimBot.State;
@@ -38,7 +36,7 @@ namespace PimBot.Repositories.Impl
         }
 
         /// <summary>
-        /// 
+        /// Map pimitem group.
         /// </summary>
         /// <param name="itemGroups"></param>
         /// <returns></returns>
@@ -55,7 +53,7 @@ namespace PimBot.Repositories.Impl
         }
 
         /// <summary>
-        /// 
+        /// Map pim product group.
         /// </summary>
         /// <param name="itemGroups"></param>
         /// <returns></returns>
@@ -72,7 +70,7 @@ namespace PimBot.Repositories.Impl
         }
 
         /// <summary>
-        /// 
+        /// Map item Group.
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
@@ -100,7 +98,7 @@ namespace PimBot.Repositories.Impl
                 Additional_Information_3 = (string)keyword["Additional_Information_3"],
                 Additional_Information_4 = (string)keyword["Additional_Information_4"],
                 Additional_Information_5 = (string)keyword["Additional_Information_5"],
-                ETag = (string)keyword["ETag"]
+                ETag = (string)keyword["ETag"],
             };
             return pimKeyword;
         }
@@ -133,7 +131,7 @@ namespace PimBot.Repositories.Impl
                 Additional_Information_3 = (string)keyword["Additional_Information_3"],
                 Additional_Information_4 = (string)keyword["Additional_Information_4"],
                 Additional_Information_5 = (string)keyword["Additional_Information_5"],
-                ETag = (string)keyword["ETag"]
+                ETag = (string)keyword["ETag"],
             };
             return productGroup;
         }

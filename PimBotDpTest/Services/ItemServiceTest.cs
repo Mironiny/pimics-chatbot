@@ -21,6 +21,7 @@ namespace Tests
         public void Setup()
         {
             var itemRepositoryMock = MockServiceGenerator.CreateItemRepositoryMock();
+            var pictureRepositoryMock = MockServiceGenerator.CreatePictureRepositoryMock();
             var featureRepositoryMock = MockServiceGenerator.CreateFeaturesRepositoryMock();
             var keywordsRepositoryMock = MockServiceGenerator.CreateKeywordRepository();
             var categoryRepositoryMock = MockServiceGenerator.CreateCategoryRepository();
@@ -29,23 +30,7 @@ namespace Tests
             var keywordService = new KeywordService(keywordsRepositoryMock);
             var categoryService = new CategoryService(categoryRepositoryMock);
 
-            itemService = new ItemService(itemRepositoryMock, featureService, keywordService, categoryService);
-
-//            var keywords = FakeDataGenerator.CreateDummyKeywords();
-//            var features = FakeDataGenerator.CreateDummyFeatures();
-//
-//            var newKeywords = new List<PimKeyword>();
-//            newKeywords.Add(keywords.ToList().First());
-//
-//            var disctionary = new Dictionary<string, List<PimKeyword>>()
-//            {
-//                { "1000", newKeywords}
-//            };
-//
-//            keywordServiceMock.Setup(s => s.GetAllKeywordsGroupByItemCodeAsync())
-//                .ReturnsAsync(disctionary);
-//
-//            itemService = new ItemService(itemRepositoryMock, featureServiceMock.Object, keywordServiceMock.Object, categoryServiceMock.Object);
+            itemService = new ItemService(itemRepositoryMock, featureService, keywordService, categoryService, pictureRepositoryMock);
         }
 
         //
@@ -291,7 +276,7 @@ namespace Tests
         }
 
         //
-        // GetAllFeaturesToAsk method tests. One item without feautures.
+        // FindSimilarItemsByDescription method tests. One item.
         //
         [Test]
         public async Task FindSimilarItemsByDescription_OneItem_Test()
@@ -305,7 +290,7 @@ namespace Tests
         }
 
         //
-        // GetAllFeaturesToAsk method tests. One item without feautures.
+        // FindSimilarItemsByDescription method tests. Empty string.
         //
         [Test]
         public async Task FindSimilarItemsByDescription_EmptyString_Test()
@@ -319,7 +304,7 @@ namespace Tests
         }
 
         //
-        // GetAllFeaturesToAsk method tests. One item without feautures.
+        // FindSimilarItemsByDescription method tests.
         //
         [Test]
         public async Task FindSimilarItemsByDescription_LongString_Test()
@@ -333,13 +318,159 @@ namespace Tests
         }
 
         //
-        // GetAllFeaturesToAsk method tests. One item without feautures.
+        // FilterItemsByFeature. UnitPriceUnderMedian.
         //
         [Test]
-        public async Task FilterItemsByFeature_Test_Test()
+        public async Task FilterItemsByFeature_UnitPriceUnderMedian_Test()
         {
-            Assert.Pass();
+            // Given
+            var pimItems = await itemService.GetAllItemsByMatchAsync("Chair");
+            var featuresToAsk = await itemService.GetAllFeaturesToAsk(pimItems);
+            var featureToAsk = featuresToAsk[0];
+
+            // When
+            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+                featuresToAsk[0].GetMedianValue().ToString(), (int) FilterInterval.UnderMedian);
+
+            Assert.NotNull(filteredItems);
+            Assert.AreEqual(2, filteredItems.Count());
+
+            Assert.AreEqual("1000", filteredItems.First().No);
+            Assert.AreEqual(500, filteredItems.First().Unit_Price);
+
+            Assert.AreEqual("1001", filteredItems.ToList()[1].No);
+            Assert.AreEqual(700, filteredItems.ToList()[1].Unit_Price);
         }
 
+        //
+        // FilterItemsByFeature. UnitPriceaAboveMedian.
+        //
+        [Test]
+        public async Task FilterItemsByFeature_UnitPriceaAboveMedian_Test()
+        {
+            // Given
+            var pimItems = await itemService.GetAllItemsByMatchAsync("Chair");
+            var featuresToAsk = await itemService.GetAllFeaturesToAsk(pimItems);
+            var featureToAsk = featuresToAsk[0];
+
+            // When
+            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+                featureToAsk.GetMedianValue().ToString(), (int)FilterInterval.AboveMedian);
+
+            Assert.NotNull(filteredItems);
+            Assert.AreEqual(1, filteredItems.Count());
+
+            Assert.AreEqual("1002", filteredItems.First().No);
+            Assert.AreEqual(1000, filteredItems.First().Unit_Price);
+        }
+
+        //
+        // FilterItemsByFeature. WidthUnderMedian.
+        //
+        [Test]
+        public async Task FilterItemsByFeature_WidthUnderMedian_Test()
+        {
+            // Given
+            var pimItems = await itemService.GetAllItemsByMatchAsync("Chair");
+            var featuresToAsk = await itemService.GetAllFeaturesToAsk(pimItems);
+            var featureToAsk = featuresToAsk[1];
+
+            // When
+            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+                featureToAsk.GetMedianValue().ToString(), (int)FilterInterval.UnderMedian);
+
+            Assert.NotNull(filteredItems);
+            Assert.AreEqual(2, filteredItems.Count());
+
+            Assert.AreEqual("1000", filteredItems.First().No);
+            Assert.AreEqual(500, filteredItems.First().Unit_Price);
+
+            Assert.AreEqual("1001", filteredItems.ToList()[1].No);
+            Assert.AreEqual(700, filteredItems.ToList()[1].Unit_Price);
+        }
+
+        //
+        // FilterItemsByFeature. WidthAboveMedian.
+        //
+        [Test]
+        public async Task FilterItemsByFeature_WidthAboveMedian_Test()
+        {
+            // Given
+            var pimItems = await itemService.GetAllItemsByMatchAsync("Chair");
+            var featuresToAsk = await itemService.GetAllFeaturesToAsk(pimItems);
+            var featureToAsk = featuresToAsk[1];
+
+            // When
+            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+                featureToAsk.GetMedianValue().ToString(), (int)FilterInterval.AboveMedian);
+
+            Assert.NotNull(filteredItems);
+            Assert.AreEqual(1, filteredItems.Count());
+
+            Assert.AreEqual("1002", filteredItems.First().No);
+            Assert.AreEqual(1000, filteredItems.First().Unit_Price);
+        }
+
+
+        //
+        // FilterItemsByFeature. Color.
+        //
+        [Test]
+        public async Task FilterItemsByFeature_Color_Test()
+        {
+            // Given
+            var pimItems = await itemService.GetAllItemsByMatchAsync("Chair");
+            var featuresToAsk = await itemService.GetAllFeaturesToAsk(pimItems);
+            var featureToAsk = featuresToAsk[2];
+
+            // When
+            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+                "Red");
+
+            Assert.NotNull(filteredItems);
+            Assert.AreEqual(1, filteredItems.Count());
+
+            Assert.AreEqual("1001", filteredItems.First().No);
+            Assert.AreEqual(700, filteredItems.First().Unit_Price);
+        }
+
+
+        //
+        // FilterItemsByFeature. ColorNotExisting.
+        //
+        [Test]
+        public async Task FilterItemsByFeature_ColorNotExisting_Test()
+        {
+            // Given
+            var pimItems = await itemService.GetAllItemsByMatchAsync("Chair");
+            var featuresToAsk = await itemService.GetAllFeaturesToAsk(pimItems);
+            var featureToAsk = featuresToAsk[2];
+
+            // When
+            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+                "White");
+
+            Assert.NotNull(filteredItems);
+            Assert.AreEqual(0, filteredItems.Count());
+        }
+
+        //
+        // FilterItemsByFeature. Material.
+        //
+        [Test]
+        public async Task FilterItemsByFeature_Material_Test()
+        {
+            // Given
+            var pimItems = await itemService.GetAllItemsByMatchAsync("Chair");
+            var featuresToAsk = await itemService.GetAllFeaturesToAsk(pimItems);
+            var featureToAsk = featuresToAsk[3];
+
+            // When
+            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+                "Wood");
+
+            Assert.NotNull(filteredItems);
+            Assert.AreEqual(2, filteredItems.Count());
+        }
     }
 }

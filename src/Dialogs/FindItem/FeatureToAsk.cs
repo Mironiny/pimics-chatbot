@@ -9,6 +9,8 @@ namespace PimBot.Dialogs.FindItem
 {
     public enum FeatureType { Alphanumeric, Numeric, Logical };
 
+    public enum FilterInterval { UnderMedian, AboveMedian };
+
     public class FeatureToAsk
     {
         public FeatureToAsk(string number, string description, int order, string unit)

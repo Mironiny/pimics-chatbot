@@ -14,16 +14,24 @@ namespace PimBot.Service.Impl
     {
 
         private readonly IItemRepository _itemRepository;
+        private readonly IPictureRepository _pictureRepository;
+
         private readonly IKeywordService _keywordService;
         private readonly IFeatureService _featuresService;
         private readonly ICategoryService _categoryService;
 
-        public ItemService(IItemRepository itemRepository, IFeatureService featureService, IKeywordService keywordService, ICategoryService categoryService)
+        public ItemService(
+            IItemRepository itemRepository,
+            IFeatureService featureService,
+            IKeywordService keywordService,
+            ICategoryService categoryService,
+            IPictureRepository pictureRepository)
         {
             _itemRepository = itemRepository;
             _featuresService = featureService;
             _keywordService = keywordService;
             _categoryService = categoryService;
+            _pictureRepository = pictureRepository;
         }
 
         /// <summary>
@@ -281,6 +289,11 @@ namespace PimBot.Service.Impl
             return null;
         }
 
+        public async Task<string> GetImageUrl(PimItem item)
+        {
+            return await _pictureRepository.GetPictureUrlByPictureDocumentId(item.Picture_Document_ID);
+        }
+
         private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string entity)
         {
             var categoryIds = await _categoryService.GetItemGroupIdsByDescription(entity);
@@ -322,22 +335,5 @@ namespace PimBot.Service.Impl
                 .ToList();
         }
 
-        public async Task<string> GetImageUrl(PimItem item)
-        {
-            var client = ODataClientSingleton.Get();
-            
-            var picture = await client
-                .For(Constants.Company).Key(Constants.CompanyName)
-                .NavigateTo(Constants.PictureEndpointName)
-                .Filter($"Number%20eq%20%27{item.Picture_Document_ID}%27")
-                .FindEntriesAsync();
-
-            if (picture == null || !picture.Any())
-            {
-                return null;
-            }
-
-            return (string) picture.First()["Content"];
-        }
     }
 }

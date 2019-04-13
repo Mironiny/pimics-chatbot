@@ -17,7 +17,7 @@ namespace PimBot.Services.Impl
         }
 
         /// <summary>
-        /// 
+        /// Get item group ids by description.
         /// </summary>
         /// <param name="description"></param>
         /// <returns></returns>

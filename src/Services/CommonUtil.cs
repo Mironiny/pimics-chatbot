@@ -20,6 +20,9 @@ namespace PimBot.Services
         /// <summary>
         /// Compute the distance between two strings - taken from https://www.dotnetperls.com/levenshtein
         /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
         public static int ComputeLevenshteinDistance(string s, string t)
         {
             int n = s.Length;
@@ -49,7 +52,7 @@ namespace PimBot.Services
             // Step 3
             for (int i = 1; i <= n; i++)
             {
-                //Step 4
+                // Step 4
                 for (int j = 1; j <= m; j++)
                 {
                     // Step 5
@@ -61,6 +64,7 @@ namespace PimBot.Services
                         d[i - 1, j - 1] + cost);
                 }
             }
+
             // Step 7
             return d[n, m];
         }

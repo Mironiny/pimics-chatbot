@@ -8,15 +8,17 @@ namespace PimBot.Service
     public interface IItemService
     {
         /// <summary>
-        /// 
+        /// Get all items by match.
         /// </summary>
         /// <param name="description"></param>
         /// <returns></returns>
         Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description); //tested
 
         /// <summary>
-        /// Find description by No. If there is no match return null.
+        /// Find item by No.
         /// </summary>
+        /// <param name="no"></param>
+        /// <returns></returns>
         Task<PimItem> FindItemByNo(string no); //tested
 
         /// <summary>
@@ -24,7 +26,7 @@ namespace PimBot.Service
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items); //tested
+        Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items);
 
         /// <summary>
         /// Filter items by feature
@@ -34,24 +36,31 @@ namespace PimBot.Service
         /// <param name="value"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        Task<IEnumerable<PimItem>> FilterItemsByFeature(IEnumerable<PimItem> items, FeatureToAsk featureToAsk,
-            string value, int index = -1);
+        Task<IEnumerable<PimItem>> FilterItemsByFeature(
+            IEnumerable<PimItem> items,
+            FeatureToAsk featureToAsk,
+            string value,
+            int index = -1);
 
         /// <summary>
-        /// 
+        /// Find Similar items by description.
         /// </summary>
-        /// <param name="items"></param>
+        /// <param name="description"></param>
         /// <returns></returns>
-        Task<string> FindSimilarItemsByDescription(string description); //tested
+        Task<string> FindSimilarItemsByDescription(string description);
 
         /// <summary>
         /// Get all items by category //
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items); //tested
+        IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items);
 
+        /// <summary>
+        /// Get image URL to item in Base64 format. When null is returned, that means that item doesn't contain image.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         Task<string> GetImageUrl(PimItem item);
-
     }
 }
