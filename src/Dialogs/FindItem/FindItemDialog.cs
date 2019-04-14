@@ -66,7 +66,7 @@ namespace PimBot.Dialogs.FindItem
                 "start",
                 waterfallSteps));
             AddDialog(new ChoicePrompt(ShowAllItemsPrompt));
-            AddDialog(new ConfirmPrompt(DidYouMeanPrompt));
+            AddDialog(new ChoicePrompt(DidYouMeanPrompt));
             AddDialog(new ChoicePrompt(AskForPropertyPrompt));
             AddDialog(new ShowCategoriesDialog(services, onTurnAccessor, provider));
         }
@@ -112,15 +112,15 @@ namespace PimBot.Dialogs.FindItem
                     // Try to find if user doesnt do type error
                     didYouMean = await _itemService.FindSimilarItemsByDescription(firstEntity);
 
-                    var opts = new PromptOptions
-                    {
-                        Prompt = new Activity
+                    return await stepContext.PromptAsync(
+                        DidYouMeanPrompt,
+                        new PromptOptions
                         {
-                            Type = ActivityTypes.Message,
-                            Text = string.Format(Messages.FindItemDidYouMean, didYouMean),
+                            Prompt = MessageFactory.Text(string.Format(Messages.FindItemDidYouMean, didYouMean)),
+                            RetryPrompt = MessageFactory.Text(string.Format(Messages.FindItemDidYouMean, didYouMean) + Messages.CancelPrompt),
+                            Choices = ChoiceFactory.ToChoices(new List<string> { Messages.Yes, Messages.No }),
                         },
-                    };
-                    return await stepContext.PromptAsync(DidYouMeanPrompt, opts);
+                        cancellationToken);
                 }
                 else if (pimItems.Count() == 1)
                 {
@@ -161,9 +161,9 @@ namespace PimBot.Dialogs.FindItem
             var choice = stepContext.Result as FoundChoice;
 
             // There were no file find and user get didyoumean message
-            if (choice == null)
+            if (choice.Value.Contains(Messages.Yes) || choice.Value.Contains(Messages.No))
             {
-                if ((bool)stepContext.Result)
+                if (choice.Value.Contains(Messages.Yes))
                 {
                     stepContext.ActiveDialog.State["stepIndex"] = -1;
                     return await stepContext.ContinueDialogAsync();

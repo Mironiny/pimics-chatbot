@@ -111,13 +111,13 @@ namespace PimBot.Dialogs.AddItem
             AddDialog(new TextPrompt(AdressPrompt));
             AddDialog(new TextPrompt(PostCodePrompt));
             AddDialog(new TextPrompt(CityPrompt));
-            AddDialog(new ConfirmPrompt(IsShippingAdressMatchPrompt));
+            AddDialog(new ChoicePrompt(IsShippingAdressMatchPrompt));
             AddDialog(new TextPrompt(ShippingNamePrompt));
             AddDialog(new TextPrompt(ShippingAdressPrompt));
             AddDialog(new TextPrompt(ShippingPostCodePrompt));
             AddDialog(new ChoicePrompt(CorrectValuePrompt));
             AddDialog(new TextPrompt(ShippingCityPrompt));
-            AddDialog(new ConfirmPrompt(ConfirmUserInfoPrompt));
+            AddDialog(new ChoicePrompt(ConfirmUserInfoPrompt));
             AddDialog(new ConfirmPrompt(ConfirmOrderPrompt));
         }
 
@@ -370,15 +370,15 @@ namespace PimBot.Dialogs.AddItem
 
             if (customerState.IsShippingAdressMatch == null)
             {
-                var opts = new PromptOptions
-                {
-                    Prompt = new Activity
+                return await stepContext.PromptAsync(
+                    IsShippingAdressMatchPrompt,
+                    new PromptOptions
                     {
-                        Type = ActivityTypes.Message,
-                        Text = Messages.GetUserInfoPromptShippingMatch,
+                        Prompt = MessageFactory.Text(Messages.GetUserInfoPromptShippingMatch),
+                        RetryPrompt = MessageFactory.Text(Messages.GetUserInfoPromptShippingMatch + Messages.CancelPrompt),
+                        Choices = ChoiceFactory.ToChoices(new List<string> { Messages.Yes, Messages.No }),
                     },
-                };
-                return await stepContext.PromptAsync(IsShippingAdressMatchPrompt, opts);
+                    cancellationToken);
             }
 
             return await stepContext.NextAsync();
@@ -393,9 +393,13 @@ namespace PimBot.Dialogs.AddItem
         {
             CustomerState customerState =
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
+
+            var context = stepContext.Context;
+            var choice = stepContext.Result as FoundChoice;
+
             if (customerState.IsShippingAdressMatch == null)
             {
-                bool isShippingAdressSet = (bool)stepContext.Result;
+                bool isShippingAdressSet = choice.Value.Contains(Messages.Yes) ? true : false;
                 customerState.IsShippingAdressMatch = isShippingAdressSet;
                 await _customerService.UpdateCustomerState(customerState);
             }
@@ -575,15 +579,15 @@ namespace PimBot.Dialogs.AddItem
 
             await stepContext.Context.SendActivityAsync(GetPrintableCustomerInfo(customerState));
 
-            var opts = new PromptOptions
-            {
-                Prompt = new Activity
+            return await stepContext.PromptAsync(
+                ConfirmUserInfoPrompt,
+                new PromptOptions
                 {
-                    Type = ActivityTypes.Message,
-                    Text = Messages.GetUserInfoPromptIsOrderOk,
+                    Prompt = MessageFactory.Text(Messages.GetUserInfoPromptIsOrderOk),
+                    RetryPrompt = MessageFactory.Text(Messages.GetUserInfoPromptIsOrderOk + Messages.CancelPrompt),
+                    Choices = ChoiceFactory.ToChoices(new List<string> { Messages.Yes, Messages.No }),
                 },
-            };
-            return await stepContext.PromptAsync(ConfirmUserInfoPrompt, opts);
+                cancellationToken);
         }
 
         /// <summary>
@@ -595,8 +599,10 @@ namespace PimBot.Dialogs.AddItem
         {
             CustomerState customerState =
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
+            var context = stepContext.Context;
+            var choice = stepContext.Result as FoundChoice;
 
-            bool confirmCustomerInfo = (bool)stepContext.Result;
+            bool confirmCustomerInfo = choice.Value.Contains(Messages.Yes) ? true : false;
 
             if (confirmCustomerInfo)
             {
@@ -637,15 +643,15 @@ namespace PimBot.Dialogs.AddItem
                 await stepContext.Context.SendActivityAsync(ShowCartDialog.GetPrintableCart(customerState.Cart, "order"));
                 await stepContext.Context.SendActivityAsync(GetPrintableCustomerInfo(customerState));
 
-                var opts = new PromptOptions
-                {
-                    Prompt = new Activity
+                return await stepContext.PromptAsync(
+                    ConfirmUserInfoPrompt,
+                    new PromptOptions
                     {
-                        Type = ActivityTypes.Message,
-                        Text = Messages.GetUserInfoConfirmOrder,
+                        Prompt = MessageFactory.Text(Messages.GetUserInfoPromptIsOrderOk),
+                        RetryPrompt = MessageFactory.Text(Messages.GetUserInfoPromptIsOrderOk + Messages.CancelPrompt),
+                        Choices = ChoiceFactory.ToChoices(new List<string> { Messages.Yes, Messages.No }),
                     },
-                };
-                return await stepContext.PromptAsync(ConfirmUserInfoPrompt, opts);
+                    cancellationToken);
             }
             else
             {
@@ -712,7 +718,9 @@ namespace PimBot.Dialogs.AddItem
             CustomerState customerState =
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-            bool confirmedOrder = (bool)stepContext.Result;
+            var context = stepContext.Context;
+            var choice = stepContext.Result as FoundChoice;
+            bool confirmedOrder = choice.Value.Contains(Messages.Yes) ? true : false;
 
             if (confirmedOrder)
             {
