@@ -7,6 +7,8 @@ namespace PimBotDpTest.Utils
 {
     public class FakeDataGenerator
     {
+        public static string CreatePictureUrl = "vut.fit.cz";
+
         public static IEnumerable<PimItem> CreateDummyItems()
         {
             var items = new List<PimItem>();
@@ -20,18 +22,21 @@ namespace PimBotDpTest.Utils
             item1.No = "1000";
             item1.Description = "Chair Camilla";
             item1.Unit_Price = 500;
+            item1.Picture_Document_ID = "PicID1";
             items.Add(item1);
 
             var item2 = new PimItem();
             item2.No = "1001";
             item2.Description = "Chair Roma";
             item2.Unit_Price = 700;
+            item2.Picture_Document_ID = "PicID1";
             items.Add(item2);
 
             var item3 = new PimItem();
             item3.No = "1002";
             item3.Description = "Chair Milada";
             item3.Unit_Price = 1000;
+            item3.Picture_Document_ID = "PicID1";
             items.Add(item3);
 
             var item4 = new PimItem();

@@ -29,30 +29,6 @@ namespace PimBot.Service.Impl
             var client = ODataClientSingleton.Get();
             try
             {
-//                IEnumerable<IDictionary<string, object>> orders = await client
-//                    .For(Constants.Company).Key(Constants.CompanyName)
-//                    .NavigateTo("SalesOrder")
-//                    .FindEntriesAsync();
-//
-//                var mapOrders = MapOrder(orders).ToList();
-//                mapOrders.Add(CreateSaleOrder(customerState));
-//
-//                var c = new Order();
-//                c.value = mapOrders;
-//
-//                var fuu = CreateSaleOrder(customerState);
-//                fuu.No = "ahojMiro";
-//                fuu.Bill_to_City = "ZLINECEK";
-
-                // Need to refactor the company
-//                var product = await client
-//                    .For(Constants.Company).Key(Constants.CompanyName)
-//                    .NavigateTo("SalesOrder")
-//                    .Key(1)
-//                    .Set(fuu)
-//                    .UpdateEntryAsync();
-
-
                 var product = await client
                     .For<SalesOrder>("SalesOrder")
                     .Set(CreateSaleOrder(customerState))
@@ -62,7 +38,6 @@ namespace PimBot.Service.Impl
             {
                 return false;
             }
-
 
             return true;
         }
@@ -88,6 +63,7 @@ namespace PimBot.Service.Impl
         }
 
         private static Random random = new Random();
+
         private static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -184,8 +160,6 @@ namespace PimBot.Service.Impl
         }
 
     }
-
-
 
     public class Order
     {

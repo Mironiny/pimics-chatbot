@@ -3,8 +3,6 @@
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.Extensions.Logging;
 
 namespace Microsoft.BotBuilderSamples
 {

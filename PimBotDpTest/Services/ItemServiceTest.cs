@@ -472,5 +472,21 @@ namespace Tests
             Assert.NotNull(filteredItems);
             Assert.AreEqual(2, filteredItems.Count());
         }
+
+        //
+        // GetImageUrl. Url.
+        //
+        [Test]
+        public async Task GetImageUrl_Url_Test()
+        {
+            // Given
+            var pimItem = FakeDataGenerator.CreateDummyItems().ToList().First();
+
+            // When
+            var imageUrl = await itemService.GetImageUrl(pimItem);
+
+            Assert.NotNull(imageUrl);
+            Assert.AreEqual(FakeDataGenerator.CreatePictureUrl, imageUrl);
+        }
     }
 }

@@ -22,10 +22,9 @@ namespace PimBotDpTest.Utils
         public static IPictureRepository CreatePictureRepositoryMock()
         {
             var mock = new Mock<IPictureRepository>();
-            var pictures = FakeDataGenerator.CreateDummyItems();
-            var x = new List<string>();
+            var pictureUrl = FakeDataGenerator.CreatePictureUrl;
 
-            mock.Setup(r => r.GetPictureUrlByPictureDocumentId("id"));
+            mock.Setup(r => r.GetPictureUrlByPictureDocumentId("PicID1")).ReturnsAsync(pictureUrl);
             return mock.Object;
         }
 

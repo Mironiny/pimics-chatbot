@@ -26,7 +26,7 @@ namespace PimBot.Service
             //    settings.BeforeRequest = BeforeRequest;
 
                 settings.Credentials = new NetworkCredential(Constants.SecureUserName, Constants.SecureUserPassword);
-                client = new ODataClient(settings) ;
+                client = new ODataClient(settings);
             }
 
             return client;

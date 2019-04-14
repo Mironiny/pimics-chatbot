@@ -4,7 +4,7 @@ VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PimBotDp", "PimBotDp.csproj", "{D85EBBFC-F5F1-4274-80B9-8FC3A4F304D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PimBotDpTest", "..\PimBotDpTest\PimBotDpTest.csproj", "{D7CD7F3C-6790-4235-BEB2-EA5C23D6BA99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PimBotDpTest", "..\PimBotDpTest\PimBotDpTest.csproj", "{D7CD7F3C-6790-4235-BEB2-EA5C23D6BA99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
