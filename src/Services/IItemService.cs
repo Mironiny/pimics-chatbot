@@ -8,34 +8,34 @@ namespace PimBot.Service
     public interface IItemService
     {
         /// <summary>
-        /// Get all items by match.
+        /// Method returns every items which match item description or category description or has keywords with same value.
         /// </summary>
-        /// <param name="description"></param>
-        /// <returns></returns>
-        Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description); //tested
+        /// <param name="description">Value to look for in item description, category and keywords</param>
+        /// <returns>All items by match.</returns>
+        Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description);
 
         /// <summary>
-        /// Find item by No.
+        /// Find item by NO number.
         /// </summary>
-        /// <param name="no"></param>
-        /// <returns></returns>
-        Task<PimItem> FindItemByNo(string no); //tested
+        /// <param name="no">No.</param>
+        /// <returns>Item.</returns>
+        Task<PimItem> FindItemByNo(string no);
 
         /// <summary>
-        /// Get features to ask sorted by important of asking.
+        /// Method choose from inputs items features to ask. It's sorts features by order and computed information gain.
         /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
+        /// <param name="items">List of items.</param>
+        /// <returns>Ordered features to ask.</returns>
         Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items);
 
         /// <summary>
-        /// Filter items by feature
+        /// Filter items by feature.
         /// </summary>
-        /// <param name="items"></param>
-        /// <param name="featureToAsk"></param>
-        /// <param name="value"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
+        /// <param name="items">Input items to filter.</param>
+        /// <param name="featureToAsk">Selected feature which is was asked.</param>
+        /// <param name="value">Value which user put. If type of feature is numeric, then this value will be median.</param>
+        /// <param name="index">Valid only in numerics type. If user select under median, the index is 0 otherwise 1.</param>
+        /// <returns>Filtered items.</returns>
         Task<IEnumerable<PimItem>> FilterItemsByFeature(
             IEnumerable<PimItem> items,
             FeatureToAsk featureToAsk,
@@ -43,24 +43,24 @@ namespace PimBot.Service
             int index = -1);
 
         /// <summary>
-        /// Find Similar items by description.
+        /// Find similar items in by description using Levenshtein distance.
         /// </summary>
-        /// <param name="description"></param>
-        /// <returns></returns>
+        /// <param name="description">Description</param>
+        /// <returns>Description of similar item.</returns>
         Task<string> FindSimilarItemsByDescription(string description);
 
         /// <summary>
-        /// Get all items by category //
+        /// Get all categories which match input items.
         /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
+        /// <param name="items">List of items.</param>
+        /// <returns>Items group.</returns>
         IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items);
 
         /// <summary>
-        /// Get image URL to item in Base64 format. When null is returned, that means that item doesn't contain image.
+        /// Get image Url, try create base64 URI. If the size is too big, resize until its gonna be OK.
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="item">Items.</param>
+        /// <returns>Image url</returns>
         Task<string> GetImageUrl(PimItem item);
     }
 }

@@ -23,8 +23,6 @@ namespace PimBot.Service
                 ODataClientSettings settings = new ODataClientSettings();
                 settings.BaseUri = new Uri(Constants.ODataServiceEndpoint);
                 settings.IgnoreUnmappedProperties = true;
-            //    settings.BeforeRequest = BeforeRequest;
-
                 settings.Credentials = new NetworkCredential(Constants.SecureUserName, Constants.SecureUserPassword);
                 client = new ODataClient(settings);
             }

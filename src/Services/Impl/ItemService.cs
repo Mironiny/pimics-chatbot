@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Dialogs.FindItem;
@@ -12,7 +16,6 @@ namespace PimBot.Service.Impl
 {
     public class ItemService : IItemService
     {
-
         private readonly IItemRepository _itemRepository;
         private readonly IPictureRepository _pictureRepository;
 
@@ -35,10 +38,10 @@ namespace PimBot.Service.Impl
         }
 
         /// <summary>
-        /// 
+        /// Find item by NO number.
         /// </summary>
-        /// <param name="no"></param>
-        /// <returns></returns>
+        /// <param name="no">No.</param>
+        /// <returns>Item.</returns>
         public async Task<PimItem> FindItemByNo(string no)
         {
             // Refactor to look only for one items
@@ -59,7 +62,7 @@ namespace PimBot.Service.Impl
         /// Method returns every items which match item description or category description or has keywords with same value.
         /// </summary>
         /// <param name="description">Value to look for in item description, category and keywords</param>
-        /// <returns></returns>
+        /// <returns>All items by match.</returns>
         public async Task<IEnumerable<PimItem>> GetAllItemsByMatchAsync(string description)
         {
             var pimItems = await _itemRepository.GetAll();
@@ -86,8 +89,8 @@ namespace PimBot.Service.Impl
         /// <summary>
         /// Method choose from inputs items features to ask. It's sorts features by order and computed information gain.
         /// </summary>
-        /// <param name="items"></param>
-        /// <returns>Ordered features to ask</returns>
+        /// <param name="items">List of items.</param>
+        /// <returns>Ordered features to ask.</returns>
         public async Task<List<FeatureToAsk>> GetAllFeaturesToAsk(IEnumerable<PimItem> items)
         {
             var features = await _featuresService.GetAllFeaturesByItemAsync();
@@ -165,9 +168,9 @@ namespace PimBot.Service.Impl
         /// </summary>
         /// <param name="items">Input items to filter.</param>
         /// <param name="featureToAsk">Selected feature which is was asked.</param>
-        /// <param name="value">Value which user put. If type of feature is numeric, then this value will be median</param>
-        /// <param name="index">Valid only in numerics type. If user select under median, the index is 0 otherwise 1</param>
-        /// <returns></returns>
+        /// <param name="value">Value which user put. If type of feature is numeric, then this value will be median.</param>
+        /// <param name="index">Valid only in numerics type. If user select under median, the index is 0 otherwise 1.</param>
+        /// <returns>Filtered items.</returns>
         public async Task<IEnumerable<PimItem>> FilterItemsByFeature(
             IEnumerable<PimItem> items,
             FeatureToAsk featureToAsk,
@@ -249,8 +252,8 @@ namespace PimBot.Service.Impl
         /// <summary>
         /// Get all categories which match input items.
         /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
+        /// <param name="items">List of items.</param>
+        /// <returns>Items group.</returns>
         public IEnumerable<PimItemGroup> GetAllItemsCategory(IEnumerable<PimItem> items)
         {
             var categories = new HashSet<PimItemGroup>();
@@ -266,6 +269,11 @@ namespace PimBot.Service.Impl
             return categories;
         }
 
+        /// <summary>
+        /// Find similar items in by description using Levenshtein distance.
+        /// </summary>
+        /// <param name="description">Description.</param>
+        /// <returns>Description of similar item.</returns>
         public async Task<string> FindSimilarItemsByDescription(string description)
         {
             var pimItems = await _itemRepository.GetAll();
@@ -289,17 +297,59 @@ namespace PimBot.Service.Impl
             return null;
         }
 
+        /// <summary>
+        /// Get image Url, try create base64 URI. If the size is too big, resize until its gonna be OK.
+        /// </summary>
+        /// <param name="item">Items.</param>
+        /// <returns>Image url.</returns>
         public async Task<string> GetImageUrl(PimItem item)
         {
-            return await _pictureRepository.GetPictureUrlByPictureDocumentId(item.Picture_Document_ID);
+            string base64string = await _pictureRepository.GetPictureUrlByPictureDocumentId(item.Picture_Document_ID);
+            if (base64string == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                while (!Uri.TryCreate(base64string, UriKind.RelativeOrAbsolute, out Uri uri))
+                {
+                    var image = Base64ToImage(base64string);
+                    var comprimImage = ResizeImage(image, image.Width / 4, image.Height / 4);
+
+                    MemoryStream ms = new MemoryStream();
+                    comprimImage.Save(ms, ImageFormat.Png);
+                    byte[] byteImage = ms.ToArray();
+                    base64string = "data:image/png;base64," + Convert.ToBase64String(byteImage);
+                }
+
+                return base64string;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string entity)
+        /// <summary>
+        /// Filter items by category.
+        /// </summary>
+        /// <param name="pimItems">Items to filter.</param>
+        /// <param name="groupName">Group name.</param>
+        /// <returns>Filtered items.</returns>
+        private async Task<IEnumerable<PimItem>> FilterByCategory(IEnumerable<PimItem> pimItems, string groupName)
         {
-            var categoryIds = await _categoryService.GetItemGroupIdsByDescription(entity);
+            var categoryIds = await _categoryService.GetItemGroupIdsByDescription(groupName);
             return pimItems.Where(o => categoryIds.Contains(o.Standardartikelgruppe));
         }
 
+        /// <summary>
+        /// Filter items by keywords.
+        /// </summary>
+        /// <param name="items">Items to filter.</param>
+        /// <param name="key">Key to filter.</param>
+        /// <param name="keywordsByItem">Keywords.</param>
+        /// <returns>Filtered items.</returns>
         private IEnumerable<PimItem> FilterByKeywordsMatch(
             IEnumerable<PimItem> items,
             string key,
@@ -308,6 +358,13 @@ namespace PimBot.Service.Impl
             return items.Where(item => IsItemContainsKeyword(item, key, keywordsByItem)).ToList();
         }
 
+        /// <summary>
+        /// Is item cointains keywords.
+        /// </summary>
+        /// <param name="item">Item.</param>
+        /// <param name="key">Key.</param>
+        /// <param name="keywordsByItem">KeywordsByItem.</param>
+        /// <returns>If items cointains keyword.</returns>
         private bool IsItemContainsKeyword(PimItem item, string key, Dictionary<string, List<PimKeyword>> keywordsByItem)
         {
             if (!keywordsByItem.ContainsKey(item.No))
@@ -328,6 +385,12 @@ namespace PimBot.Service.Impl
             return false;
         }
 
+        /// <summary>
+        /// Filter items by description.
+        /// </summary>
+        /// <param name="items">Items to filter.</param>
+        /// <param name="key">Key to look for.</param>
+        /// <returns>Filtered items.</returns>
         private IEnumerable<PimItem> FilterByItemDescription(IEnumerable<PimItem> items, string key)
         {
             return items
@@ -335,5 +398,56 @@ namespace PimBot.Service.Impl
                 .ToList();
         }
 
+        /// <summary>
+        /// Convert Base64 image to Image object.
+        /// </summary>
+        /// <param name="base64String">Base64 image.</param>
+        /// <returns>Image.</returns>
+        private Image Base64ToImage(string base64String)
+        {
+            var cleanerBase64 = base64String.Substring(22);
+
+            // Convert base 64 string to byte[]
+            byte[] imageBytes = Convert.FromBase64String(cleanerBase64);
+
+            // Convert byte[] to Image
+            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+            {
+                Image image = Image.FromStream(ms, true);
+                return image;
+            }
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        private Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
     }
 }

@@ -77,21 +77,34 @@ namespace PimBot.Dialogs.AddItem
         private Attachment CreateAdaptiveCardDetailUsingSdk(PimItem item, List<PimFeature> features, string pictureUrl)
         {
             var card = new AdaptiveCard();
-            Uri uri;
-            if (pictureUrl != null && Uri.TryCreate(pictureUrl, UriKind.RelativeOrAbsolute, out uri))
+            if (pictureUrl != null)
             {
                 card.Body.Add(new AdaptiveImage()
                 {
                     Type = "Image",
-                    Url = uri,
-                    Size = AdaptiveImageSize.Large
+                    UrlString = pictureUrl,
+                    HorizontalAlignment = AdaptiveHorizontalAlignment.Center,
+                    Size = AdaptiveImageSize.Large,
                 });
             }
-            card.Body.Add(new AdaptiveTextBlock() { Text = $"**No**: {item.No}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
-            card.Body.Add(new AdaptiveTextBlock() { Text = $"**Description**: {item.Description}", Size = AdaptiveTextSize.Medium, Weight = AdaptiveTextWeight.Bolder });
+
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = $"**Price**: {item.Unit_Price}/{item.Base_Unit_of_Measure}",
+                Text = $"**{Messages.No}**: {item.No}",
+                Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder,
+            });
+
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"**{Messages.Description}**: {item.Description}",
+                Size = AdaptiveTextSize.Medium,
+                Weight = AdaptiveTextWeight.Bolder,
+            });
+
+            card.Body.Add(new AdaptiveTextBlock()
+            {
+                Text = $"**{Messages.Price}**: {item.Unit_Price}/{item.Base_Unit_of_Measure}",
                 Size = AdaptiveTextSize.Medium,
                 Weight = AdaptiveTextWeight.Bolder,
             });
@@ -111,7 +124,7 @@ namespace PimBot.Dialogs.AddItem
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
-                Content = card
+                Content = card,
             };
         }
     }

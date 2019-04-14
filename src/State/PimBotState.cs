@@ -18,6 +18,5 @@ namespace PimBot.State
         /// </summary>
         /// <value>The user has been welcomed in the conversation.</value>
         public bool DidBotWelcomeUser { get; set; } = false;
-
     }
 }

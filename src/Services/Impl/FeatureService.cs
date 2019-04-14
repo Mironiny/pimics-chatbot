@@ -16,6 +16,10 @@ namespace PimBot.Services.Impl
             _featuresRepository = featuresRepository;
         }
 
+        /// <summary>
+        /// Get all feature by item.
+        /// </summary>
+        /// <returns>Features.</returns>
         public async Task<Dictionary<string, List<PimFeature>>> GetAllFeaturesByItemAsync()
         {
             var pimFeatures = await _featuresRepository.GetAll();
@@ -25,6 +29,11 @@ namespace PimBot.Services.Impl
                 .ToDictionary(group => group.Key, group => group.ToList());
         }
 
+        /// <summary>
+        /// Get all features by no.
+        /// </summary>
+        /// <param name="no">No.</param>
+        /// <returns>Features.</returns>
         public async Task<List<PimFeature>> GetFeaturesByNoAsync(string no)
         {
             var pimFeatures = await _featuresRepository.GetAll();

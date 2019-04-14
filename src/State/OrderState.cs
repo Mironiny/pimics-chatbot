@@ -3,9 +3,13 @@ using System.Collections.Generic;
 
 namespace PimBot.State
 {
+    /// <summary>
+    /// Ordered status.
+    /// </summary>
     public enum OrderStatus
     {
-        OrderCancelled, OrderDelivered, OrderInTransit,
+        OrderCancelled,
+        OrderDelivered, OrderInTransit,
         OrderPaymentDue, OrderPickupAvailable, OrderProblem, OrderProcessing, OrderReturned
     };
 

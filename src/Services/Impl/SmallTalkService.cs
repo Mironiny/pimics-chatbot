@@ -30,15 +30,15 @@ namespace PimBot.Services.Impl
                 // Send request to Azure service, get response
                 var response = client.SendAsync(request).Result;
                 var jsonResponse = response.Content.ReadAsAsync<Rootobject>().Result;
-                if (jsonResponse != null || jsonResponse.answers != null || !jsonResponse.answers.Length.Equals(0) ||
-                    jsonResponse.answers[0].score > 49)
+                if (jsonResponse != null || jsonResponse.Answers != null || !jsonResponse.Answers.Length.Equals(0) ||
+                    jsonResponse.Answers[0].Score > 49)
                 {
-                    if (jsonResponse.answers[0].answer == "No good match found in KB.")
+                    if (jsonResponse.Answers[0].answer == "No good match found in KB.")
                     {
                         return Messages.NotUnderstand;
                     }
 
-                    return jsonResponse.answers[0].answer;
+                    return jsonResponse.Answers[0].answer;
                 }
 
                 return Messages.NotUnderstand;
@@ -47,25 +47,29 @@ namespace PimBot.Services.Impl
 
         public class Rootobject
         {
-            public Answer[] answers { get; set; }
+            public Answer[] Answers { get; set; }
         }
 
         public class Answer
         {
-            public string[] questions { get; set; }
+            public string[] Questions { get; set; }
+
             public string answer { get; set; }
-            public float score { get; set; }
-            public int id { get; set; }
-            public string source { get; set; }
-            public Metadata[] metadata { get; set; }
+
+            public float Score { get; set; }
+
+            public int Id { get; set; }
+
+            public string Source { get; set; }
+
+            public Metadata[] Metadata { get; set; }
         }
 
         public class Metadata
         {
-            public string name { get; set; }
-            public string value { get; set; }
+            public string Name { get; set; }
+
+            public string Value { get; set; }
         }
     }
-
 }
-

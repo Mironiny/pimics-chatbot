@@ -21,6 +21,7 @@ namespace PimBot.State
         }
 
         public string Intent { get; set; }
+
         public JObject Entities { get; set; }
     }
 }

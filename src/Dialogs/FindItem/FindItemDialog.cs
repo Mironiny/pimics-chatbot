@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ using PimBot.Dialogs.AddItem;
 using PimBot.Service;
 using PimBot.State;
 using PimBotDp.Services;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace PimBot.Dialogs.FindItem
 {
@@ -183,13 +187,13 @@ namespace PimBot.Dialogs.FindItem
                     {
                         var response = stepContext.Context.Activity.CreateReply();
                         var pictureUrl = await _itemService.GetImageUrl(item);
-//                        response.Attachments.Add(new Attachment()
-//                        {
-//                            ContentUrl = pictureUrl,
-//                            ContentType = "image/jpeg",
-//                        });
-//
-//                        await context.SendActivityAsync(response);
+                        //                        response.Attachments.Add(new Attachment()
+                        //                        {
+                        //                            ContentUrl = pictureUrl,
+                        //                            ContentType = "image/jpeg",
+                        //                        });
+                        //
+                        //                        await context.SendActivityAsync(response);
 
 
                         response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item, pictureUrl) };
@@ -407,19 +411,13 @@ namespace PimBot.Dialogs.FindItem
         private Attachment CreateAdaptiveCardUsingSdk(PimItem item, string pictureUrl)
         {
             var card = new AdaptiveCard();
-
             if (pictureUrl != null)
-            {
-                var x = pictureUrl.Length;
-            }
-
-            Uri uri;
-            if (pictureUrl != null && Uri.TryCreate(pictureUrl, UriKind.RelativeOrAbsolute, out uri))
             {
                 card.Body.Add(new AdaptiveImage()
                 {
                     Type = "Image",
-                    Url = uri,
+                    UrlString = pictureUrl,
+                    HorizontalAlignment = AdaptiveHorizontalAlignment.Center,
                     Size = AdaptiveImageSize.Large
                 });
             }

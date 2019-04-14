@@ -19,8 +19,8 @@ namespace PimBot.Services.Impl
         /// <summary>
         /// Get item group ids by description.
         /// </summary>
-        /// <param name="description"></param>
-        /// <returns></returns>
+        /// <param name="description">Description.</param>
+        /// <returns>Items groups.</returns>
         public async Task<IEnumerable<string>> GetItemGroupIdsByDescription(string description)
         {
             var pimItemGroups = await _categoryRepository.GetAllItemGroup();
@@ -31,10 +31,23 @@ namespace PimBot.Services.Impl
                 .ToList();
         }
 
+        /// <summary>
+        /// Get all items by group.
+        /// </summary>
+        /// <returns>PimItemGroup.</returns>
         public async Task<IEnumerable<PimItemGroup>> GetAllItemGroupAsync() => await _categoryRepository.GetAllItemGroup();
 
+        /// <summary>
+        /// Get all product group.
+        /// </summary>
+        /// <returns>Product group.</returns>
         public async Task<IEnumerable<PimProductGroup>> GetAllProductGroupAsync() => await _categoryRepository.GetAllProductGroup();
 
+        /// <summary>
+        /// Get item groups by No.
+        /// </summary>
+        /// <param name="item">Item.</param>
+        /// <returns>Task.</returns>
         public async Task GetItemGroupsByNo(PimItem item)
         {
             throw new System.NotImplementedException();

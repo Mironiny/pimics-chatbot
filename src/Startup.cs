@@ -143,7 +143,8 @@ namespace Microsoft.BotBuilderSamples
             var userState = new UserState(dataStore);
             services.AddSingleton(userState);
 
-            var blobStorage = new AzureBlobTranscriptStore(Constants.AzureBlogStorageConnectionString,
+            var blobStorage = new AzureBlobTranscriptStore(
+                Constants.AzureBlogStorageConnectionString,
                 Constants.BlobTranscriptStorageContainerName);
 
             services.AddBot<PimBot.PimBot>(options =>

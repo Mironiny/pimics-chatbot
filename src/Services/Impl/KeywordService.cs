@@ -16,8 +16,16 @@ namespace PimBot.Services.Impl
             _keywordRepository = keywordRepository;
         }
 
+        /// <summary>
+        /// Get all keywords.
+        /// </summary>
+        /// <returns>All keywords.</returns>
         public async Task<IEnumerable<PimKeyword>> GetAllKeywordsAsync() => await _keywordRepository.GetAll();
 
+        /// <summary>
+        /// Get all keywords by group by item code.
+        /// </summary>
+        /// <returns>Keywords.</returns>
         public async Task<Dictionary<string, List<PimKeyword>>> GetAllKeywordsGroupByItemCodeAsync()
         {
             var pimKeywords = await GetAllKeywordsAsync();
