@@ -111,7 +111,7 @@ namespace PimBot.Dialogs.FindItem
                     var count = 0;
                     foreach (var item in items)
                     {
-                        // Count of 
+                        // Count of
                         count += item.PimFeatures.Where(i => i.Number == Number && i.Value == feature).Count();
                     }
 

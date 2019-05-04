@@ -1,13 +1,9 @@
 using System.Linq;
-using Moq;
 using NUnit.Framework;
-using PimBot.Repositories;
 using PimBot.Service;
 using PimBotDpTest.Utils;
 using System.Threading.Tasks;
 using PimBot.Service.Impl;
-using PimBot.State;
-using System.Collections.Generic;
 using PimBot.Dialogs.FindItem;
 using PimBot.Services.Impl;
 

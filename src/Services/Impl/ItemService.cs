@@ -419,7 +419,7 @@ namespace PimBot.Service.Impl
         }
 
         /// <summary>
-        /// Resize the image to the specified width and height.
+        /// Resize the image to the specified width and height. Source - STACK OVERFLOW.
         /// </summary>
         /// <param name="image">The image to resize.</param>
         /// <param name="width">The width to resize to.</param>

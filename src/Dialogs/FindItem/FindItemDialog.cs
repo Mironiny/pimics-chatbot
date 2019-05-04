@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,9 +13,6 @@ using PimBot.Dialogs.AddItem;
 using PimBot.Service;
 using PimBot.State;
 using PimBotDp.Services;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 
 namespace PimBot.Dialogs.FindItem
 {

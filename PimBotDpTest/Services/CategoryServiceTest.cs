@@ -1,9 +1,7 @@
 using System.Linq;
-using Moq;
 using NUnit.Framework;
 using PimBot.Repositories;
 using PimBot.Service;
-using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBotDpTest.Utils;
 using System.Threading.Tasks;

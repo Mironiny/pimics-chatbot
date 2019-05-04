@@ -2,23 +2,13 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
-using Microsoft.CognitiveServices.ContentModerator.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Graph;
-using Newtonsoft.Json.Linq;
-using PimBot.Service;
-using PimBot.Service.Impl;
 using PimBot.State;
 using PimBotDp.Dialogs;
 using PimBotDp.Services;
@@ -35,7 +25,6 @@ namespace PimBot
         private readonly IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private readonly IStatePropertyAccessor<DialogState> _dialogStateAccessor;
         private readonly ILogger _logger;
-        private readonly IKeywordService _keywordService;
 
         public PimBot(BotServices services, UserState userState, ConversationState conversationState, ILoggerFactory loggerFactory, IPimbotServiceProvider provider)
         {

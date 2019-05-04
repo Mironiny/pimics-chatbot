@@ -10,7 +10,6 @@ namespace PimBot.Repositories.Impl
         public async Task<IEnumerable<PimItem>> GetAll()
         {
             var client = ODataClientSingleton.Get();
-
             var items = await client
                 .For(Constants.Company).Key(Constants.CompanyName)
                 .NavigateTo(Constants.ItemsServiceEndpointName)

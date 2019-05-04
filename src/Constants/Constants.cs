@@ -11,7 +11,6 @@
         public const string KeywordsServiceEndpointName = "KeywordsPIM";
         public const string ItemGroupServiceEndpointName = "ItemGroupsPIM";
         public const string ProductGroupServiceEndpointName = "ProductGroupsPIM";
-        public const string ItemGroupLinks = "ItemGroupLinks";
         public const string PictureEndpointName = "PicturesPIM";
 
         // Should be somewhere else
