@@ -17,8 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PimBot;
 using PimBot.Repositories.Impl;
-using PimBot.Services.Impl;
 using PimBot.Services;
+using PimBot.Services.Impl;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -120,16 +120,16 @@ namespace Microsoft.BotBuilderSamples
             }
 
             // For testing and develop
-            IStorage dataStore = new MemoryStorage();
+//            IStorage dataStore = new MemoryStorage();
             
             // For publishing
-//            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
-//            {
-//                AuthKey = Constants.CosmosDBKey,
-//                CollectionId = Constants.CosmosDBCollectionName,
-//                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
-//                DatabaseId = Constants.CosmosDBDatabaseName,
-//            });
+            IStorage dataStore = new CosmosDbStorage(new CosmosDbStorageOptions()
+            {
+                AuthKey = Constants.CosmosDBKey,
+                CollectionId = Constants.CosmosDBCollectionName,
+                CosmosDBEndpoint = new Uri(Constants.CosmosServiceEndpoint),
+                DatabaseId = Constants.CosmosDBDatabaseName,
+            });
 
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);

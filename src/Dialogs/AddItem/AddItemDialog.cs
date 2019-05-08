@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.Documents.SystemFunctions;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -14,6 +16,8 @@ namespace PimBot.Dialogs
     public class AddItemDialog : ComponentDialog
     {
         public const string Name = "Add_item";
+
+        private static string No = string.Empty;
 
         // Prompts names
         private const string CountPrompt = "countPrompt";
@@ -51,6 +55,7 @@ namespace PimBot.Dialogs
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
+            No = string.Empty;
             var context = stepContext.Context;
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
             if (onTurnProperty.Entities[EntityNames.Item] != null && onTurnProperty.Entities[EntityNames.Item].Count() > 0)
@@ -65,10 +70,16 @@ namespace PimBot.Dialogs
                     return await stepContext.EndDialogAsync();
                 }
 
+                No = pimItem.No;
                 CustomerState customerState =
                     await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-                customerState.Cart.Items.Add(pimItem);
+                // If user adding item which is in cart yet
+                if (!customerState.Cart.Items.Select(i => i.No).Contains(pimItem.No))
+                {
+                    customerState.Cart.Items.Add(pimItem);
+                }
+
                 await _customerService.UpdateCustomerState(customerState);
                 return await stepContext.NextAsync();
             }
@@ -117,7 +128,8 @@ namespace PimBot.Dialogs
             CustomerState customerState =
                 await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-            customerState.Cart.Items[customerState.Cart.Items.Count - 1].Count = outputCount;
+            var item = customerState.Cart.Items.FirstOrDefault(i => i.No == No);
+            item.Count += outputCount;
             await _customerService.UpdateCustomerState(customerState);
 
             await stepContext.Context.SendActivityAsync(Messages.AddToCartAdded);
