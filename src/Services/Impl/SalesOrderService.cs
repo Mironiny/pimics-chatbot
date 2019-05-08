@@ -6,7 +6,7 @@ using PimBot.Dto;
 using PimBot.Repositories;
 using PimBot.State;
 
-namespace PimBot.Service.Impl
+namespace PimBot.Services.Impl
 {
     public class SalesOrderService : ISalesOrderService
     {

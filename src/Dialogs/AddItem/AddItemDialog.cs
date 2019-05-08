@@ -5,14 +5,11 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
-using PimBot.Service;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
-using PimBotDp.Constants;
-using PimBotDp.Services;
 
-namespace PimBot.Dialogs.AddItem
+namespace PimBot.Dialogs
 {
     public class AddItemDialog : ComponentDialog
     {
@@ -22,9 +19,9 @@ namespace PimBot.Dialogs.AddItem
         private const string CountPrompt = "countPrompt";
         private readonly IItemService _itemService;
         private readonly BotServices _services;
+        private readonly ICustomerService _customerService = new CustomerService();
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
-        private readonly ICustomerService _customerService = new CustomerService();
 
         public AddItemDialog(BotServices services,
             IStatePropertyAccessor<OnTurnState> onTurnAccessor,

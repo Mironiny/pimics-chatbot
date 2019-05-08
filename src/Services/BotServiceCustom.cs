@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Configuration;
 
-namespace PimBotDp.Services
+namespace PimBot.Services
 {
     public class BotServiceCustom
     {

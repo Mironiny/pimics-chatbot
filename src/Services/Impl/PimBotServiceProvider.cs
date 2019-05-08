@@ -1,6 +1,4 @@
-﻿using PimBot.Service;
-
-namespace PimBotDp.Services.Impl
+﻿namespace PimBot.Services.Impl
 {
     public class PimBotServiceProvider : IPimbotServiceProvider
     {

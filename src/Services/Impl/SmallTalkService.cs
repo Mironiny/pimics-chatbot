@@ -2,8 +2,6 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using PimBot.Service;
-using PimBotDp.Constants;
 
 namespace PimBot.Services.Impl
 {

@@ -1,4 +1,4 @@
-﻿namespace PimBotDp.Constants
+﻿namespace PimBot
 {
     /// <summary>
     /// Every Chatbot messages. Note that is supported Markdown.

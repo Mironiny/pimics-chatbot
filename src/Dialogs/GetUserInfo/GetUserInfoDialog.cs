@@ -8,15 +8,11 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Dto;
-using PimBot.Service;
-using PimBot.Service.Impl;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
-using PimBotDp.Constants;
-using PimBotDp.Services;
 
-namespace PimBot.Dialogs.AddItem
+namespace PimBot.Dialogs
 {
     /// <summary>
     /// Dialog which takes from user information needs to be know to complete the order.
@@ -66,7 +62,9 @@ namespace PimBot.Dialogs.AddItem
                 { "ConfirmCustomerInfo", 13 },
             };
 
-        public GetUserInfoDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor,
+        public GetUserInfoDialog(
+            BotServices services,
+            IStatePropertyAccessor<OnTurnState> onTurnAccessor,
             IStatePropertyAccessor<CartState> cartStateAccessor,
             IStatePropertyAccessor<CustomerState> customerStateAccessor,
             IPimbotServiceProvider provider)

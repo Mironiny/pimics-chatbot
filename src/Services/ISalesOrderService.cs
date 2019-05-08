@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using PimBot.Dto;
 using PimBot.State;
 
-namespace PimBot.Service
+namespace PimBot.Services
 {
     public interface ISalesOrderService
     {

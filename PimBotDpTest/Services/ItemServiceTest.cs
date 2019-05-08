@@ -1,11 +1,10 @@
 using System.Linq;
 using NUnit.Framework;
-using PimBot.Service;
+using PimBot.Services;
 using PimBotDpTest.Utils;
 using System.Threading.Tasks;
-using PimBot.Service.Impl;
-using PimBot.Dialogs.FindItem;
 using PimBot.Services.Impl;
+using PimBot.Dialogs;
 
 namespace Tests
 {

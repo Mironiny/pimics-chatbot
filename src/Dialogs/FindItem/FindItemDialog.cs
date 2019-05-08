@@ -9,17 +9,16 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
-using PimBot.Dialogs.AddItem;
 using PimBot.Dto;
-using PimBot.Service;
+using PimBot.Services;
 using PimBot.State;
-using PimBotDp.Constants;
-using PimBotDp.Services;
 
-namespace PimBot.Dialogs.FindItem
+namespace PimBot.Dialogs
 {
     public class FindItemDialog : ComponentDialog
     {
+        // Variable serve for savings didYouMean recomendation. If is empty that means that we should not look against this variable
+        public static string didYouMean = null;
         public const string Name = "Find_item";
 
         private const string ShowAllItemsPrompt = "ShowAllItemsPrompt";
@@ -33,9 +32,6 @@ namespace PimBot.Dialogs.FindItem
         private static List<string> questionAkedList = new List<string>();
         private static IEnumerable<PimItem> pimItems = new List<PimItem>();
         private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
-
-        // Variable serve for savings didYouMean recomendation. If is empty that means that we should not look against this variable
-        public static string didYouMean = null;
 
         private readonly IItemService _itemService;
         private readonly ICategoryService _categoryService;
@@ -185,14 +181,6 @@ namespace PimBot.Dialogs.FindItem
                     {
                         var response = stepContext.Context.Activity.CreateReply();
                         var pictureUrl = await _itemService.GetImageUrl(item);
-                        //                        response.Attachments.Add(new Attachment()
-                        //                        {
-                        //                            ContentUrl = pictureUrl,
-                        //                            ContentType = "image/jpeg",
-                        //                        });
-                        //
-                        //                        await context.SendActivityAsync(response);
-
 
                         response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingSdk(item, pictureUrl) };
                         await context.SendActivityAsync(response);
@@ -416,7 +404,7 @@ namespace PimBot.Dialogs.FindItem
                     Type = "Image",
                     UrlString = pictureUrl,
                     HorizontalAlignment = AdaptiveHorizontalAlignment.Center,
-                    Size = AdaptiveImageSize.Large
+                    Size = AdaptiveImageSize.Large,
                 });
             }
 

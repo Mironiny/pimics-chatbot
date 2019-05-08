@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace PimBot.Service
+namespace PimBot.Services
 {
     public interface ISmallTalkService
     {

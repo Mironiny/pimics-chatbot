@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Dto;
 using PimBot.Repositories;
-using PimBot.Service;
 
 namespace PimBot.Services.Impl
 {

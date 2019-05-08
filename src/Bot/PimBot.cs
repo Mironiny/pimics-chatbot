@@ -10,9 +10,8 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using Microsoft.Extensions.Logging;
 using PimBot.State;
-using PimBotDp.Constants;
-using PimBotDp.Dialogs;
-using PimBotDp.Services;
+using PimBot.Dialogs;
+using PimBot.Services;
 
 namespace PimBot
 {

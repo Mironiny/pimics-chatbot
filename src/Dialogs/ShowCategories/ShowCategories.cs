@@ -7,12 +7,10 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.BotBuilderSamples;
 using PimBot.Dto;
-using PimBot.Service;
+using PimBot.Services;
 using PimBot.State;
-using PimBotDp.Constants;
-using PimBotDp.Services;
 
-namespace PimBot.Dialogs.AddItem
+namespace PimBot.Dialogs
 {
     public class ShowCategoriesDialog : ComponentDialog
     {

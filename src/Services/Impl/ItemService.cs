@@ -7,13 +7,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using PimBot.Dialogs.FindItem;
+using PimBot.Dialogs;
 using PimBot.Dto;
 using PimBot.Repositories;
-using PimBot.Services;
-using PimBotDp.Constants;
 
-namespace PimBot.Service.Impl
+namespace PimBot.Services.Impl
 {
     public class ItemService : IItemService
     {

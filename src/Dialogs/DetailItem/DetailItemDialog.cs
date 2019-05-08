@@ -8,12 +8,10 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Dto;
-using PimBot.Service;
+using PimBot.Services;
 using PimBot.State;
-using PimBotDp.Constants;
-using PimBotDp.Services;
 
-namespace PimBot.Dialogs.AddItem
+namespace PimBot.Dialogs
 {
     public class DetailItemDialog : ComponentDialog
     {
@@ -24,7 +22,6 @@ namespace PimBot.Dialogs.AddItem
 
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
-        private IStatePropertyAccessor<CartState> _cartStateAccessor;
 
         public DetailItemDialog(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, IPimbotServiceProvider provider)
             : base(Name)

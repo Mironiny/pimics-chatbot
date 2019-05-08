@@ -5,7 +5,7 @@ using System.Linq;
 using PimBotDpTest.Utils;
 using PimBot.Services.Impl;
 using System.Threading.Tasks;
-using PimBot.Service;
+using PimBot.Services;
 
 namespace Tests
 {

@@ -5,7 +5,7 @@ using System.Linq;
 using MathNet.Numerics.Statistics;
 using PimBot.Dto;
 
-namespace PimBot.Dialogs.FindItem
+namespace PimBot.Dialogs
 {
     public enum FeatureType { Alphanumeric, Numeric, Logical };
 

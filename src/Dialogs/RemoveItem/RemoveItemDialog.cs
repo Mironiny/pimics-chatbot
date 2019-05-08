@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,17 +9,17 @@ using Microsoft.BotBuilderSamples;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
-using PimBotDp.Constants;
 
-namespace PimBot.Dialogs.AddItem
+namespace PimBot.Dialogs
 {
     public class RemoveItemDialog : ComponentDialog
     {
         public const string Name = "Remove_item";
+        private readonly ICustomerService _customerService = new CustomerService();
+
         private readonly BotServices _services;
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
         private IStatePropertyAccessor<CartState> _cartStateAccessor;
-        private readonly ICustomerService _customerService = new CustomerService();
 
         // Prompts names
         private const string ConfirmPrompt = "confirmPrompt";

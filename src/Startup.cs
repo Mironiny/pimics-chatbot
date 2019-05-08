@@ -17,12 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PimBot;
 using PimBot.Repositories.Impl;
-using PimBot.Service;
-using PimBot.Service.Impl;
 using PimBot.Services.Impl;
-using PimBotDp.Constants;
-using PimBotDp.Services;
-using PimBotDp.Services.Impl;
+using PimBot.Services;
 
 namespace Microsoft.BotBuilderSamples
 {

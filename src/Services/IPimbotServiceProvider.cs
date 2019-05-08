@@ -1,6 +1,4 @@
-﻿using PimBot.Service;
-
-namespace PimBotDp.Services
+﻿namespace PimBot.Services
 {
     /// <summary>
     /// Service provider serves as DI container.

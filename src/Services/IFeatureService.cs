@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using PimBot.Dto;
 
-namespace PimBot.Service
+namespace PimBot.Services
 {
     public interface IFeatureService
     {

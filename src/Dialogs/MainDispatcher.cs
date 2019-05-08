@@ -6,15 +6,11 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.BotBuilderSamples;
 using Microsoft.Extensions.Logging;
 using PimBot;
-using PimBot.Dialogs.AddItem;
-using PimBot.Dialogs.FindItem;
-using PimBot.Service;
+using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
-using PimBotDp.Constants;
-using PimBotDp.Services;
 
-namespace PimBotDp.Dialogs
+namespace PimBot.Dialogs
 {
     public class MainDispatcher : ComponentDialog
     {
