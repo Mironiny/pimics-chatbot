@@ -8,9 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Dialogs.FindItem;
+using PimBot.Dto;
 using PimBot.Repositories;
 using PimBot.Services;
-using PimBot.State;
+using PimBotDp.Constants;
 
 namespace PimBot.Service.Impl
 {

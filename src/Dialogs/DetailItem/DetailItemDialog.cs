@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,10 +7,10 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
+using PimBot.Dto;
 using PimBot.Service;
-using PimBot.Service.Impl;
-using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Constants;
 using PimBotDp.Services;
 
 namespace PimBot.Dialogs.AddItem

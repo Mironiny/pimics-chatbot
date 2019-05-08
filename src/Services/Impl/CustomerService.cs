@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Azure;
+using PimBot.Dto;
 using PimBot.State;
 
 namespace PimBot.Services.Impl

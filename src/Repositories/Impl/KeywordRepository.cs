@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using PimBot.Service;
-using PimBot.State;
+using PimBot.Dto;
 
 namespace PimBot.Repositories.Impl
 {

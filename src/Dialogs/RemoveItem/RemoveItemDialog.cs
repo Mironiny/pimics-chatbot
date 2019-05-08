@@ -10,6 +10,7 @@ using Microsoft.BotBuilderSamples;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Constants;
 
 namespace PimBot.Dialogs.AddItem
 {

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using PimBot.Service;
 
 namespace PimBot.Repositories.Impl
 {

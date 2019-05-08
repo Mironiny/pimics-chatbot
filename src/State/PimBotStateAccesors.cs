@@ -1,8 +1,5 @@
-﻿using Microsoft.Bot.Builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.Bot.Builder;
 
 namespace PimBot.State
 {
@@ -32,12 +29,5 @@ namespace PimBot.State
         /// <value>The accessor name for the WelcomeUser state.</value>
         public static string PimUserName { get; } = $"{nameof(PimBotStateAccesors)}.PimUserState";
 
-        /// <summary>
-        /// Gets or sets the <see cref="IStatePropertyAccessor{T}"/> for DidBotWelcome.
-        /// </summary>
-        /// <value>
-        /// The accessor stores if the bot has welcomed the user or not.
-        /// </value>
-        public IStatePropertyAccessor<PimBotState> PimBotState { get; set; }
     }
 }

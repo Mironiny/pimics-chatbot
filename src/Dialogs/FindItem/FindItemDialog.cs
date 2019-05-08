@@ -10,8 +10,10 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using PimBot.Dialogs.AddItem;
+using PimBot.Dto;
 using PimBot.Service;
 using PimBot.State;
+using PimBotDp.Constants;
 using PimBotDp.Services;
 
 namespace PimBot.Dialogs.FindItem

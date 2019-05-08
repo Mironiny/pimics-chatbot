@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using AdaptiveCards.Rendering;
+using PimBot.Dto;
+using PimBot.Repositories;
 using PimBot.State;
 
 namespace PimBot.Service.Impl

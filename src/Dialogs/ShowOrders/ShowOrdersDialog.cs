@@ -13,6 +13,7 @@ using PimBot.Service.Impl;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Constants;
 using PimBotDp.Services;
 
 namespace PimBot.Dialogs.AddItem

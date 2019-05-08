@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PimBot.State;
+using PimBot.Dto;
 
 namespace PimBotDpTest.Utils
 {

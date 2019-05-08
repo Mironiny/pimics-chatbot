@@ -11,6 +11,7 @@ using PimBot.Dialogs.FindItem;
 using PimBot.Service;
 using PimBot.Services.Impl;
 using PimBot.State;
+using PimBotDp.Constants;
 using PimBotDp.Services;
 
 namespace PimBotDp.Dialogs
