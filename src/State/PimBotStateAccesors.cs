@@ -1,7 +1,7 @@
 ﻿using System;
 // ===============================
 // Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
-// Create date:
+// Create date: 05.02.2019
 // ===
 
 using Microsoft.Bot.Builder;

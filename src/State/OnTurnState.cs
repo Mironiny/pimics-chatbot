@@ -1,6 +1,6 @@
 ﻿// ===============================
 // Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
-// Create date:
+// Create date: 18.02.2019
 // ===
 
 using Newtonsoft.Json.Linq;

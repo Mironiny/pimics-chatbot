@@ -1,7 +1,7 @@
 ﻿// ===============================
 // Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
-// Create date:
-// ===
+// Create date: 20.3.2019
+// ==.
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
