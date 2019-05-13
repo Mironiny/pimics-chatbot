@@ -1,8 +1,16 @@
-﻿using System.Linq;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PimBot.Repositories.Impl
 {
+    /// <summary>
+    /// Class responsible for getting pictures (implementation).
+    /// </summary>
     public class PictureRepository : IPictureRepository
     {
         public async Task<string> GetPictureUrlByPictureDocumentId(string pictureDocumentId)

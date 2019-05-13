@@ -1,5 +1,13 @@
-﻿namespace PimBot.Services.Impl
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+namespace PimBot.Services.Impl
 {
+    /// <summary>
+    /// Container class for service instances (implementation).
+    /// </summary>
     public class PimBotServiceProvider : IPimbotServiceProvider
     {
         public PimBotServiceProvider(

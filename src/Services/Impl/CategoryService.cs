@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PimBot.Dto;
@@ -6,6 +11,9 @@ using PimBot.Repositories;
 
 namespace PimBot.Services.Impl
 {
+    /// <summary>
+    /// Service for handling categories (implementation).
+    /// </summary>
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;

@@ -1,4 +1,9 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +17,9 @@ using PimBot.State;
 
 namespace PimBot.Dialogs
 {
+    /// <summary>
+    /// Class represents remove item dialog.
+    /// </summary>
     public class RemoveItemDialog : ComponentDialog
     {
         public const string Name = "Remove_item";

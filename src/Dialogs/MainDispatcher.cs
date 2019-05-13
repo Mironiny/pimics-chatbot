@@ -1,17 +1,24 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.BotBuilderSamples;
 using Microsoft.Extensions.Logging;
-using PimBot;
 using PimBot.Services;
 using PimBot.Services.Impl;
 using PimBot.State;
 
 namespace PimBot.Dialogs
 {
+    /// <summary>
+    /// Main class for handling dialogs.
+    /// </summary>
     public class MainDispatcher : ComponentDialog
     {
         private const string MainDispatcherStateProperty = "mainDispatcherState";
@@ -28,8 +35,13 @@ namespace PimBot.Dialogs
 
         private readonly DialogSet _dialogs;
 
-        public MainDispatcher(BotServices services, IStatePropertyAccessor<OnTurnState> onTurnAccessor, UserState userState, ConversationState conversationState,
-            ILoggerFactory loggerFactory, IPimbotServiceProvider provider)
+        public MainDispatcher(
+            BotServices services,
+            IStatePropertyAccessor<OnTurnState> onTurnAccessor,
+            UserState userState,
+            ConversationState conversationState,
+            ILoggerFactory loggerFactory,
+            IPimbotServiceProvider provider)
             : base(nameof(MainDispatcher))
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
@@ -62,13 +74,16 @@ namespace PimBot.Dialogs
             AddDialog(new DetailItemDialog(services, onTurnAccessor, provider));
         }
 
-        protected override async Task<DialogTurnResult> OnBeginDialogAsync(DialogContext innerDc, object options,
+        protected override async Task<DialogTurnResult> OnBeginDialogAsync(
+            DialogContext innerDc,
+            object options,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return await MainDispatch(innerDc);
         }
 
-        protected override async Task<DialogTurnResult> OnContinueDialogAsync(DialogContext innerDc,
+        protected override async Task<DialogTurnResult> OnContinueDialogAsync(
+            DialogContext innerDc,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return await MainDispatch(innerDc);

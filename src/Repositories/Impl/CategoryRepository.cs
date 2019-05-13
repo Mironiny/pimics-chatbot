@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PimBot.Dto;
 
 namespace PimBot.Repositories.Impl
 {
+    /// <summary>
+    /// Class responsible for getting categories (implementation).
+    /// </summary>
     public class CategoryRepository : ICategoryRepository
     {
         public async Task<IEnumerable<PimItemGroup>> GetAllItemGroup()
@@ -54,7 +62,7 @@ namespace PimBot.Repositories.Impl
         /// <summary>
         /// Map pim product group.
         /// </summary>
-        /// <param name="itemGroups"></param>
+        /// <param name="itemGroups">ItemGroups.</param>
         /// <returns></returns>
         private IEnumerable<PimProductGroup> MapPimProductGroup(IEnumerable<IDictionary<string, object>> productGroups)
         {

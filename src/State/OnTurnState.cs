@@ -1,7 +1,15 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using Newtonsoft.Json.Linq;
 
 namespace PimBot.State
 {
+    /// <summary>
+    /// OnTurnState state object.
+    /// </summary>
     public class OnTurnState
     {
         public OnTurnState()

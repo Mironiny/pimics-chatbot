@@ -1,8 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Threading.Tasks;
 using PimBot.State;
 
 namespace PimBot.Services
 {
+    /// <summary>
+    /// Service for handling customers (api).
+    /// </summary>
     public interface ICustomerService
     {
         /// <summary>

@@ -1,5 +1,13 @@
-﻿namespace PimBot
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+namespace PimBot
 {
+    /// <summary>
+    /// Class represents every Luis.ai intents.
+    /// </summary>
     public static class Intents
     {
         public const string FindItem = "FindItem";

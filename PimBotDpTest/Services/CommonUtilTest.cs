@@ -1,8 +1,16 @@
+// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
 using NUnit.Framework;
 using PimBot.Services;
 
 namespace Tests
 {
+    /// <summary>
+    /// Test suite for Common util.
+    /// </summary>
     public class CommonUtilTest
     {
         [SetUp]

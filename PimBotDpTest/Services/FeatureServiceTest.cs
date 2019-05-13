@@ -1,5 +1,9 @@
+// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
 using System.Linq;
-using Moq;
 using NUnit.Framework;
 using PimBot.Repositories;
 using PimBot.Services;
@@ -9,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace Tests
 {
+    /// <summary>
+    /// Test suite for Feature service.
+    /// </summary>
     public class FeatureServiceTest
     {
         private IFeatureService featureService;

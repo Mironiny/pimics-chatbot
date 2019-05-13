@@ -1,4 +1,9 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System;
 using System.Net;
 using System.Web;
 using Simple.OData.Client;

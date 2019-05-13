@@ -1,3 +1,8 @@
+// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
 using System.Linq;
 using NUnit.Framework;
 using PimBot.Repositories;
@@ -8,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace Tests
 {
+    /// <summary>
+    /// Test suite for Category service.
+    /// </summary>
     public class CategoryServiceTest
     {
         private ICategoryService categoryService;

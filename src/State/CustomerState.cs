@@ -1,7 +1,15 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Collections.Generic;
 
 namespace PimBot.State
 {
+    /// <summary>
+    /// Customer state object.
+    /// </summary>
     public class CustomerState
     {
         public int SmallTalkCount { get; set; }

@@ -1,5 +1,13 @@
-﻿namespace PimBot.Dto
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+namespace PimBot.Dto
 {
+    /// <summary>
+    /// SalesOrder dto class.
+    /// </summary>
     public class SalesOrder
     {
         public string Document_Type { get; set; }

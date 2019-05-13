@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PimBot.Dto;
 
 namespace PimBot.Repositories.Impl
 {
+    /// <summary>
+    /// Class responsible for getting features (implementation).
+    /// </summary>
     public class FeatureRepository : IFeaturesRepository
     {
         public async Task<IEnumerable<PimFeature>> GetAll()

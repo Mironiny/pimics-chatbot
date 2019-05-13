@@ -1,8 +1,16 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System;
 using System.Linq;
 
 namespace PimBot.Services
 {
+    /// <summary>
+    /// Class contains usefull util methods for another classes in solution.
+    /// </summary>
     public class CommonUtil
     {
         public static bool ContainsIgnoreCase(string sentance, string key)

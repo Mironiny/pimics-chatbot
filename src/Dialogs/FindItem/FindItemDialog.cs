@@ -1,4 +1,9 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,6 +20,9 @@ using PimBot.State;
 
 namespace PimBot.Dialogs
 {
+    /// <summary>
+    /// Class represents find item dialog.
+    /// </summary>
     public class FindItemDialog : ComponentDialog
     {
         // Variable serve for savings didYouMean recomendation. If is empty that means that we should not look against this variable

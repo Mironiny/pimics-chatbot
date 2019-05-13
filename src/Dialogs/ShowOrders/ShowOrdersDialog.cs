@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveCards;
@@ -12,6 +17,9 @@ using PimBot.State;
 
 namespace PimBot.Dialogs
 {
+    /// <summary>
+    /// Class represents show orders dialog.
+    /// </summary>
     public class ShowOrdersDialog : ComponentDialog
     {
         public const string Name = "Show_orders";
@@ -70,13 +78,13 @@ namespace PimBot.Dialogs
             var card = new AdaptiveCard();
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = $"**Status**: processing",
+                Text = Messages.ShowOrdersStatus,
                 Size = AdaptiveTextSize.Small,
                 Weight = AdaptiveTextWeight.Bolder,
             });
             card.Body.Add(new AdaptiveTextBlock()
             {
-                Text = $"**Created at**: {order.CreateDateTime}",
+                Text = string.Format(Messages.ShowOrdersCreatedAt, order.CreateDateTime),
                 Size = AdaptiveTextSize.Small,
                 Weight = AdaptiveTextWeight.Bolder,
             });
@@ -90,9 +98,8 @@ namespace PimBot.Dialogs
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
-                Content = card
+                Content = card,
             };
         }
-
     }
 }

@@ -1,4 +1,9 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,6 +17,9 @@ using PimBot.State;
 
 namespace PimBot.Dialogs
 {
+    /// <summary>
+    /// Class represents show categories dialogs.
+    /// </summary>
     public class ShowCategoriesDialog : ComponentDialog
     {
         public const string Name = "Show_categories";
@@ -39,6 +47,18 @@ namespace PimBot.Dialogs
                 waterfallSteps));
         }
 
+        public static string GetPritableGroup(IEnumerable<PimGroup> categories)
+        {
+            var categoriesToPrint = categories.Where(i => i.Description.Any());
+            string result = Messages.ShowCategoriesAvaliableCategories + Environment.NewLine;
+            foreach (var category in categoriesToPrint)
+            {
+                result += category.Description + Environment.NewLine;
+            }
+
+            return result;
+        }
+
         private async Task<DialogTurnResult> InitializeStateStepAsync(
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
@@ -50,18 +70,6 @@ namespace PimBot.Dialogs
 
             await context.SendActivityAsync(GetPritableGroup(categories));
             return await stepContext.EndDialogAsync();
-        }
-
-        public static string GetPritableGroup(IEnumerable<PimGroup> categories)
-        {
-            var categoriesToPrint = categories.Where(i => i.Description.Any());
-            string result = Messages.ShowCategoriesAvaliableCategories + Environment.NewLine;
-            foreach (var category in categoriesToPrint)
-            {
-                result += category.Description + Environment.NewLine;
-            }
-
-            return result;
         }
     }
 }

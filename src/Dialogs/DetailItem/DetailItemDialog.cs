@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +18,9 @@ using PimBot.State;
 
 namespace PimBot.Dialogs
 {
+    /// <summary>
+    /// Class represents detail of item dialog.
+    /// </summary>
     public class DetailItemDialog : ComponentDialog
     {
         public const string Name = "DetailItem";

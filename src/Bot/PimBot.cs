@@ -1,5 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
 
 using System;
 using System.Threading;
@@ -9,9 +11,9 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.BotBuilderSamples;
 using Microsoft.Extensions.Logging;
-using PimBot.State;
 using PimBot.Dialogs;
 using PimBot.Services;
+using PimBot.State;
 
 namespace PimBot
 {

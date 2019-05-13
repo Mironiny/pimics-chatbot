@@ -1,5 +1,13 @@
-﻿namespace PimBot.Dto
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+namespace PimBot.Dto
 {
+    /// <summary>
+    /// PimFeature dto class.
+    /// </summary>
     public class PimFeature
     {
         public string Source { get; set; }

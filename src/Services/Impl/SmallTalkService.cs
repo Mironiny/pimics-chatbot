@@ -1,10 +1,18 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PimBot.Services.Impl
 {
+    /// <summary>
+    /// Smalltalk service (implementation).
+    /// </summary>
     public class SmallTalkService : ISmallTalkService
     {
         public async Task<string> GetSmalltalkAnswer(string inputMessage)

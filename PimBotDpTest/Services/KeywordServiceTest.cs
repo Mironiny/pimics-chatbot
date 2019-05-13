@@ -1,4 +1,8 @@
-using Moq;
+// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
 using NUnit.Framework;
 using PimBot.Repositories;
 using System.Linq;
@@ -9,6 +13,9 @@ using PimBot.Services;
 
 namespace Tests
 {
+    /// <summary>
+    /// Test suite for Keyword service.
+    /// </summary>
     public class KeywordServiceTest
     {
         private IKeywordService keywordService;

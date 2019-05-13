@@ -1,4 +1,9 @@
-﻿using System;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,6 +16,9 @@ namespace PimBot.Dialogs
 
     public enum FilterInterval { UnderMedian, AboveMedian };
 
+    /// <summary>
+    /// Class encapsulate guestion which chatbot asks.
+    /// </summary>
     public class FeatureToAsk
     {
         public FeatureToAsk(string number, string description, int order, string unit)

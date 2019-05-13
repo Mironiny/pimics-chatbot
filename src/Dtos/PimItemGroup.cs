@@ -1,5 +1,13 @@
-﻿namespace PimBot.Dto
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+namespace PimBot.Dto
 {
+    /// <summary>
+    /// PimItemGroup dto class.
+    /// </summary>
     public class PimItemGroup : PimGroup
     {
         public string Item_Template_Code { get; set; }

@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
 using Moq;
 using PimBot.Repositories;
-using PimBot.State;
 
 namespace PimBotDpTest.Utils
 {
+    /// <summary>
+    /// Class for generating mocks.
+    /// </summary>
     public class MockServiceGenerator
     {
         public static IItemRepository CreateItemRepositoryMock()

@@ -1,3 +1,8 @@
+// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
 using System.Linq;
 using NUnit.Framework;
 using PimBot.Services;
@@ -8,6 +13,9 @@ using PimBot.Dialogs;
 
 namespace Tests
 {
+    /// <summary>
+    /// Test suite for item service.
+    /// </summary>
     public class ItemServiceTest
     {
         private IItemService itemService;

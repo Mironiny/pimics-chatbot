@@ -1,4 +1,9 @@
-﻿namespace PimBot
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+namespace PimBot
 {
     public static class Constants
     {

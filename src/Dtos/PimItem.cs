@@ -1,7 +1,15 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Collections.Generic;
 
 namespace PimBot.Dto
 {
+    /// <summary>
+    /// PimItem dto class.
+    /// </summary>
     public class PimItem
     {
         // Not in PIM - represents how many item you order

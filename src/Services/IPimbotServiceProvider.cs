@@ -1,4 +1,9 @@
-﻿namespace PimBot.Services
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+namespace PimBot.Services
 {
     /// <summary>
     /// Service provider serves as DI container.

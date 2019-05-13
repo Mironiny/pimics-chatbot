@@ -1,8 +1,16 @@
-﻿using System.Collections.Generic;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Collections.Generic;
 using PimBot.Dto;
 
 namespace PimBotDpTest.Utils
 {
+    /// <summary>
+    /// Class for generating fake data.
+    /// </summary>
     public class FakeDataGenerator
     {
         public static string CreatePictureUrl = "vut.fit.cz";

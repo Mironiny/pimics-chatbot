@@ -1,7 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
+using System.Threading.Tasks;
 
 namespace PimBot.Repositories
 {
+    /// <summary>
+    /// Class responsible for getting pictures (api).
+    /// </summary>
     public interface IPictureRepository
     {
         /// <summary>

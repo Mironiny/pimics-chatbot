@@ -1,4 +1,9 @@
 ﻿using System;
+// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===
+
 using Microsoft.Bot.Builder;
 
 namespace PimBot.State

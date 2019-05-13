@@ -1,7 +1,12 @@
-﻿namespace PimBot
+﻿// ===============================
+// Author: Miroslav Novák (xnovak1k@stud.fit.vutbr.cz)
+// Create date:
+// ===============================
+
+namespace PimBot
 {
     /// <summary>
-    /// Every Chatbot messages. Note that is supported Markdown.
+    /// Every Chatbot messages - localization. Note that is supported Markdown.
     /// </summary>
     public static class Messages
     {
@@ -83,6 +88,8 @@
 
         // ---------------Show orders ---------------
         public const string ShowOrdersNoOrder = @"Sorry, you don't have any active orders.";
+        public const string ShowOrdersCreatedAt = @"**Created at**: {0}";
+        public const string ShowOrdersStatus = "**Status**: processing";
 
         // ---------------Show categories ---------------
         public const string ShowCategoriesAvaliableCategories = @"This is all available **categories**: ";
