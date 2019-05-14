@@ -37,6 +37,7 @@ namespace PimBot.Services.Impl
         {
             var pimKeywords = await GetAllKeywordsAsync();
             return pimKeywords
+                .Where(i => !string.IsNullOrEmpty(i.Keyword))
                 .GroupBy(i => i.Code)
                 .ToDictionary(group => group.Key, group => group.ToList());
         }

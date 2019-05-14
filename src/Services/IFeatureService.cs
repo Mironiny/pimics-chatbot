@@ -15,6 +15,12 @@ namespace PimBot.Services
     public interface IFeatureService
     {
         /// <summary>
+        /// Get all features.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<PimFeature>> GetAllFeatures();
+
+        /// <summary>
         /// Get all feature by item.
         /// </summary>
         /// <returns>Features.</returns>
@@ -25,6 +31,6 @@ namespace PimBot.Services
         /// </summary>
         /// <param name="no">No.</param>
         /// <returns>Features.</returns>
-        Task<List<PimFeature>> GetFeaturesByNoAsync(string no);
+        Task<List<PimFeature>> GetFeaturesByNoAsync(string no, IEnumerable<PimFeature> pimFeatures);
     }
 }

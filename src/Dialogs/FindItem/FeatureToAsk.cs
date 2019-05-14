@@ -153,8 +153,8 @@ namespace PimBot.Dialogs
 
                         if (x.Count() > 0)
                         {
-                            countLowerEqualThanAverage += Convert.ToDouble(x[0].Value) <= median ? 1 : 0;
-                            countGreaterThanAverage += Convert.ToDouble(x[0].Value) > median ? 1 : 0;
+                            countLowerEqualThanAverage += double.Parse(x[0].Value, CultureInfo.InvariantCulture) <= median ? 1 : 0;
+                            countGreaterThanAverage += double.Parse(x[0].Value, CultureInfo.InvariantCulture) > median ? 1 : 0;
                         }
                     }
                 }

@@ -83,11 +83,11 @@ namespace PimBot.Services.Impl
                 .Union(filteredByKeywords)
                 .Union(filteredByDescription);
 
-            // Initialization of list
-            unitedItems.ToList().ForEach(i => _categoryService.GetItemGroupsByNo(i));
+//            unitedItems.ToList().ForEach(i => _categoryService.GetItemGroupsByNo(i));
+            var allFeatures = await _featuresService.GetAllFeatures();
             foreach (var item in unitedItems)
             {
-                item.PimFeatures = await _featuresService.GetFeaturesByNoAsync(item.No);
+                item.PimFeatures = await _featuresService.GetFeaturesByNoAsync(item.No, allFeatures);
             }
 
             return unitedItems;
@@ -190,7 +190,8 @@ namespace PimBot.Services.Impl
                 case FeatureType.Alphanumeric:
                     foreach (var item in items)
                     {
-                        var features = await _featuresService.GetFeaturesByNoAsync(item.No);
+                        var allFeatures = await _featuresService.GetAllFeatures();
+                        var features = await _featuresService.GetFeaturesByNoAsync(item.No, allFeatures);
                         var filteredItem = features.Where(i => i.Number == featureToAsk.Number).ToList();
                         if (filteredItem.Count() == 0)
                         {
@@ -224,7 +225,8 @@ namespace PimBot.Services.Impl
 
                     foreach (var item in items)
                     {
-                        var features = await _featuresService.GetFeaturesByNoAsync(item.No);
+                        var allFeatures = await _featuresService.GetAllFeatures();
+                        var features = await _featuresService.GetFeaturesByNoAsync(item.No, allFeatures);
                         var filteredItem = features.Where(i => i.Number == featureToAsk.Number).ToList();
                         if (filteredItem.Count() == 0)
                         {

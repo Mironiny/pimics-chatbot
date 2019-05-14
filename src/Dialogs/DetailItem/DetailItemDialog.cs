@@ -67,7 +67,8 @@ namespace PimBot.Dialogs
                     return await stepContext.EndDialogAsync();
                 }
 
-                var features = await _featureService.GetFeaturesByNoAsync(pimItem.No);
+                var allFeatures = await _featureService.GetAllFeatures();
+                var features = await _featureService.GetFeaturesByNoAsync(pimItem.No, allFeatures);
                 var response = stepContext.Context.Activity.CreateReply();
                 var pictureUrl = await _itemService.GetImageUrl(pimItem);
 
@@ -117,7 +118,7 @@ namespace PimBot.Dialogs
             {
                 card.Body.Add(new AdaptiveTextBlock()
                 {
-                    Text = $"{feature.Description}: {feature.Value}",
+                    Text = $"{feature.Description}: {feature.Value} {feature.Unit_Shorthand_Description}",
                     Size = AdaptiveTextSize.Medium,
                     Weight = AdaptiveTextWeight.Bolder,
                 });

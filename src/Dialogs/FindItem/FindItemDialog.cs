@@ -39,6 +39,7 @@ namespace PimBot.Dialogs
         private static int questionCounter;
         private static List<string> questionAkedList = new List<string>();
         private static IEnumerable<PimItem> pimItems = new List<PimItem>();
+        private static IEnumerable<PimFeature> pimFeatures = new List<PimFeature>();
         private static List<FeatureToAsk> featuresToAsk = new List<FeatureToAsk>();
 
         private readonly IItemService _itemService;

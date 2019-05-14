@@ -85,7 +85,8 @@ namespace Tests
             var features = FakeDataGenerator.CreateDummyFeatures();
 
             // When
-            var returnedFeatures = await featureService.GetFeaturesByNoAsync("0");
+            var allFeatures = await featureService.GetAllFeatures();
+            var returnedFeatures = await featureService.GetFeaturesByNoAsync("0", allFeatures);
 
             // Then
             Assert.NotNull(returnedFeatures);
@@ -99,7 +100,8 @@ namespace Tests
             var features = FakeDataGenerator.CreateDummyFeatures();
 
             // When
-            var returnedFeatures = await featureService.GetFeaturesByNoAsync("1000");
+            var allFeatures = await featureService.GetAllFeatures();
+            var returnedFeatures = await featureService.GetFeaturesByNoAsync("1000", allFeatures);
 
             // Then
             Assert.NotNull(returnedFeatures);
@@ -115,7 +117,8 @@ namespace Tests
             var features = FakeDataGenerator.CreateDummyFeatures();
 
             // When
-            var returnedFeatures = await featureService.GetFeaturesByNoAsync("1001");
+            var allFeatures = await featureService.GetAllFeatures();
+            var returnedFeatures = await featureService.GetFeaturesByNoAsync("1001", allFeatures);
 
             // Then
             Assert.NotNull(returnedFeatures);

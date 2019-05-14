@@ -24,6 +24,12 @@ namespace PimBot.Services.Impl
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<PimFeature>> GetAllFeatures() => await _featuresRepository.GetAll();
+
+        /// <summary>
         /// Get all feature by item.
         /// </summary>
         /// <returns>Features.</returns>
@@ -41,9 +47,8 @@ namespace PimBot.Services.Impl
         /// </summary>
         /// <param name="no">No.</param>
         /// <returns>Features.</returns>
-        public async Task<List<PimFeature>> GetFeaturesByNoAsync(string no)
+        public async Task<List<PimFeature>> GetFeaturesByNoAsync(string no, IEnumerable<PimFeature> pimFeatures)
         {
-            var pimFeatures = await _featuresRepository.GetAll();
             return pimFeatures.Where(i => i.Code == no).ToList();
         }
     }
