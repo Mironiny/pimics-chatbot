@@ -44,6 +44,7 @@ namespace PimBot.Dialogs
 
         private readonly IItemService _itemService;
         private readonly ICategoryService _categoryService;
+        private readonly IFeatureService _featureService;
         private readonly BotServices _services;
 
         private IStatePropertyAccessor<OnTurnState> _onTurnAccessor;
@@ -57,6 +58,7 @@ namespace PimBot.Dialogs
             _cartStateAccessor = cartStateAccessor;
             _itemService = provider.ItemService;
             _categoryService = provider.CategoryService;
+            _featureService = provider.FeatureService;
 
             // Add dialogs
             var waterfallSteps = new WaterfallStep[]
@@ -105,6 +107,8 @@ namespace PimBot.Dialogs
 
                 // Get all items
                 pimItems = await _itemService.GetAllItemsByMatchAsync(firstEntity);
+                pimFeatures = await _featureService.GetAllFeatures();
+
                 //                var groupCount = _itemService.GetAllItemsCategory(pimItems).Count();
 
                 if (didYouMean != null)
@@ -267,11 +271,12 @@ namespace PimBot.Dialogs
                 // Do some filtering
                 if (featuresToAsk[0].Type == FeatureType.Alphanumeric)
                 {
-                    pimItems = await _itemService.FilterItemsByFeature(pimItems, featuresToAsk[0], choice.Value);
+                    pimItems = await _itemService.FilterItemsByFeature(pimFeatures, pimItems, featuresToAsk[0], choice.Value);
                 }
                 else
                 {
                     pimItems = await _itemService.FilterItemsByFeature(
+                        pimFeatures,
                         pimItems,
                         featuresToAsk[0],
                         featuresToAsk[0].GetMedianValue().ToString(),

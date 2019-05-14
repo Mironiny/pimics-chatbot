@@ -19,6 +19,8 @@ namespace Tests
     public class ItemServiceTest
     {
         private IItemService itemService;
+        private IFeatureService featureService;
+
 
         [SetUp]
         public void Setup()
@@ -29,7 +31,7 @@ namespace Tests
             var keywordsRepositoryMock = MockServiceGenerator.CreateKeywordRepository();
             var categoryRepositoryMock = MockServiceGenerator.CreateCategoryRepository();
 
-            var featureService = new FeatureService(featureRepositoryMock);
+            featureService = new FeatureService(featureRepositoryMock);
             var keywordService = new KeywordService(keywordsRepositoryMock);
             var categoryService = new CategoryService(categoryRepositoryMock);
 
@@ -332,7 +334,9 @@ namespace Tests
             var featureToAsk = featuresToAsk[0];
 
             // When
-            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+            var pimFeatures = await featureService.GetAllFeatures();
+
+            var filteredItems = await itemService.FilterItemsByFeature(pimFeatures, pimItems, featureToAsk,
                 featuresToAsk[0].GetMedianValue().ToString(), (int) FilterInterval.UnderMedian);
 
             Assert.NotNull(filteredItems);
@@ -357,7 +361,9 @@ namespace Tests
             var featureToAsk = featuresToAsk[0];
 
             // When
-            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+            var pimFeatures = await featureService.GetAllFeatures();
+
+            var filteredItems = await itemService.FilterItemsByFeature(pimFeatures, pimItems, featureToAsk,
                 featureToAsk.GetMedianValue().ToString(), (int)FilterInterval.AboveMedian);
 
             Assert.NotNull(filteredItems);
@@ -379,7 +385,9 @@ namespace Tests
             var featureToAsk = featuresToAsk[1];
 
             // When
-            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+            var pimFeatures = await featureService.GetAllFeatures();
+
+            var filteredItems = await itemService.FilterItemsByFeature(pimFeatures, pimItems, featureToAsk,
                 featureToAsk.GetMedianValue().ToString(), (int)FilterInterval.UnderMedian);
 
             Assert.NotNull(filteredItems);
@@ -404,7 +412,9 @@ namespace Tests
             var featureToAsk = featuresToAsk[1];
 
             // When
-            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+            var pimFeatures = await featureService.GetAllFeatures();
+
+            var filteredItems = await itemService.FilterItemsByFeature(pimFeatures, pimItems, featureToAsk,
                 featureToAsk.GetMedianValue().ToString(), (int)FilterInterval.AboveMedian);
 
             Assert.NotNull(filteredItems);
@@ -427,7 +437,9 @@ namespace Tests
             var featureToAsk = featuresToAsk[2];
 
             // When
-            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+            var pimFeatures = await featureService.GetAllFeatures();
+
+            var filteredItems = await itemService.FilterItemsByFeature(pimFeatures, pimItems, featureToAsk,
                 "Red");
 
             Assert.NotNull(filteredItems);
@@ -450,7 +462,9 @@ namespace Tests
             var featureToAsk = featuresToAsk[2];
 
             // When
-            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+            var pimFeatures = await featureService.GetAllFeatures();
+
+            var filteredItems = await itemService.FilterItemsByFeature(pimFeatures, pimItems, featureToAsk,
                 "White");
 
             Assert.NotNull(filteredItems);
@@ -469,7 +483,9 @@ namespace Tests
             var featureToAsk = featuresToAsk[3];
 
             // When
-            var filteredItems = await itemService.FilterItemsByFeature(pimItems, featureToAsk,
+            var pimFeatures = await featureService.GetAllFeatures();
+
+            var filteredItems = await itemService.FilterItemsByFeature(pimFeatures, pimItems, featureToAsk,
                 "Wood");
 
             Assert.NotNull(filteredItems);

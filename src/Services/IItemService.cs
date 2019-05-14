@@ -45,6 +45,7 @@ namespace PimBot.Services
         /// <param name="index">Valid only in numerics type. If user select under median, the index is 0 otherwise 1.</param>
         /// <returns>Filtered items.</returns>
         Task<IEnumerable<PimItem>> FilterItemsByFeature(
+            IEnumerable<PimFeature> allFeatures,
             IEnumerable<PimItem> items,
             FeatureToAsk featureToAsk,
             string value,

@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using MathNet.Numerics.Statistics;
 using PimBot.Dto;
+using PimBot.Services;
 
 namespace PimBot.Dialogs
 {
@@ -90,7 +92,9 @@ namespace PimBot.Dialogs
 
         public bool IsDigitsOnly(string str)
         {
-            return double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double unusedValue);
+            string withoutBack = string.Concat(str.Where(c => !char.IsWhiteSpace(c)));
+
+            return double.TryParse(withoutBack, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double unusedValue);
         }
 
         /// <summary>

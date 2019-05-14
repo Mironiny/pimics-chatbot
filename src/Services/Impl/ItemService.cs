@@ -93,6 +93,24 @@ namespace PimBot.Services.Impl
             return unitedItems;
         }
 
+        public List<PimFeature> GetFeaturesFromItems(IEnumerable<PimItem> items)
+        {
+            List<PimFeature> list = new List<PimFeature>();
+            foreach (var item in items)
+            {
+                foreach (var feature in item.PimFeatures)
+                {
+                    var index = list.FindIndex(f => f.Number == feature.Number);
+                    if (index == -1)
+                    {
+                       list.Add(feature);
+                    }
+                }
+            }
+
+            return list;
+        }
+
         /// <summary>
         /// Method choose from inputs items features to ask. It's sorts features by order and computed information gain.
         /// </summary>
@@ -141,7 +159,7 @@ namespace PimBot.Services.Impl
                     }
                 }
             }
-
+    
             // Added to features to ask the unit price which is by default not in features
             var unitPriceFeature = new FeatureToAsk(Constants.UnitPriceType, Messages.UnitPrice, 1, string.Empty);
             unitPriceFeature.ValuesList = new HashSet<string>();
@@ -179,6 +197,7 @@ namespace PimBot.Services.Impl
         /// <param name="index">Valid only in numerics type. If user select under median, the index is 0 otherwise 1.</param>
         /// <returns>Filtered items.</returns>
         public async Task<IEnumerable<PimItem>> FilterItemsByFeature(
+            IEnumerable<PimFeature> allFeatures,
             IEnumerable<PimItem> items,
             FeatureToAsk featureToAsk,
             string value,
@@ -190,7 +209,6 @@ namespace PimBot.Services.Impl
                 case FeatureType.Alphanumeric:
                     foreach (var item in items)
                     {
-                        var allFeatures = await _featuresService.GetAllFeatures();
                         var features = await _featuresService.GetFeaturesByNoAsync(item.No, allFeatures);
                         var filteredItem = features.Where(i => i.Number == featureToAsk.Number).ToList();
                         if (filteredItem.Count() == 0)
@@ -225,7 +243,6 @@ namespace PimBot.Services.Impl
 
                     foreach (var item in items)
                     {
-                        var allFeatures = await _featuresService.GetAllFeatures();
                         var features = await _featuresService.GetFeaturesByNoAsync(item.No, allFeatures);
                         var filteredItem = features.Where(i => i.Number == featureToAsk.Number).ToList();
                         if (filteredItem.Count() == 0)
@@ -236,7 +253,7 @@ namespace PimBot.Services.Impl
                         {
                             if (index == 0)
                             {
-                                if (Convert.ToDouble(filteredItem[0].Value) <= Convert.ToDouble(value))
+                                if (double.Parse(filteredItem[0].Value, CultureInfo.InvariantCulture) <= double.Parse(value, CultureInfo.InvariantCulture))
                                 {
                                     pimItemResult.Add(item);
                                 }
@@ -244,7 +261,7 @@ namespace PimBot.Services.Impl
 
                             if (index == 1)
                             {
-                                if (Convert.ToDouble(filteredItem[0].Value) > Convert.ToDouble(value))
+                                if (double.Parse(filteredItem[0].Value, CultureInfo.InvariantCulture) > double.Parse(value, CultureInfo.InvariantCulture))
                                 {
                                     pimItemResult.Add(item);
                                 }
