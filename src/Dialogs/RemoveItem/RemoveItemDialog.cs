@@ -22,6 +22,7 @@ namespace PimBot.Dialogs
     /// </summary>
     public class RemoveItemDialog : ComponentDialog
     {
+        private static string ItemToRemoveName;
         public const string Name = "Remove_item";
         private readonly ICustomerService _customerService = new CustomerService();
 
@@ -60,13 +61,13 @@ namespace PimBot.Dialogs
             var onTurnProperty = await _onTurnAccessor.GetAsync(context, () => new OnTurnState());
             if (onTurnProperty.Entities[EntityNames.Item] != null && onTurnProperty.Entities[EntityNames.Item].Count() > 0)
             {
-                var item = (string)onTurnProperty.Entities[EntityNames.Item].First;
+                ItemToRemoveName = (string)onTurnProperty.Entities[EntityNames.Item].First;
 
                 // Check if item exists in cart
                 CustomerState customerState =
                     await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-                if (!customerState.Cart.Items.Exists(x => x.No == item))
+                if (!customerState.Cart.Items.Exists(x => x.No == ItemToRemoveName))
                 {
                     await context.SendActivityAsync(Messages.RemoveItemForgotItem);
                     return await stepContext.EndDialogAsync();
@@ -90,7 +91,7 @@ namespace PimBot.Dialogs
                 Prompt = new Activity
                 {
                     Type = ActivityTypes.Message,
-                    Text = $"Are you sure?",
+                    Text = Messages.RemoveItemConfirm,
                 },
             };
             return await stepContext.PromptAsync(ConfirmPrompt, opts);
@@ -106,8 +107,7 @@ namespace PimBot.Dialogs
                 CustomerState customerState =
                     await _customerService.GetCustomerStateById(stepContext.Context.Activity.From.Id);
 
-                var nameToRemove = customerState.Cart.Items[customerState.Cart.Items.Count - 1].Description;
-                var item = customerState.Cart.Items.SingleOrDefault(x => x.Description == nameToRemove);
+                var item = customerState.Cart.Items.SingleOrDefault(x => x.No == ItemToRemoveName);
                 if (item != null)
                 {
                     customerState.Cart.Items.Remove(item);

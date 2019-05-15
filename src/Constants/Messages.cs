@@ -103,6 +103,7 @@ namespace PimBot
         public const string RemoveItemChangeMind = @"Ok, never mind.";
         public const string RemoveItemNotNumber = @"Sorry, please add just number.";
         public const string RemoveItemGreater = @"Sorry, count has to be greater than 0.";
+        public const string RemoveItemConfirm = "Are you sure?";
 
         // ---------------Find item ---------------
         public const string FindItemDidYouMean = "Did you mean {0}?";
